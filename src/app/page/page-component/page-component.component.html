@@ -1,0 +1,188 @@
+<app-header (isLoggedIn)="checkLogin($event)"></app-header>
+<div class="gray-background knowledge-warp">
+  <div class="theme-container">
+    <div class="knowledge-header-block text-center">
+      <div class="knowledge-head">
+        <h1 class="main-head no-margin">
+          Knowledge
+          <span class="text-light">Base</span>
+        </h1>
+        <img
+          [src]="imgPath + 'Icon_KnowledgeBase_Blue.svg'"
+          width="40"
+          alt="Icon_KnowledgeBase_Blue.svg"
+        />
+      </div>
+    </div>
+    <div class="knowledge-content-block" *ngIf="!isFirstCall; else loader">
+      <div class="row">
+        <div class="col-sm-3 col-md-3">
+          <div
+            class="col-sm-12 knowledge-tile-bg knowledge-leftsidebar-tile no-padding"
+            *ngIf="pages.length > 0"
+          >
+            <!--For manage mobile view-->
+            <div class="faq-toggle-section hidden-sm hidden-md hidden-lg">
+              <button
+                class="btn btn-theme-white"
+                type="button"
+                data-toggle="collapse"
+                data-target="#collapseExample"
+                aria-expanded="false"
+                aria-controls="collapseExample"
+              >
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              <span class="text" *ngIf="isDataLoaded"
+                ><span [innerHTML]="selectedPageTitle"></span
+                ><span *ngIf="faqName" [innerHTML]="': ' + faqName"></span
+              ></span>
+            </div>
+            <!--For manage mobile view-->
+            <ul class="hidden-xs">
+              <!-- <li [ngClass]="{'active': selectedPage=='faq'}" (click)="gotToPage('faq')">
+                <a>FAQ</a>
+              </li> -->
+              <ng-container *ngFor="let faq of faqCat">
+                <li [ngClass]="{ active: pageId == faq.id }" (click)="gotToFaq(faq)">
+                  <a>{{ faq.value }}</a>
+                </li>
+              </ng-container>
+            </ul>
+
+            <!--For manage mobile view-->
+            <div class="collapse hidden-sm hidden-md hidden-lg" id="collapseExample">
+              <ul>
+                <ng-container *ngFor="let faq of faqCat">
+                  <li
+                    [ngClass]="{ active: pageId == faq.id }"
+                    (click)="gotToFaq(faq)"
+                    data-toggle="collapse"
+                    data-target="#collapseExample"
+                    aria-expanded="false"
+                    aria-controls="collapseExample"
+                  >
+                    <a>{{ faq.value }}</a>
+                  </li>
+                </ng-container>
+                <ng-container *ngFor="let page of pages">
+                  <li
+                    [ngClass]="{ active: selectedPage == page.slug }"
+                    (click)="gotToPage(page.slug)"
+                    data-toggle="collapse"
+                    data-target="#collapseExample"
+                    aria-expanded="false"
+                    aria-controls="collapseExample"
+                  >
+                    <a>{{ page.title }}</a>
+                  </li>
+                </ng-container>
+              </ul>
+            </div>
+            <!--For manage mobile view-->
+          </div>
+          <div class="col-sm-12 knowledge-tile-bg knowledge-leftsidebar-tile no-padding hidden-xs">
+            <ul>
+              <ng-container *ngFor="let page of pages">
+                <li
+                  [ngClass]="{ active: selectedPage == page.slug }"
+                  (click)="gotToPage(page.slug)"
+                >
+                  <a>{{ page.title }}</a>
+                </li>
+              </ng-container>
+            </ul>
+          </div>
+        </div>
+        <div class="col-md-9 col-sm-9">
+          <div class="col-sm-12 knowledge-tile-bg">
+            <div class="row">
+              <div *ngIf="isDataLoaded; else loader">
+                <div
+                  class=" knowledge-rightsidebar-tile"
+                  *ngIf="selectedPage == 'faq'; else notFAQ"
+                >
+                  <div class="heading">
+                    <h3>
+                      FAQ<span class="text-light" *ngIf="faqName">: {{ faqName }}</span>
+                    </h3>
+                  </div>
+                  <div
+                    class="panel-group"
+                    id="accordion"
+                    role="tablist"
+                    aria-multiselectable="true"
+                    *ngIf="faqData && faqData.length > 0"
+                  >
+                    <div class="panel panel-default" *ngFor="let faq of faqData; let i = index">
+                      <div class="panel-heading" role="tab" id="headingOne-{{ i }}">
+                        <h4 class="panel-title">
+                          <a
+                            class="collapsed"
+                            role="button"
+                            data-toggle="collapse"
+                            data-parent="#accordion"
+                            href="#collapseOne-{{ i }}"
+                            aria-expanded="false"
+                            [attr.aria-controls]="'collapseOne' + i"
+                          >
+                            <i class="fa fa-angle-down" aria-hidden="true"></i>
+                            {{ faq.question }}
+                          </a>
+                        </h4>
+                      </div>
+                      <div
+                        id="collapseOne-{{ i }}"
+                        class="panel-collapse collapse"
+                        role="tabpanel"
+                        [attr.aria-labelledby]="'headingOne' + i"
+                      >
+                        <div class="panel-body" [innerHTML]="faq.answer | safeHtml"></div>
+                      </div>
+                    </div>
+                    <div class="contact-line">
+                      <h4>
+                        Didn't find what you were looking for?
+                        <a routerLink="/support">Contact Us</a> and we'll be glad to help.
+                      </h4>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <ng-template #notFAQ>
+              <div class="col-sm-12 knowledge-tile-bg knowledge-rightsidebar-tile">
+                <div class="heading">
+                  <h3>
+                    {{ pageData.title }}
+                    <!-- <span class="text-light">Usage Conditions</span> -->
+                  </h3>
+                </div>
+                <div id="accordion">
+                  <div [innerHTML]="pageData.description | safeHtml"></div>
+                </div>
+                <div class="contact-line">
+                  <h4>
+                    Didn't find what you were looking for?
+                    <a routerLink="/support">Contact Us</a> and we'll be glad to help.
+                  </h4>
+                </div>
+              </div>
+            </ng-template>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <ng-template #loader>
+    <div class="">
+      <br />
+      <loader></loader>
+      <br />
+    </div>
+  </ng-template>
+</div>
+<app-footer></app-footer>

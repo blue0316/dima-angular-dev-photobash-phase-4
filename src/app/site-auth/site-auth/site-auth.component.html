@@ -1,0 +1,59 @@
+<!-- <div class="centered">
+  <div class="jumbotron">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-12 offset-md-3">
+          <h2>Please provide password to access full site!</h2>
+          <form [formGroup]="authForm" (ngSubmit)="onSubmit()">
+            <div class="form-group">
+              <label>Password</label>
+              <input type="password" formControlName="password" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.password.errors }" />
+              <div *ngIf="submitted && f.password.errors" class="invalid-feedback">
+                <div class="warn" *ngIf="f.password.errors.required">Password is required</div>
+                <div class="warn" *ngIf="f.password.errors.minlength">Password must be at least 6 characters</div>
+                <div class="warn" *ngIf="f.password.errors.maxlength">Password cannot be more than 18 characters</div>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <button class="btn btn-primary" type="submit">Submit</button>
+            </div>
+
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div> -->
+<div class="main-login-wrapper">
+<div class="login-wrapper">
+  <div class="login-form-wrapper">
+    <div>
+    <form [formGroup]="authForm" (ngSubmit)="onSubmit()" class="form-signin">
+      <div class="col-md-12 text-center loginform-header">
+        <a href="javascript:;" ><img
+          [src]="ImgPath+'admin-login-logo.png'"
+         ></a>
+        <div class="text-center admin-login-name">Beta Login</div>
+      </div>
+      <div class="login-wrap">
+      <div class="col-md-12 pswd-fld  form-group">
+        <label>Password</label>
+        <input type="password" formControlName="password" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.password.errors }" />
+        <div *ngIf="submitted && f.password.errors" class="invalid-feedback">
+          <div class="warn" *ngIf="f.password.errors.required">Password is required</div>
+          <div class="warn" *ngIf="f.password.errors.minlength">Password must be at least 6 characters</div>
+          <div class="warn" *ngIf="f.password.errors.maxlength">Password cannot be more than 18 characters</div>
+        </div>
+      </div>
+    
+      <div class="col-md-12 text-center">
+        <button class="btn btn-primary btn-lock login" type="submit">Continue</button>
+      </div>
+      </div>
+    
+    </form>
+    </div>
+  </div>
+</div>
+</div>

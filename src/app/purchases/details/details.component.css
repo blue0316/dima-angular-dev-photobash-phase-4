@@ -1,0 +1,196 @@
+.collection-filter-wrapper .collection-filter-name {
+  max-width: 100%;
+}
+.selected {
+  cursor: pointer;
+  color: #4995ff;
+}
+.filter-element:hover {
+  color: #4995ff;
+}
+.vertical-separator .separator {
+  display: inline-block;
+  height: 10px;
+  width: 2px;
+  background-color: #ddd;
+  margin: 0 2px;
+}
+input[type='checkbox'].ios8-switch {
+  position: absolute;
+  margin: 8px 0 0 16px;
+  display: none;
+}
+input[type='checkbox'].ios8-switch + label {
+  position: relative;
+  padding: 5px 0 0 50px;
+  line-height: 2em;
+}
+input[type='checkbox'].ios8-switch + label:before {
+  content: '';
+  position: absolute;
+  display: block;
+  left: 0;
+  top: 0;
+  width: 40px; /* x*5 */
+  height: 24px; /* x*3 */
+  border-radius: 16px; /* x*2 */
+  background: #61666c;
+  border: 1px solid #d9d9d9;
+  -webkit-transition: all 0.3s;
+  transition: all 0.3s;
+}
+input[type='checkbox'].ios8-switch + label:after {
+  content: '';
+  position: absolute;
+  display: block;
+  left: 0px;
+  top: 0px;
+  width: 24px; /* x*3 */
+  height: 24px; /* x*3 */
+  border-radius: 16px; /* x*2 */
+  background: #61666c;
+  border: 1px solid #d9d9d9;
+  -webkit-transition: all 0.3s;
+  transition: all 0.3s;
+}
+input[type='checkbox'].ios8-switch + label:hover:after {
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+}
+input[type='checkbox'].ios8-switch:checked + label:after {
+  margin-left: 16px;
+}
+input[type='checkbox'].ios8-switch:checked + label:before {
+  background: #61666c;
+}
+
+/* SMALL */
+
+input[type='checkbox'].ios8-switch-sm {
+  cursor: pointer;
+}
+input[type='checkbox'].ios8-switch-sm + label {
+  position: relative;
+  padding: 0 0 7px 25px;
+  line-height: 1.3em;
+  background: #fff;
+}
+input[type='checkbox'].ios8-switch-sm + label:before {
+  width: 25px; /* x*5 */
+  height: 15px; /* x*3 */
+  border-radius: 10px; /* x*2 */
+}
+input[type='checkbox'].ios8-switch-sm + label:after {
+  width: 15px; /* x*3 */
+  height: 15px; /* x*3 */
+  border-radius: 10px; /* x*2 */
+  cursor: pointer;
+  background: #fff;
+}
+input[type='checkbox'].ios8-switch-sm + label:hover:after {
+  box-shadow: 0 0 3px rgba(0, 0, 0, 0.3);
+}
+input[type='checkbox'].ios8-switch-sm:checked + label:after {
+  margin-left: 10px; /* x*2 */
+}
+
+.purchase-dropdown-list {
+  border-bottom: 0px;
+}
+.purchase-dropdown-list ul {
+  padding-bottom:0px;
+}
+.collection-dropdown .dropdown-menu li.import-purchases {
+    border-top: 1px solid #e2e2e2;
+    margin-top: 7px;
+}
+.collection-dropdown .dropdown-menu li.import-purchases.import-purchases-duplicate {
+    border-top: 0px solid #e2e2e2;
+    margin-top: 0px;
+    padding-top: 0px;
+}
+@media (max-width: 1600px) {
+  .collection-header .search-block {
+    width: 500px;
+  }
+}
+
+@media (max-width: 1490px) and (min-width: 1451px) {
+  .collection-header .search-block {
+    width: 370px;
+  }
+}
+
+@media (max-width: 1400px) {
+  .collection-filter-wrapper {
+    padding: 0px 0 0;
+  }
+  .collection-edits.purchase-edits.collection-edits {
+    padding-top: 0px;
+  }
+  .account-header .middle-section {
+    margin-top: 34px;
+  }
+  .collection-header .search-block {
+    width: 100%;
+    padding: 0 20px;
+  }
+  .account-header .right-section {
+    padding-right: 5px;
+  }
+}
+.account-header .collection-edits ul li.download-pack-detail-tile {
+  padding-left: 0px;
+  padding-right: 0px;
+  margin-right: 20px;
+}
+.download-pack-detail-tile a {
+  padding-left: 60px;
+}
+
+.slick-track {
+  width: 100%;
+}
+.slick-dots li button {
+  width: 8px;
+  height: 8px;
+  cursor: pointer;
+  /*  background: #000;*/
+  border-radius: 50%;
+  border: 1px solid #7e7e7e;
+  margin: 0 5px;
+}
+.slick-dots li button:hover {
+  background-color: #7e7e7e;
+}
+.slick-dots li button.active:hover {
+  border-color: #fff;
+  background-color: #fff;
+}
+.slick-dotted.slick-slider {
+  margin-bottom: 0px !important;
+}
+
+.quick-look-warp:hover .overlay {
+  z-index: -1;
+}
+.quick-look-warp.quick-look-kit-warp a {
+  cursor: default;
+}
+@media (max-width: 1600px) {
+  .collection-header .search-block {
+    width: 460px;
+  }
+}
+
+@media (max-width: 1490px) and (min-width: 1451px) {
+  .collection-header .search-block {
+    width: 330px;
+  }
+}
+
+@media screen and (max-width: 991px)  and (min-width: 768px) 
+{
+  .download-pack-detail-tile a {
+    padding-left: 33px;
+  }
+}

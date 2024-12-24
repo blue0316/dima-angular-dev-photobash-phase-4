@@ -1,0 +1,713 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Photobash - Royalty Free Reference Photos For Artists</title>
+    <base href="/" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1,maximum-scale=1, user-scalable=0"
+    />
+    <meta
+      name="google-signin-client_id"
+      content="624796833023-clhjgupm0pu6vgga7k5i5bsfp6qp6egh.apps.googleusercontent.com"
+    />
+    <meta
+      name="description"
+      content="High Quality Photos for Concept Art, Matte Painting, Illustration, 3D Modelling, Arch Viz and Media Design, available for personal and commercial use."
+    />
+    <meta property="og:site_name" content="Photobash - Royalty Free Reference Photos For Artists" />
+    <meta property="og:title" content="Photobash - Royalty Free Photo Reference Packs" />
+    <meta property="og:url" content="https://www.photobash.co/" />
+    <meta property="og:type" content="website" />
+    <meta
+      property="og:image"
+      content="https://static1.squarespace.com/static/5583d7ffe4b0db43b0a1118f/t/58bce4588419c2e3d2c98f5c/1488774234778/Logo_Social_Splash.jpg?format=1000w"
+    />
+    <meta property="og:image:width" content="1000" />
+    <meta property="og:image:height" content="523" />
+    <meta itemprop="name" content="Photobash - Royalty Free Photo Reference Packs" />
+    <meta itemprop="url" content="https://www.photobash.co/" />
+
+    <meta name="twitter:title" content="Photobash - Royalty Free Photo Reference Packs" />
+    <meta
+      name="twitter:image"
+      content="http://static1.squarespace.com/static/5583d7ffe4b0db43b0a1118f/t/58bce4588419c2e3d2c98f5c/1488774234778/Logo_Social_Splash.jpg?format=1000w"
+    />
+    <meta name="twitter:url" content="https://www.photobash.co/" />
+    <meta name="twitter:card" content="summary" />
+    <meta
+      name="description"
+      content="High Quality Photos for Concept Art, Matte Painting, Illustration, 3D
+  Modelling, Arch Viz and Media Design, available for personal and commercial
+  use."
+    />
+    <!-- For Google Login -->
+    <link rel="icon" type="image/x-icon" href="favicon.ico" />
+    <link
+      rel="apple-touch-icon"
+      sizes="180x180"
+      href="https://admin.photobash.co/assets/front/img/apple-touch-icon-180x180.png"
+    />
+    <link
+      rel="apple-touch-icon"
+      sizes="152x152"
+      href="https://admin.photobash.co/assets/front/img/apple-touch-icon-152x152.png"
+    />
+    <link
+      rel="apple-touch-icon"
+      sizes="144x144"
+      href="https://admin.photobash.co/assets/front/img/apple-touch-icon-144x144.png"
+    />
+    <link
+      rel="apple-touch-icon"
+      sizes="120x120"
+      href="https://admin.photobash.co/assets/front/img/apple-touch-icon-120x120.png"
+    />
+    <link
+      rel="apple-touch-icon"
+      sizes="114x114"
+      href="https://admin.photobash.co/assets/front/img/apple-touch-icon-114x114.png"
+    />
+    <link
+      rel="apple-touch-icon"
+      sizes="76x76"
+      href="https://admin.photobash.co/assets/front/img/apple-touch-icon-76x76.png"
+    />
+    <link
+      rel="apple-touch-icon"
+      sizes="72x72"
+      href="https://admin.photobash.co/assets/front/img/apple-touch-icon-72x72.png"
+    />
+    <link
+      rel="apple-touch-icon"
+      sizes="60x60"
+      href="https://admin.photobash.co/assets/front/img/apple-touch-icon-60x60.png"
+    />
+    <link
+      rel="apple-touch-icon"
+      href="https://admin.photobash.co/assets/front/img/apple-touch-icon-57x57.png"
+    />
+
+    <link href="https://admin.photobash.co/assets/front/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="assets/css/font-awesome.min.css" rel="stylesheet" />
+    <link href="https://admin.photobash.co/assets/front/css/google-gallery.css" rel="stylesheet" />
+    <link href="https://admin.photobash.co/assets/front/css/sweetalert2.min.css" rel="stylesheet" />
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="https://admin.photobash.co/assets/front/css/xzoom.css"
+      media="all"
+    />
+    <!-- <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css"> -->
+    <!-- <link href="https://admin.photobash.co/assets/front/css/style.css" rel="stylesheet"> -->
+    <link href="https://admin.photobash.co/assets/front/css/style.css" rel="stylesheet" />
+    <style type="text/css">
+      @import url('https://fonts.googleapis.com/css?family=Montserrat:300,400,500,600,700,800&amp;subset=cyrillic,cyrillic-ext,latin-ext,vietnamese');
+      @font-face {
+        font-family: 'FrutigerNeueLTPro-Regular';
+        src: url('assets/fonts/FrutigerNeueLTPro-Regular/FrutigerNeueLTPro-Regular.ttf')
+          format('truetype');
+        src: url('assets/fonts/FrutigerNeueLTPro-Regular/FrutigerNeueLTPro-Regular.eot?#iefix')
+            format('embedded-opentype'),
+          url('assets/fonts/FrutigerNeueLTPro-Regular/FrutigerNeueLTPro-Regular.woff2')
+            format('woff2'),
+          url('assets/fonts/FrutigerNeueLTPro-Regular/FrutigerNeueLTPro-Regular.woff')
+            format('woff'),
+          url('assets/fonts/FrutigerNeueLTPro-Regular/FrutigerNeueLTPro-Regular.svg#svgFontName')
+            format('svg');
+      }
+
+      @font-face {
+        font-family: 'FrutigerNeueLTPro-Medium';
+        src: url('assets/fonts/frutiger-neue-lt-pro-medium/FrutigerNeueLTPro-Medium.eot');
+        src: url('assets/fonts/frutiger-neue-lt-pro-medium/FrutigerNeueLTPro-Medium.eot?#iefix')
+            format('embedded-opentype'),
+          url('assets/fonts/frutiger-neue-lt-pro-medium/FrutigerNeueLTPro-Medium.woff2')
+            format('woff2'),
+          url('assets/fonts/frutiger-neue-lt-pro-medium/FrutigerNeueLTPro-Medium.woff')
+            format('woff'),
+          url('assets/fonts/frutiger-neue-lt-pro-medium/FrutigerNeueLTPro-Medium.ttf')
+            format('truetype'),
+          url('assets/fonts/frutiger-neue-lt-pro-medium/FrutigerNeueLTPro-Medium.svg#svgFontName')
+            format('svg');
+      }
+
+      @font-face {
+        font-family: 'FrutigerNeueLTPro-Bold';
+        src: url('assets/fonts/frutiger-neue-lt-pro-bold/FrutigerNeueLTPro-Bold.eot');
+        src: url('assets/fonts/frutiger-neue-lt-pro-bold/FrutigerNeueLTPro-Bold.eot?#iefix')
+            format('embedded-opentype'),
+          url('assets/fonts/frutiger-neue-lt-pro-bold/FrutigerNeueLTPro-Bold.woff2') format('woff2'),
+          url('assets/fonts/frutiger-neue-lt-pro-bold/FrutigerNeueLTPro-Bold.woff') format('woff'),
+          url('assets/fonts/frutiger-neue-lt-pro-bold/FrutigerNeueLTPro-Bold.ttf')
+            format('truetype'),
+          url('assets/fonts/frutiger-neue-lt-pro-bold/FrutigerNeueLTPro-Bold.svg#svgFontName')
+            format('svg');
+      }
+
+      @font-face {
+        font-family: 'FrutigerNeueLTPro-Light';
+        src: url('assets/fonts/frutiger-neue-lt-pro-light/FrutigerNeueLTPro-Light.eot');
+        src: url('assets/fonts/frutiger-neue-lt-pro-light/FrutigerNeueLTPro-Light.eot?#iefix')
+            format('embedded-opentype'),
+          url('assets/fonts/frutiger-neue-lt-pro-light/FrutigerNeueLTPro-Light.woff2')
+            format('woff2'),
+          url('assets/fonts/frutiger-neue-lt-pro-light/FrutigerNeueLTPro-Light.woff') format('woff'),
+          url('assets/fonts/frutiger-neue-lt-pro-light/FrutigerNeueLTPro-Light.ttf')
+            format('truetype'),
+          url('assets/fonts/frutiger-neue-lt-pro-light/FrutigerNeueLTPro-Light.svg#svgFontName')
+            format('svg');
+      }
+      @font-face {
+        font-family: 'Theme-Montserrat-SemiBold';
+        src: url('assets/fonts/Theme-Montserrat/Theme-Montserrat-SemiBold.eot');
+        src: url('assets/fonts/Theme-Montserrat/Theme-Montserrat-SemiBold.eot?#iefix')
+            format('embedded-opentype'),
+          url('assets/fonts/Theme-Montserrat/Theme-Montserrat-SemiBold.woff2') format('woff2'),
+          url('assets/fonts/Theme-Montserrat/Theme-Montserrat-SemiBold.woff') format('woff'),
+          url('assets/fonts/Theme-Montserrat/Theme-Montserrat-SemiBold.ttf') format('truetype'),
+          url('assets/fonts/Theme-Montserrat/Theme-Montserrat-SemiBold.svg#svgFontName')
+            format('svg');
+      }
+    </style>
+    <!-- Scripts -->
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="https://admin.photobash.co/assets/front/js/bootstrap.min.js"></script>
+
+    <script src="https://admin.photobash.co/assets/front/js/google-gallery.js"></script>
+    <!--  -->
+    <script type="text/javascript">
+      (function() {
+        var po = document.createElement('script');
+        po.type = 'text/javascript';
+        po.async = true;
+        po.src = 'https://apis.google.com/js/client.js?onload=onLoadCallback';
+        var s = document.getElementsByTagName('script')[0];
+        s.parentNode.insertBefore(po, s);
+      })();
+    </script>
+    <!-- Facebook Pixel Code -->
+    <script>
+      !(function(f, b, e, v, n, t, s) {
+        if (f.fbq) return;
+        n = f.fbq = function() {
+          n.callMethod ? n.callMethod.apply(n, arguments) : n.queue.push(arguments);
+        };
+        if (!f._fbq) f._fbq = n;
+        n.push = n;
+        n.loaded = !0;
+        n.version = '2.0';
+        n.queue = [];
+        t = b.createElement(e);
+        t.async = !0;
+        t.src = v;
+        s = b.getElementsByTagName(e)[0];
+        s.parentNode.insertBefore(t, s);
+      })(window, document, 'script', 'https://connect.facebook.net/en_US/fbevents.js');
+      fbq('init', '1603563313049808');
+      fbq('track', 'PageView');
+    </script>
+    <noscript>
+      <br />
+      <div class="container">
+        <div class="col-sm-12">
+          <div class="text-center">
+            <img
+              class="img-responsive"
+              src="https://admin.photobash.co/assets/front/img/noscript.png"
+              alt=""
+              style="width:100%"
+            />
+          </div>
+          <br />
+          <!-- <div class="alert alert-info">You need to enable JavaScript to run this web page</div> -->
+        </div>
+      </div>
+      <img
+        height="1"
+        width="1"
+        style="display:none"
+        src="https://www.facebook.com/tr?id=1603563313049808&ev=PageView&noscript=1"
+      />
+    </noscript>
+    <!-- End Facebook Pixel Code -->
+    <div id="fb-root"></div>
+    <script>
+      // This function initializes the FB variable
+      (function(d, s, id) {
+        var js,
+          fjs = d.getElementsByTagName(s)[0];
+        if (d.getElementById(id)) {
+          return;
+        }
+        js = d.createElement(s);
+        js.id = id;
+        js.src = '//connect.facebook.net/en_US/sdk.js';
+        fjs.parentNode.insertBefore(js, fjs);
+      })(document, 'script', 'facebook-jssdk');
+      window.fbAsyncInit = function() {
+        console.log('fbasyncinit');
+        FB.init({
+          appId: '187685235396074',
+          autoLogAppEvents: true,
+          xfbml: true,
+          version: 'v2.10'
+        });
+        FB.AppEvents.logPageView();
+      };
+    </script>
+  </head>
+  <!--  oncontextmenu="return false" onkeydown="return false" onkeypress="return false" onkeyup="return false" -->
+  <body>
+    <div class="alert alert-info alert-message login" style="display: none">
+      <!-- <a href="javascript:;" class="close">&times;</a> -->
+      <span>
+        <i class="fa fa-check-circle" aria-hidden="true"></i>
+      </span>
+      You have logged in from another tab.
+    </div>
+    <div class="alert alert-info alert-message logout" style="display: none">
+      <!-- <a href="javascript:;" class="close">&times;</a> -->
+      <span>
+        <i class="fa fa-check-circle" aria-hidden="true"></i>
+      </span>
+      You have logged out from another tab.
+    </div>
+    <app-root></app-root>
+  </body>
+  <script type="text/javascript">
+    $('body').on('click', '.collection-tile-last,.new-collection-tag,.rename-col', function() {
+      setTimeout(function() {
+        $('body')
+          .find('#newColName')
+          .focus();
+        $('body')
+          .find('#colName')
+          .focus();
+      }, 500);
+    });
+    $('body').on('click', '.navbar-toggle', function(e) {
+      $('body').toggleClass('view-navigation');
+    });
+
+    $('body').on('click', '.dropdown-menu', function(e) {
+      if (
+        !$(this)
+          .find('li > a')
+          .data('toggle') &&
+        !$(this).hasClass('toggle-dropdown') &&
+        $(this).find('.checkbox').length > 0
+      ) {
+        e.stopPropagation();
+      }
+      if ($(this).find('.custom-radio').length) {
+        e.stopPropagation();
+      }
+    });
+    $('body').on('keydown', function(e) {
+      var event = window.event ? window.event : e;
+      if ($(this).find('.modal.fade.in').length > 0) {
+        return;
+      }
+      if (event.keyCode && event.keyCode == 39) {
+        //for right keypress
+        var ele = $('body')
+          .find('.open-grid-info.package-resultitem')
+          .next()
+          .find('.clickevent');
+        if (ele[0]) {
+          ele[0].click();
+        }
+      } else if (event.keyCode && event.keyCode == 37) {
+        //for left keypress
+        var ele = $('body')
+          .find('.open-grid-info.package-resultitem')
+          .prev()
+          .find('.clickevent');
+        if (ele[0]) {
+          ele[0].click();
+        }
+      } else if (event.keyCode && event.keyCode == 27) {
+        //for esc keypress
+        var ele = $('body')
+          .find('.open-grid-info.package-resultitem')
+          .find('.package-detailClose');
+        if (ele[0]) {
+          ele[0].click();
+        }
+      }
+    });
+    $('body').on('change', '.do-not-show-purchase', function(event) {
+      if ($(this).prop('checked')) {
+        window.localStorage.setItem('hidePurchaseConfirm', 'true');
+      } else {
+        window.localStorage.removeItem('hidePurchaseConfirm');
+      }
+    });
+    $('body').on('change', '.do-not-show-img-purchase', function(event) {
+      if ($(this).prop('checked')) {
+        window.localStorage.setItem('hideImageConfirm', 'true');
+      } else {
+        window.localStorage.removeItem('hideImageConfirm');
+      }
+    });
+
+    if ($('body').find('.cart-active').length == 1) {
+      $(window).scroll(function() {
+        var scroll = $(window).scrollTop();
+        if (scroll >= 60) {
+          $('body')
+            .find('.cart-box')
+            .addClass('cart-move');
+          $('body')
+            .find('.cart-count')
+            .addClass('bounce');
+        } else {
+          $('body')
+            .find('.cart-box')
+            .removeClass('cart-move');
+        }
+      });
+    }
+    $(window).scroll(function() {
+      var scroll = $(window).scrollTop();
+      var scroll_postion = 0;
+      var banner_div = $('body').find('.home-top-banner');
+      if (banner_div.length > 0) {
+        scroll_postion = banner_div.height();
+      } else {
+        scroll_postion = 70;
+      }
+      if (scroll >= scroll_postion) {
+        $('body')
+          .find('.theme-header')
+          .addClass('header-home-cart');
+      } else {
+        $('body')
+          .find('.theme-header')
+          .removeClass('header-home-cart');
+      }
+
+      // Script for image page collection bar sticky position
+      var sticky = $('body').find('.image-collection-head');
+      var sticky_image_head = $('body').find('.image-collection-head-warp .filter-tag');
+      var sticky_packge_filter = $('body').find('.package-filter-tag');
+      var search_warp_height = $('body')
+        .find($('.search-warp'))
+        .outerHeight();
+      var top = $('.search-warp').offset() ? $('.search-warp').offset().top : 0;
+      if (sticky.length > 0) {
+        var scrollTop_value = top + search_warp_height;
+        if (scroll >= scrollTop_value) {
+          sticky.addClass('fixed');
+        } else {
+          sticky.removeClass('fixed');
+        }
+      }
+      if (sticky_image_head.length > 0 && !sticky_image_head.hasClass('no-data')) {
+        var scrollTop_value = top + search_warp_height;
+        if (scroll >= scrollTop_value) {
+          sticky_image_head.addClass('fixed');
+        } else {
+          sticky_image_head.removeClass('fixed');
+        }
+      }
+
+      if (sticky_packge_filter.length > 0 && !sticky_packge_filter.hasClass('no-data')) {
+        var top = $('.search-warp').offset().top;
+        var search_warp_height = $('body')
+          .find($('.search-warp'))
+          .outerHeight();
+        var scrollTop_value = top + search_warp_height;
+        if (scroll >= scrollTop_value) {
+          sticky_image_head.removeClass('fixed');
+          sticky_packge_filter.addClass('fixed');
+        } else {
+          sticky_packge_filter.removeClass('fixed');
+        }
+      }
+
+      // Images section fix left toggle menu
+      if (scroll > 0) {
+        $('body')
+          .find('.left-filter')
+          .addClass('aside-update');
+      } else {
+        $('body')
+          .find('.left-filter')
+          .removeClass('aside-update');
+      }
+    });
+
+    $('body').on('click', '.right-group-btn', function(event) {
+      $('body')
+        .find('.header-home')
+        .addClass('header-home-cart');
+    });
+
+    // Fires on Subscription Modal open
+    $('body').on('click', '.settings-modal .view-subscrib-modal', function(event) {
+      $('body').addClass('subscriptions-modal-open');
+    });
+    $('body').on(
+      'click',
+      '#subscriptions-detial-modal .btn-close-modal , #subscriptions-detial-modal',
+      function(event) {
+        $('body').removeClass('subscriptions-modal-open');
+      }
+    );
+
+    // $('body').on('click', '.checkout-modal', function(event) {
+    //   $('body').removeClass('modal-open-checkout');
+    // });
+
+    $('body').on('click', '.checkoutPurchaseClose', function(event) {
+      $('body').removeClass('modal-open-checkout');
+    });
+
+    $('body').on('click', '.continueAsguest', function(event) {
+      $('body').addClass('modal-open-checkoutPurchase');
+    });
+
+    $('body').on('click', '.checkoutPurchaseClose', function(event) {
+      $('body').removeClass('modal-open-checkoutPurchase');
+    });
+
+    // Setting model close
+    $('body').on('click', '.setting-modal-close', function(event) {
+      $('body').removeClass('modal-open-checkoutPurchase');
+    });
+
+    $('body').on('click', '.filter-block .dropdown-menu li.has-sub', function(event) {
+      // $(this).find('ul').addClass('show');
+    });
+
+    $('body').on(
+      'mouseover',
+      '.filter-block .dropdown-menu li.has-sub .custom-scrollbar li',
+      function(event) {
+        var li_offset = $(this).offset().top;
+        var diff = 180;
+        if ($(this).hasClass('pack-required-tooltip')) {
+          diff = 172;
+        }
+        $(this)
+          .find('.custom-tooltip')
+          .css('top', li_offset - diff);
+
+        // $(this).find('.custom-tooltip.custom-tooltip-required').css("top",li_offset - 140);
+      }
+    );
+
+    $('body').on('mouseover', 'aside.left-filter .dropdown-item-block ul li', function(event) {
+      var li_offset = $(this).offset().top;
+      var difftop = 16;
+      var diffwidth = 85;
+
+      if ($(this).hasClass('pack-required-tooltip')) {
+        var difftop = 5;
+      }
+      var top_side = li_offset - difftop;
+      var li_wordwidth = $(this)
+        .find('.name-count-wrap .text-width')
+        .width();
+      var left_side = li_wordwidth + diffwidth;
+      //console.log("li_offset",li_offset, "top_side", top_side,"li_wordwidth",li_wordwidth,"left_side",left_side);
+      $(this)
+        .find('.custom-tooltip')
+        .css({ top: top_side, left: left_side });
+    });
+
+    // });
+    var window_width = $('body').width();
+    $('body').on('click', '.resultitem', function(event) {
+      var offset = $(this).offset().left;
+      var final_offset = parseInt(offset);
+      $('body')
+        .find('.resultitem')
+        .removeClass('row-first-element');
+      if (final_offset < 15) {
+        $(this).addClass('row-first-element');
+      }
+    });
+
+    function heightSet() {
+      var window_Height = 0;
+      var setHeight = 0;
+      var themeHeader_Height = 0;
+      var footer_Height = 0;
+      var reduce_Calc = 0;
+      setHeight = 0;
+      setHeight = 600;
+      window_height = $(window).outerHeight();
+      themeHeader_Height = $('body')
+        .find('.theme-header')
+        .outerHeight();
+      footer_Height = $('body')
+        .find('.site-footer')
+        .outerHeight();
+      reduce_Calc = themeHeader_Height + footer_Height;
+      setHeight = window_height - reduce_Calc;
+      $('body')
+        .find('.setHeight')
+        .css('min-height', setHeight);
+    }
+    // OS Detection and add reletive class to body
+    function osDetection() {
+      var OSName = 'Unknown OS';
+      if (navigator.appVersion.indexOf('Win') != -1) OSName = 'Windows';
+      else if (navigator.appVersion.indexOf('Mac') != -1) OSName = 'MacOS';
+      else if (navigator.appVersion.indexOf('X11') != -1) OSName = 'UNIX';
+      else if (navigator.appVersion.indexOf('Linux') != -1) OSName = 'Linux';
+
+      $('body').addClass(OSName);
+    }
+
+    $(window).on('load resize', function() {
+      //aboutSetmargin();
+      osDetection();
+      heightSet();
+      getHomePageResize();
+      InitializeGoogleGallary();
+      var openModals = $('body').find('.modal:visible').length;
+      $('body')
+        .find('.modal:visible')
+        .each(function() {
+          fitModal($(this));
+        });
+
+      var scroll = $(window).scrollTop();
+      if (scroll > 0) {
+        $('body')
+          .find('#left-filter')
+          .addClass('aside-update');
+      } else {
+        $('body')
+          .find('#left-filter')
+          .removeClass('aside-update');
+      }
+    });
+
+    $(window).on('load', function() {
+      var window_widthonload = $(window).width();
+      // console.log("window_widthonload",window_widthonload);
+      $(window).on('resize', function(params) {
+        var window_widthonresize = $(window).width();
+        //  console.log("window_widthonload",window_widthonload,"window_widthonresize",window_widthonresize);
+        if (window_widthonresize != window_widthonload) {
+          // console.log("width changed");
+          InitializeTagFilter();
+          collectionGallery();
+          closeDetails();
+          $('.package-picflex .package-resultitem > .package-box > a').removeAttr('data-isopen');
+          $('body')
+            .find('.package-picflex .package-resultitem')
+            .removeClass('open-grid-info');
+          $('body')
+            .find('.package-picflex .package-resultitem')
+            .css('height', '');
+        }
+      });
+    });
+
+    // $(window).on('resize', function(params) {
+    //   InitializeTagFilter();
+    //   collectionGallery();
+    //   closeDetails();
+    //   $('.package-picflex .package-resultitem > .package-box > a').removeAttr('data-isopen');
+    //   $('body')
+    //     .find('.package-picflex .package-resultitem')
+    //     .removeClass('open-grid-info');
+    //   $('body')
+    //     .find('.package-picflex .package-resultitem')
+    //     .css('height', '');
+    // });
+
+    $(window).on('load', function() {
+      var fade_element = $('.fade-load-banner');
+      setTimeout(function() {
+        $(fade_element).addClass('banner-fade');
+      }, 800);
+    });
+    $('body').on('click', '[data-toggle="modal"]', function() {
+      var targetId = $(this).attr('data-target');
+      fitModal($(targetId));
+      $('body').css('padding', '0px !important');
+    });
+
+    $('body').on('click', '[data-dismiss="modal"] ,.modal-dissmissed', function() {
+      //$('body').css("padding","0px !important");
+      $('body').css('padding-right', '');
+      $('body').removeAttr('style');
+    });
+    function fitModal(modal) {
+      var dialog = modal.find('.modal-dialog');
+      modal.css('display', 'block');
+      if (Math.floor($(window).width()) > 991) {
+        dialog.css('margin-top', Math.max(0, ($(window).height() - dialog.height()) / 2));
+      }
+    }
+    // For About us page Modal video play and pause
+    $('body').on('click', '.modal-open-button', function() {
+      var youtube_src = $('body')
+        .find('#about-video-modal')
+        .attr('data-video-src');
+      $('body')
+        .find('#about-video-modal')
+        .find('#iframe')
+        .attr('src', youtube_src);
+      $('body').addClass('scroll');
+    });
+    $('body').on('click', '.about-video-modal', function() {
+      $('body')
+        .find('#about-video-modal')
+        .find('#iframe')
+        .attr('src', '');
+      $('body').removeClass('scroll');
+    });
+
+    $('body').on('mouseover', '.filter-block-ul .dropdown-menu li.has-sub', function() {
+      $('.filter-block-ul .dropdown-menu li.has-sub').removeClass('open-dropdown');
+      $(this).addClass('open-dropdown');
+    });
+    $('body').click(function() {
+      $('.filter-block-ul .dropdown-menu li').removeClass('open-dropdown');
+    });
+
+    $('body').on('contextmenu', function(e) {
+      return false;
+    });
+    $(document).keydown(function(event) {
+      if (event.keyCode == 123) {
+        // Prevent F12
+        return false;
+      } else if (event.ctrlKey && event.shiftKey && event.keyCode == 73) {
+        return false;
+      }
+    });
+    $(document).keydown(function(event) {
+      var pressedKey = String.fromCharCode(event.keyCode).toLowerCase();
+      if (event.ctrlKey && pressedKey == 'u') {
+        return false;
+      }
+    });
+
+    $('body').on('dragstart', 'img', function(event) {
+      event.preventDefault();
+    });
+  </script>
+
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-117123606-1"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() {
+      dataLayer.push(arguments);
+    }
+    gtag('js', new Date());
+    gtag('config', 'UA-117123606-1');
+  </script>
+</html>

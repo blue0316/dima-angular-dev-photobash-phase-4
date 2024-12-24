@@ -1,0 +1,1561 @@
+<!--MAIN HEADER BLOCK START-->
+<div [ngClass]="{'header-home': homeClass}">
+  <header class="theme-header">
+    <nav class="navbar">
+      <div class="navbar-header">
+        <button class="navbar-toggle" type="button">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" routerLink="/">
+          <img class="theme-logo main" [src]="ImgPath+'Logo_PhotoBash_Navigation.svg'" alt="Logo_PhotoBash_Navigation.svg" />
+          <img class="theme-logo mobile-logo" [src]="ImgPath+'photobash_mobile_logo.svg'" alt="photobash_mobile_logo.svg" />
+        </a>
+      </div>
+      <!-- new code for cart by tushar goyal -->
+
+      <!-- for non logged in user cart block -->
+      <div class="pull-right cart-panel" [ngClass]="{'cart-active': cartActive}" *ngIf="cartData && cartData.data && cartData.data.length>0 && !isLoggedIn">
+        <div class="cart-box">
+          <img [src]="ImgPath+'Icon_ShoppingCart.svg'" width="25" class="center-block cart-icon pages-cart-icon"
+            (click)="toggleCartActive()" alt="Icon_ShoppingCart.svg">
+          <img [src]="ImgPath+'Icon_ShoppingCart_Dark.svg'" width="25" class="center-block cart-icon dashboard-cart-icon"
+            (click)="toggleCartActive()" alt="Icon_ShoppingCart_Dark.svg">
+          <span class="cart-count" *ngIf="cartData && cartData.data && cartData.data.length>0">{{cartData.data.length}}</span>
+          <div class="cart-list-block" [ngClass]="{'active': cartActive}" [@toggleAnimation]='state'>
+            <ul class="list-group no-margin">
+              <ng-container *ngIf="cartData.data">
+                <li class="list-group-item list-group-pack" *ngFor="let cart of cartData.data | orderBy: 'packName'">
+                  <button class="btn-close" (click)="removeFromCart(cart.cartItemId)">
+                    <img [src]="ImgPath+'Icon_Basic_S_Cancel_Gray.svg'" class="main-icon" width="10" alt="Icon_Basic_S_Cancel_Gray.svg">
+                    <img [src]="ImgPath+'Icon_Basic_S_Cancel_Blue.svg'" class="hover-icon" width="10" alt="Icon_Basic_S_Cancel_Blue.svg">
+                  </button>
+                  <span class="plan-image plan-image-kit" *ngIf="cart.type == 'Kit'">
+                    <img [src]="ImgPath + 'Icons_Details_Models_Light_Gray_Cart.svg'" alt="Icons_Details_Models_Light_Gray_Cart.svg" width="16" height="13" /> 
+                  </span>
+                  <span class="plan-image" *ngIf="cart.type == 'pack'">
+                    <img [src]="ImgPath + 'Icon_PhotobashCamera_Cart.svg'" alt="Icon_PhotobashCamera_Cart.svg" width="15" />
+                  </span>
+                  <span class="plan-name" [innerHTML]="cart.packName"></span>
+                  <span class="price-tag" *ngIf="!isLoggedIn"><span class="doller-icon">$ {{cart.packPrice}}</span></span>
+                  <span class="price-tag" *ngIf="isLoggedIn">{{cart.packPriceInCredits}}</span>
+                </li>
+              </ng-container>
+              <li class="list-group-item" *ngIf="!cartData.data || cartData.data.length==0">
+                <span class="plan-name">Your cart is empty</span>
+              </li>
+              <li class="list-group-item" *ngIf="cartData.data && cartData.data.length>0">
+                <ng-container *ngIf="purchasingCart; else purchaseCart">
+                  <button class="btn btn-default-white btn-block" *ngIf="isLoggedIn" disabled>Please wait..</button>
+                  <button class="btn btn-default-white btn-block" *ngIf="!isLoggedIn" disabled>Please wait..
+                  </button>
+                </ng-container>
+                <ng-template #purchaseCart>
+                  <button class="btn btn-default-white btn-block" *ngIf="isLoggedIn" (click)="purchaseMultiplePacksByCredits()"><span
+                      class="text-mostdrak-gray">Purchase for</span> <span class="text-blue">{{cartData.priceInCredits
+                      || 0}}</span> <span class="text-dark-Gray">Credits</span></button>
+                  <button class="btn btn-default-white btn-block" *ngIf="!isLoggedIn" data-target="#signup-promotion"
+                    data-toggle="modal" data-dismiss="modal" data-backdrop="static" data-keyboard="false"><span class="text-mostdrak-gray">Checkout</span>
+                    <span class="text-dark-Gray"><span class="doller-icon">$</span>{{cartData.price || 0}}</span>
+                  </button>
+                </ng-template>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <!-- for non logged in user -->
+      <!-- for logged in user -->
+      <div class="pull-right cart-panel" [ngClass]="{'cart-active': cartActive}" *ngIf="cartData && cartData.data && cartData.data.length>0 && isLoggedIn">
+        <div class="cart-box">
+          <img [src]="ImgPath+'Icon_ShoppingCart.svg'" width="25" class="center-block cart-icon pages-cart-icon"
+            (click)="toggleCartActive()" alt="Icon_ShoppingCart.svg">
+          <img [src]="ImgPath+'Icon_ShoppingCart_Dark.svg'" width="25" class="center-block cart-icon dashboard-cart-icon"
+            (click)="toggleCartActive()" alt="Icon_ShoppingCart_Dark.svg">
+          <span class="cart-count" *ngIf="cartData && cartData.data && cartData.data.length>0">{{cartData.data.length}}</span>
+          <div class="cart-list-block" [ngClass]="{'active': cartActive}" [@toggleAnimation]='state'>
+            <ul class="list-group no-margin">
+              <ng-container *ngIf="cartData.data">
+                <li class="list-group-item list-group-pack" *ngFor="let cart of cartData.data | orderBy: 'packName'">
+
+                  <div *ngIf="cart.type === '0'">
+                    <button class="btn-close" (click)="removeFromCart(cart.cartItemId)">
+                      <img [src]="ImgPath+'Icon_Basic_S_Cancel_Gray.svg'" class="main-icon" width="10" alt="Icon_Basic_S_Cancel_Gray.svg">
+                      <img [src]="ImgPath+'Icon_Basic_S_Cancel_Blue.svg'" class="hover-icon" width="10" alt="Icon_Basic_S_Cancel_Blue.svg">
+                    </button>
+                    <span class="plan-image plan-image-kit" *ngIf="cart.type">
+                      <img [src]="ImgPath + 'Icons_Details_Models_Light_Gray_Cart.svg'" alt="Icons_Details_Models_Light_Gray_Cart.svg"  height="13" width="16" />
+                    </span>
+                    <span class="plan-name" [innerHTML]="cart.kitName"></span>
+                    <span class="price-tag" *ngIf="!isLoggedIn"><span class="doller-icon">$ {{cart.kitPrice}}</span></span>
+                    <span class="price-tag" *ngIf="isLoggedIn"><span>{{cart.kitPriceInCredits}}</span></span>
+                  </div>
+
+                  <div *ngIf="cart.type === '1'">
+                    <button class="btn-close" (click)="removeFromCart(cart.cartItemId)">
+                      <img [src]="ImgPath+'Icon_Basic_S_Cancel_Gray.svg'" class="main-icon" width="10" alt="Icon_Basic_S_Cancel_Gray.svg">
+                      <img [src]="ImgPath+'Icon_Basic_S_Cancel_Blue.svg'" class="hover-icon" width="10" alt="Icon_Basic_S_Cancel_Blue.svg">
+                    </button>
+                    <span class="plan-image" *ngIf="cart.type">
+                      <img [src]="ImgPath + 'Icon_PhotobashCamera_Cart.svg'" alt="Icon_PhotobashCamera_Cart.svg" width="17" />
+                    </span>
+                    <span class="plan-name" [innerHTML]="cart.packName"></span>
+                    <span class="price-tag" *ngIf="!isLoggedIn"><span class="doller-icon">$ {{cart.packPrice}}</span></span>
+                    <span class="price-tag" *ngIf="isLoggedIn"><span>{{cart.packPriceInCredits}}</span></span>
+                  </div>
+
+                </li>
+              </ng-container>
+              <li class="list-group-item" *ngIf="!cartData.data || cartData.data.length==0">
+                <span class="plan-name">Your cart is empty</span>
+              </li>
+              <li class="list-group-item" *ngIf="cartData.data && cartData.data.length>0">
+                <ng-container *ngIf="purchasingCart; else purchaseCart">
+                  <button class="btn btn-default-white btn-block" *ngIf="isLoggedIn" disabled>Please wait..</button>
+                  <button class="btn btn-default-white btn-block" *ngIf="!isLoggedIn" disabled>Please wait..
+                  </button>
+                </ng-container>
+                <ng-template #purchaseCart>
+                  <button class="btn btn-default-white btn-block" *ngIf="isLoggedIn" (click)="purchaseMultiplePacksByCredits()"><span
+                      class="text-mostdrak-gray">Purchase for</span> <span class="text-blue">{{cartData.priceInCredits
+                      || 0}}</span> <span class="text-dark-Gray">Credits</span></button>
+                  <button class="btn btn-default-white btn-block" *ngIf="!isLoggedIn" data-target="#signup-promotion"
+                    data-toggle="modal" data-dismiss="modal" data-backdrop="static" data-keyboard="false"><span class="text-mostdrak-gray">Checkout</span>
+                    <span class="text-dark-Gray"><span class="doller-icon">$</span>{{cartData.price || 0}}</span>
+                  </button>
+                </ng-template>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <!-- for logged in user cart block -->
+
+      <!-- new code for cart by tushar goyal -->
+
+      <div class="navbar-right site-navigation">
+        <ul class="nav navbar-nav main-nav-list">
+            <li>
+                <a href="#" data-target="#welcome-modal" data-toggle="modal">
+                  Modal
+                </a>
+          <li>
+            <a routerLink="/packs" routerLinkActive="active">
+              <img class="icon-mobile icon pack-icon-home-header" [src]="ImgPath+'Camera-Models-Light-Gray.svg'" width="20"
+                alt="Icon_Details_FileSize.svg" /><img class="icon-mobile pack-icon-header" [src]="ImgPath+'Icon_Details_Camera_Dark_.svg'"
+                width="20" alt="Icon_Details_FileSize.svg" />Packs
+            </a>
+          </li>
+          <li class="separator-li"></li>
+          <li>
+            <a routerLink="/images" routerLinkActive="active"><img class="visible-xs hidden-md- hidden-sm icon-mobile"
+                [src]="ImgPath+'Icon_Details_Camera.svg'" width="20" alt="Icon_Details_Camera.svg" />Images</a>
+          </li>
+          <li class="divide-space"></li>
+          <li>
+            <a routerLink="/kits" routerLinkActive="active"><img class="icon-mobile pack-icon-home-header" [src]="ImgPath+'Icons_Models_Light.svg'"
+                width="18" alt="Icon_Details_FileSize.svg" /><img class="icon-mobile pack-icon-header" [src]="ImgPath+'Icons_Models_Dark.svg'"
+                width="18" alt="Icon_Details_FileSize.svg" />Kits</a>
+          </li>
+          <li class="separator-li"></li>
+          <li>
+            <a routerLink="/models" routerLinkActive="active"><img class="visible-xs hidden-md- hidden-sm icon-mobile"
+                [src]="ImgPath+'Icon_Details_Camera.svg'" width="20" alt="Icon_Details_Camera.svg" />Models</a>
+          </li>
+          <!--           <li class="" *ngIf="!isLoggedIn">
+            <a routerLink="/about" routerLinkActive="active">About</a>
+          </li>
+          <li class="" *ngIf="!isLoggedIn">
+            <a routerLink="/subscriptions" routerLinkActive="active">Pricing</a>
+          </li> -->
+        </ul>
+        <ng-template #notLoggedIn>
+          <ul class="nav navbar-nav navbar-right account-links">
+            <li class="" *ngIf="!isLoggedIn">
+              <a routerLink="/about" routerLinkActive="active">About</a>
+            </li>
+            <li class="" *ngIf="!isLoggedIn">
+              <a routerLink="/subscriptions" routerLinkActive="active">Pricing</a>
+            </li>
+            <li class="">
+              <a data-target="#login-modal" data-toggle="modal" (click)="checkLogin()" href="javascript:;">Login</a>
+            </li>
+            <li class="">
+              <a data-target="#signup-modal" data-toggle="modal" (click)="checkLogin()" href="javascript:;">Sign Up</a>
+            </li>
+          </ul>
+        </ng-template>
+        <ul class="nav navbar-nav navbar-right account-links log-in" *ngIf="isLoggedIn; else notLoggedIn">
+          <li class="dropdown">
+            <a href="javascript:;" aria-expanded="true" aria-haspopup="true" class="dropdown-toggle credi-toggle"
+              data-toggle="dropdown" id="dropdownMenucredit" type="button">
+              <img class="icon  wallet-icon-home-header" [src]="ImgPath+'Icon_Wallet.svg'" width="20" alt="Icon_Wallet.svg" />
+              <img class="icon wallet-icon " [src]="ImgPath+'Icon_Wallet-black.svg'" width="20" alt="Icon_Wallet-black.svg" />
+              Credits
+              <span class="creadit-value">
+                {{user.remainingCredits || 0}}
+              </span>
+              <!-- <span class="total" *ngIf="user.planCredits && user.planCredits>0">
+                /
+                {{user.planCredits || 0}}
+              </span> -->
+            </a>
+            <ul aria-labelledby="dropdownMenucredit" class="dropdown-menu account-drop-menu creadit-drop-menu">
+              <li *ngIf="user.user_plan; else noAccount">
+                <a data-toggle="modal" data-target="#add-credit-modal" id="add-credit-modal-btn" href="javascript:;"
+                  data-dismiss="modal" (click)="getAndUpdateCustomCredits()">Add Credits</a>
+              </li>
+              <ng-template #noAccount>
+                <li>
+                  <a data-toggle="modal" data-target="#set-account-type" id="add-credit-modal-btn" href="javascript:;"
+                    data-dismiss="modal" (click)="selectAccountTypes()">Add Credits</a>
+                </li>
+              </ng-template>
+              <li>
+                <a routerLink="/subscriptions">Subscription</a>
+              </li>
+              <li>
+                <a routerLink="/invoices">View Invoices</a>
+              </li>
+            </ul>
+          </li>
+          <li class="dropdown user-name-li">
+            <a aria-expanded="true" aria-haspopup="true" class="dropdown-toggle user-name" data-toggle="dropdown" id="dropdownMenu1"
+              type="button">
+              <span class="user-name-text-block" *ngIf="user.name">
+                {{user.name || ''}}
+              </span>
+              <!-- <span class="user-icon">
+                <img [src]="user.photoUrl" width="25" [alt]="user.photoUrl"/>
+              </span> -->
+              <span class="user-icon">
+                <img [src]="ImgPath+'Icon_User.svg'" width="25" class="user-icon-img" alt="Icon_User.svg" />
+                <img [src]="ImgPath+'Icon_User_Header.svg'" width="25" class="icon-login-dashboard-user" alt="Icon_User_Header.svg" />
+              </span>
+            </a>
+            <ul aria-labelledby="dropdownMenu1" class="dropdown-menu account-drop-menu">
+              <li *ngIf="user && user.user_role=='1' && !adminRememberDisplay">
+                <a data-toggle="modal" data-target="#admin-login-modal" href="javascript:;" data-dismiss="modal">Admin
+                  Panel</a>
+              </li>
+              <li *ngIf="user && user.user_role=='1' && adminRememberDisplay">
+                <a href="javascript:;" (click)="goToAdminPanel()">Admin Panel</a>
+              </li>
+              <li *ngIf="user && user.user_role=='1'" class="divider" role="separator">
+              </li>
+              <li>
+                <a routerLink="/">
+                  Dashboard
+                </a>
+              </li>
+              <li>
+                <a data-toggle="modal" (click)="getSettingInfo()" data-target="#modal-settings" href="javascript:;"
+                  data-dismiss="modal"> Settings</a>
+              </li>
+              <li>
+                <a routerLink="/purchases"> Purchases</a>
+              </li>
+              <li>
+                <a routerLink="/collections">
+                  Collections
+                </a>
+              </li>
+              <!--<li>
+                <a data-toggle="modal" data-target="#add-credit-modal" href="javascript:;" data-dismiss="modal" (click)="getAndUpdateCustomCredits()">
+                  Add Credits
+                </a>
+              </li>
+              <li>
+                <a [routerLink]="['/subscriptions']" fragment="plans-block">Subscription</a>
+              </li> -->
+              <li class="divider" role="separator">
+              </li>
+              <li>
+                <a href="javascript:;" (click)="signOut()">Logout</a>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+
+    </nav>
+  </header>
+  <!--MAIN HEADER BLOCK END-->
+</div>
+<!--SEARCH AND FILTER BLOCK END-->
+<!--LOGIN MODAL-->
+<div aria-labelledby="myModalLabel" class="modal fade" id="login-modal" role="dialog" tabindex="-1" *ngIf="!isLoggedIn">
+  <div class="modal-dialog account-modal comman-modal" role="document">
+    <div class="modal-content login-model-content">
+      <div class="modal-header comman-header-modal">
+        <button aria-label="Close " class="close btn-close-modal" data-dismiss="modal" type="button ">
+          <span aria-hidden="true "><img [src]="ImgPath+'Icon_Basic_Close.svg'" width="18" alt="Icon_Basic_Close.svg"></span>
+        </button>
+        <h3 class="text-center heading">Login to <span class="site-name"><b>PHOTO</b>BASH</span></h3>
+      </div>
+      <div class="modal-body">
+        <div class="">
+          <div>
+            <form name="Login_Form" (submit)="login()" #f="ngForm" novalidate>
+              <div class="alert alert-danger" *ngIf="isLoginError">{{loginError}}</div>
+              <div class="form-group">
+                <input autocomplete="off" class="form-control input-block" id="exampleInputEmail" name="userName"
+                  placeholder="Email address" type="email" required [(ngModel)]="loginUser.email" #userName="ngModel"
+                  pattern="[^@]+@[^@]+\.[a-zA-Z]{2,6}" />
+                <div *ngIf="serverLoginError && serverLoginError.email">
+                  <p class="text-danger">{{serverLoginError.email}}</p>
+                </div>
+                <!-- <div *ngIf="userName.invalid && (userName.dirty || userName.touched)">
+                  <p class="text-danger" *ngIf="userName.errors.required">Please enter email</p>
+                  <p class="text-danger" *ngIf="!userName.errors.required && userName.errors.pattern">Please enter valid email</p>
+                </div> -->
+              </div>
+              <div class="form-group">
+                <input autocomplete="off" class="form-control input-block" id="exampleInputPassword" name="password"
+                  placeholder="Password" type="password" [(ngModel)]="loginUser.password" required #password="ngModel"
+                  minlength="6" />
+                <!-- <div *ngIf="password.invalid && (password.dirty || password.touched)">
+                  <p class="text-danger" *ngIf="password.errors.required">Please enter password</p>
+                  <p class="text-danger" *ngIf="password.errors.minlength">Password must be at least 6 character long</p>
+                </div> -->
+                <div *ngIf="serverLoginError && serverLoginError.password">
+                  <p class="text-danger">{{serverLoginError.password}}</p>
+                </div>
+              </div>
+              <button class="btn btn-default btn-block login-btn" name="waiting" type="button" value="waiting" disabled="disabled"
+                *ngIf="loggingIn; else continue">
+                <b class="bold">Logging In...</b>
+              </button>
+              <ng-template #continue>
+                <button class="btn btn-default btn-block login-btn" name="Submit" type="submit" value="Login">
+                  <!-- [disabled]="f.invalid" -->
+                  <b class="bold">Continue</b>
+                </button>
+              </ng-template>
+            </form>
+            <div class="login-extras clearfix">
+              <div class="pull-left" *ngIf="showRememberMe">
+                <div class="checkbox checkbox-white">
+                  <input id="remember-me" type="checkbox" [checked]="rememberMe" (change)="rememberMe = !rememberMe" />
+                  <label for="remember-me">
+                    Remember Me?
+                  </label>
+                </div>
+              </div>
+              <div class="pull-right">
+                <div class="forgot-block">
+                  <a class="forgot-link" data-target="#forget-modal" data-toggle="modal" data-dismiss="modal" href="#">Forgot
+                    Password</a>
+                </div>
+              </div>
+            </div>
+            <div class="divider">
+              <span>or</span>
+            </div>
+            <div class="social-login">
+              <div class="facebook-login-wrapper">
+                <div class="facebook-login-img">
+                  <img [src]="ImgPath+'LoginIcon_Facebook.svg'" alt="LoginIcon_Facebook.svg" />
+                </div>
+                <div class="fb-login-button btn btn-block btn-default btn-social-login btn-facebook" data-max-rows="1"
+                  data-size="large" data-button-type="continue_with" data-show-faces="false" data-auto-logout-link="false"
+                  data-use-continue-as="true" data-scope="email,public_profile" data-onlogin="loginwithFB()"></div>
+              </div>
+
+              <div>
+                <a class="btn btn-block btn-default btn-social-login btn-gmail bold" (click)="signInWithGoogle()"><img
+                    [src]="ImgPath+'LoginIcon_Google.svg'" alt="LoginIcon_Google.svg" />Continue with Google</a>
+              </div>
+            </div>
+            <div class="footer text-center">
+              <p class="bold">
+                Not a member yet?
+                <a data-target="#signup-modal" data-toggle="modal" data-dismiss="modal" href="#">Sign Up</a>
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!--Forget Password MODAL-->
+<div aria-labelledby="myModalLabel" class="modal fade" id="forget-modal" role="dialog" tabindex="-1" *ngIf="!isLoggedIn">
+  <div class="modal-dialog account-modal comman-modal" role="document">
+    <div class="modal-content ">
+      <div class="modal-header comman-header-modal">
+        <button aria-label="Close " class="close btn-close-modal" data-dismiss="modal" type="button ">
+          <span aria-hidden="true "><img [src]="ImgPath+'Icon_Basic_Close.svg'" width="18" alt="Icon_Basic_Close.svg"></span>
+        </button>
+        <h3 class="text-center heading">Recover your password</h3>
+      </div>
+      <div class="modal-body">
+        <div class="">
+          <div>
+            <form name="Forget_Form" #forget="ngForm" (submit)="sendResetLink(forget)" novalidate>
+              <div class="alert alert-danger" *ngIf="isForgetError && forgetErrorClass">{{forgetError}}</div>
+              <div class="alert alert-success" *ngIf="isForgetError && !forgetErrorClass">{{forgetError}}</div>
+              <div class="form-group">
+                <input autocomplete="off" class="form-control input-block" name="userName" placeholder="Email address"
+                  type="email" required [(ngModel)]="uemail" #forgetEmail="ngModel" pattern="[^@]+@[^@]+\.[a-zA-Z]{2,6}" />
+                <!-- <div *ngIf="forgetEmail.invalid && (forgetEmail.dirty || forgetEmail.touched)">
+                  <p class="text-danger" *ngIf="forgetEmail.errors.required">Please enter email</p>
+                  <p class="text-danger" *ngIf="!forgetEmail.errors.required && forgetEmail.errors.pattern">Please enter valid email</p>
+                </div> -->
+                <p class="text-danger" *ngIf="forgetErrorSer['email']">{{forgetErrorSer['email']}}</p>
+              </div>
+              <button class="btn btn-default btn-block login-btn" name="waiting" type="button" value="waiting" disabled="disabled"
+                *ngIf="sendingLink; else sendLink">
+                <b class="bold">Sending reset link...</b>
+              </button>
+              <ng-template #sendLink>
+                <button class="btn btn-default btn-block login-btn" name="Submit" type="submit" value="Reset">
+                  <b class="bold">Send reset link</b>
+                </button>
+              </ng-template>
+            </form>
+            <!--             <div class="footer text-center">
+              <p class="bold">
+                Not a member yet?
+                <a data-target="#signup-modal" data-toggle="modal" data-dismiss="modal" href="#">Sign Up</a>
+              </p>
+            </div> -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!--SIGN UP MODAL-->
+<div aria-labelledby="myModalLabel" class="modal fade" id="signup-modal" role="dialog" tabindex="-1" *ngIf="!isLoggedIn">
+  <div class="modal-dialog account-modal comman-modal" role="document">
+    <div class="modal-content signup-modal-block login-model-content">
+      <div class="modal-header comman-header-modal">
+        <button aria-label="Close " class="close btn-close-modal" data-dismiss="modal" type="button ">
+          <span aria-hidden="true "><img [src]="ImgPath+'Icon_Basic_Close.svg'" width="18" alt="Icon_Basic_Close.svg"></span>
+        </button>
+        <h3 class="text-center heading">Sign Up</h3>
+      </div>
+      <div class="modal-body">
+        <div class="">
+          <div>
+            <form name="Signup_Form" (submit)="signUp(signUpForm)" #signUpForm="ngForm" novalidate>
+              <div class="alert alert-danger" *ngIf="isSignupError && errorClass">{{signupError}}</div>
+              <!-- <div class="alert alert-success" *ngIf="isSignupError && !errorClass">{{signupError}}</div> -->
+              <div class="form-group">
+                <!--                 <div class="row">
+                  <div class="col-md-12 col-sm-12 col-xs-12"> -->
+                <input autocomplete="off" class="form-control input-block" id="firstName" name="firstName" placeholder="Username"
+                  type="text" required [(ngModel)]="signupUser.first_name" #firstName="ngModel" />
+                <p class="text-danger" *ngIf="signUperror && signUperror.first_name">{{signUperror.first_name}}</p>
+                <!--  </div> -->
+                <!-- <div class="col-md-6 col-sm-6 col-xs-12">
+                    <input autocomplete="off" class="form-control input-block" id="lastName" name="lastName" placeholder="Last Name" type="text" required [(ngModel)]="signupUser.last_name" #lastName="ngModel" />
+                    <p class="text-danger" *ngIf="signUperror && signUperror.last_name">{{signUperror.last_name}} name</p>
+                  </div> -->
+                <!--  </div> -->
+              </div>
+              <div class="form-group">
+                <input autocomplete="off" class="form-control input-block" id="exampleInputEmail2" name="Username"
+                  placeholder="Email address" type="email" required [(ngModel)]="signupUser.email" #email="ngModel"
+                  pattern="[^@]+@[^@]+\.[a-zA-Z]{2,6}" />
+                <p class="text-danger" *ngIf="signUperror && signUperror.email">{{signUperror.email}}</p>
+              </div>
+              <div class="form-group">
+                <input autocomplete="off" class="form-control input-block" id="exampleInputPassword1" name="Password"
+                  placeholder="Password" type="password" [(ngModel)]="signupUser.password" required #spassword="ngModel"
+                  minlength="6" />
+                <p class="text-danger" *ngIf="signUperror && signUperror.password">{{signUperror.password}}</p>
+              </div>
+              <button class="btn btn-default btn-block login-btn" name="waiting" type="button" value="waiting" disabled="disabled"
+                *ngIf="signingUp; else signup">
+                <b class="bold">Signing Up...</b>
+              </button>
+              <ng-template #signup>
+                <button class="btn btn-default btn-block login-btn" name="Submit" type="submit" value="Login">
+                  <!-- [disabled]="signUpForm.invalid" -->
+                  <b class="bold">Sign Up For Free</b>
+                </button>
+              </ng-template>
+            </form>
+            <div class="divider">
+              <span>or</span>
+            </div>
+            <div class="social-login">
+              <div class="facebook-login-wrapper">
+                <div class="facebook-login-img">
+                  <img [src]="ImgPath+'LoginIcon_Facebook.svg'" alt="LoginIcon_Facebook.svg" />
+                </div>
+                <div class="fb-login-button btn btn-block btn-default btn-social-login btn-facebook bold" data-max-rows="1"
+                  data-size="large" data-button-type="continue_with" data-show-faces="false" data-auto-logout-link="false"
+                  data-use-continue-as="true" data-scope="email,public_profile" data-onlogin="loginwithFB()"></div>
+              </div>
+
+              <div>
+                <a class="btn btn-block btn-default btn-social-login btn-gmail bold" (click)="signInWithGoogle()"><img
+                    [src]="ImgPath+'LoginIcon_Google.svg'" alt="LoginIcon_Google.svg" />Continue with Google</a>
+              </div>
+            </div>
+            <div class="footer text-center ">
+              <p class="bold ">
+                Already a member?
+                <a data-target="#login-modal" data-toggle="modal" data-dismiss="modal" href="#">Login</a>
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!--SETTINGS MODAL-->
+<div aria-labelledby="myModalLabel " [hidden]="hideModal" class="modal fade " id="modal-settings" role="dialog"
+  tabindex="-1" *ngIf="isLoggedIn">
+  <div class="modal-dialog settings-modal comman-modal" role="document ">
+    <div class="modal-content">
+      <div class="modal-header comman-header-modal">
+        <button aria-label="Close" class="close btn-close-modal checkoutPurchaseClose" data-dismiss="modal" type="button ">
+          <span aria-hidden="true "><img [src]="ImgPath+'Icon_Basic_Close.svg'" width="18" alt="Icon_Basic_Close.svg"></span>
+        </button>
+        <h3 class="text-center heading "><img [src]="ImgPath+ 'Icon_User.svg' " width="25 " alt="Icon_User.svg" />&nbsp;Account
+          Settings</h3>
+      </div>
+      <div class="modal-body">
+        <div class=" ">
+          <div [ngClass]="{ 'sectionShow': aciveSection=='changePassword','sectionHide': aciveSection!='changePassword'  }">
+            <form method="post" name="change_password" (submit)="submitChangepassword(chnagePasswordForm); "
+              #chnagePasswordForm="ngForm" novalidate="">
+              <div class="alert alert-danger" *ngIf="isChangePasswordError && errorClass">{{changePasswordError}}</div>
+              <div class="alert alert-success" *ngIf="isChangePasswordError && !errorClass">{{changePasswordError}}</div>
+              <div class="form-group clearfix ">
+                <div class="col-md-3 col-sm-3">
+                  <label class=" ">Old Password</label>
+                </div>
+                <div class="col-md-9 col-sm-9">
+                  <div class="">
+                    <input class="form-control input-block " name="oldpassword" id="oldpassword" placeholder="Old Password"
+                      required type="password" [(ngModel)]="chnagePassword.oldpassword" #OldPassword="ngModel" />
+                    <!-- <div *ngIf="OldPassword.invalid && (OldPassword.dirty || OldPassword.touched) && !changeError.oldpassword">
+                      <p class="text-danger" *ngIf="OldPassword.errors.required">Please enter Password</p>
+                    </div> -->
+                    <p class="text-danger" *ngIf="changeError.oldpassword">{{ changeError.oldpassword }}</p>
+                  </div>
+                </div>
+              </div>
+              <div class="form-group clearfix ">
+                <div class="col-md-3 col-sm-3">
+                  <label class=" ">New Password</label>
+                </div>
+                <div class="col-md-9 col-sm-9">
+                  <div class="">
+                    <input class="form-control input-block " name="newpassword" id="newpassword" placeholder="New Password"
+                      required type="password" [(ngModel)]="chnagePassword.newpassword" #NewPassword="ngModel" />
+                    <!-- <div *ngIf="NewPassword.invalid && (NewPassword.dirty || NewPassword.touched) && !changeError.newpassword">
+                      <p class="text-danger" *ngIf="NewPassword.errors.required">Please enter New Password</p>
+                    </div> -->
+                    <p class="text-danger" *ngIf="changeError.newpassword">{{ changeError.newpassword }}</p>
+                  </div>
+                </div>
+              </div>
+              <div class="form-group clearfix">
+                <div class="col-md-3 col-sm-3 no-padding-right">
+                  <label class=" ">Confirm Password</label>
+                </div>
+                <div class="col-md-9 col-sm-9">
+                  <div class="">
+                    <input class="form-control input-block " name="confpassword" id="confpassword" placeholder="Confirm Password"
+                      required type="password" [(ngModel)]="chnagePassword.confpassword" #ConfirmPassword="ngModel" />
+                    <!-- <div *ngIf="ConfirmPassword.invalid && (ConfirmPassword.dirty || ConfirmPassword.touched) && !serverError.confpassword">
+                      <p class="text-danger" *ngIf="ConfirmPassword.errors.required">Please enter Confirm Password</p>
+                    </div> -->
+                    <p class="text-danger" *ngIf="changeError.confpassword">{{ changeError.confpassword }}</p>
+                  </div>
+                </div>
+              </div>
+              <div class="form-group clearfix ">
+                <div class="col-md-9 col-md-offset-3 col-sm-9 col-sm-offset-3 ">
+                  <button class="btn setting-btn" name="waiting" type="button" value="waiting" disabled="disabled"
+                    *ngIf="changePasswordUpdate; else changePassword">
+                    <b class="bold">Saving Changes...</b>
+                  </button>
+                  <ng-template #changePassword>
+                    <button class="btn setting-btn" name="Submit" type="submit" value="Login">Save</button>
+                  </ng-template>
+                  <button class="btn setting-btn" type="button" (click)="sectionShow('setting')">Cancel</button>
+                </div>
+              </div>
+            </form>
+            <div class="divider"></div>
+          </div>
+          <div [ngClass]="{ 'sectionShow': aciveSection=='accountDelete','sectionHide': aciveSection!='accountDelete' }">
+            <form method="post" name="accountDelete" (submit)="submitAccountDelete()" #accountDeleteForm="ngForm"
+              novalidate>
+              <div class="alert alert-danger" *ngIf="isaccountDeleteError && errorClass">{{accountDeleteError}}</div>
+              <div class="alert alert-success" *ngIf="isaccountDeleteError && !errorClass">{{accountDeleteError}}</div>
+              <div class="form-group clearfix">
+                <div class="col-md-3 col-sm-3 col-xs-4">
+                  <div class="warning-icon">
+                    <img [src]="ImgPath+'Icon_Warning2_Blue.svg'" width="80" alt="Icon_Warning2_Blue.svg">
+                  </div>
+                </div>
+                <div class="col-md-9 col-sm-9 col-xs-8">
+                  <p>This will disable all future access to purchases and downloads associated with this user.</p>
+                  <p>Are you sure you want to Delete your account?</p>
+                </div>
+              </div>
+              <div class="form-group clearfix ">
+                <div class="col-md-9 col-md-offset-3 col-sm-9 col-sm-offset-3 col-xs-8 col-xs-offset-4">
+                  <button class="btn setting-btn deleting-button deleting-button-with-spinner" name="waiting" type="button"
+                    value="waiting" disabled="disabled" *ngIf="accountDeleteUpdate; else accountDelete">
+                    <b class="bold">Deleting Account...</b>
+                    <span>
+                      <svg class="circular-loader deleting-spinner" viewBox="25 25 50 50">
+                        <circle class="loader-path" cx="50" cy="50" r="10" fill="none" stroke="#4995ff" stroke-width="2.5" />
+                      </svg>
+                    </span>
+                  </button>
+                  <ng-template #accountDelete>
+                    <button class="btn setting-btn" name="Submit" type="submit" value="Login" [disabled]="accountDeleteForm.invalid">Delete
+                      Account</button>
+                  </ng-template>
+                  <button class="btn setting-btn" type="button" (click)="sectionShow('setting')">Cancel</button>
+                </div>
+              </div>
+            </form>
+            <div class="divider"></div>
+          </div>
+          <form method="post" name="Setting_Form" (submit)="submitUserData()" #settingForm="ngForm" novalidate>
+            <div class="alert alert-danger" *ngIf="isSettingError && errorClass">{{settingError}}</div>
+            <!-- <div class="alert alert-success" *ngIf="isSettingError && !errorClass">{{settingError}}</div> -->
+            <div [ngClass]="{ 'sectionShow': aciveSection=='setting','sectionHide': aciveSection!='setting'  }">
+              <div class="form-group clearfix ">
+                <div class="col-md-3 col-sm-3">
+                  <label class=" ">Username</label>
+                </div>
+                <div class="col-md-9 col-sm-9">
+                  <div class=" ">
+                    <input class="form-control input-block " id="CZXc" placeholder="Username " name="user_name"
+                      [(ngModel)]="settingInfo.user_name" type="text " #username="ngModel" placeholder="Enter Username" />
+                    <p class="text-danger" *ngIf="serverError.user_name">{{ serverError.user_name }}</p>
+                  </div>
+                </div>
+                <div class="clearfix "></div>
+              </div>
+              <div class="form-group clearfix ">
+                <div class="col-md-3 col-sm-3">
+                  <label class=" ">Email Address</label>
+                </div>
+                <div class="col-md-9 col-sm-9">
+                  <div class=" ">
+                    <input class="form-control input-block " id="ampleInputEmail1 " placeholder="example@test.com"
+                      readonly="true" type="email" name="email" [(ngModel)]="settingInfo.email" />
+                  </div>
+                </div>
+              </div>
+              <div class="form-group clearfix ">
+                <div class="col-md-3 col-sm-3">
+                </div>
+                <div class="col-md-9 col-sm-9">
+                  <div class="advance-setting-block clearfix ">
+                    <div class="pull-left ">
+                      <a class="update-link " href="javascript:void(0)" (click)="sectionShow('changePassword')">
+                        <img [src]="ImgPath+ 'Icon_Lock.svg' " width="12" alt="Icon_Lock.svg" />
+                        <img [src]="ImgPath+ 'Icon_Lock_Blue.svg' " width="12" alt="Icon_Lock_Blue.svg" class="hover-icon" />
+                        Change Password</a>
+                    </div>
+                    <div class="pull-right ">
+                      <a class="update-link delete-link" href="javascript:void(0)" (click)="sectionShow('accountDelete')">
+                        <img [src]="ImgPath+ 'Icon_Basic_Close.svg' " width="12 " alt="Icon_Basic_Close.svg" />
+                        <img [src]="ImgPath+ 'Icon_Basic_Close_Red.svg' " width="12 " alt="Icon_Basic_Close_Red.svg"
+                          class="hover-icon" />
+                        Delete Account
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="form-group clearfix ">
+                <div class="col-md-3 col-sm-3">
+                  <label class="account-type-label ">Account Type</label>
+                </div>
+                <div class="col-md-9 col-sm-9">
+                  <div class="license-type ">
+                    <div aria-label="... " class="btn-group col-md-12 col-sm-12 col-xs-12 no-padding " role="group ">
+                      <button type="button" *ngFor="let account of accountLicense" [ngClass]="{'active': account.id ==settingInfo.account_type,'deactive':account.id !=settingInfo.account_type }"
+                        class="col-md-4 col-sm-4 btn btn-default">
+                        <span class="plans-name">{{ account.name }}</span>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="divider"></div>
+            </div>
+            <div class="form-group clearfix no-margin">
+              <div class="col-md-3 col-sm-3">
+                <label class="subscription-label no-margin">Subscription</label>
+              </div>
+              <div class="col-md-9 col-sm-9">
+                <div class="subscripation-block" *ngIf="user.user_plan && userPlanDetails.subscriptionName">
+                  <span class="info-line">{{ userPlanDetails.subscriptionName || 'No active Subscription'}}</span> | <a
+                    class="view-plan view-subscrib-modal" (click)="getBillingInfo()" data-dismiss="modal" data-target="#subscriptions-detial-modal"
+                    data-toggle="modal" href="javascript:;">View Plan</a>
+                </div>
+                <div class="subscripation-block" *ngIf="!user.user_plan || !userPlanDetails.subscriptionName">
+                  <span class="info-line">No active Subscription</span> |
+                  <a data-dismiss="modal" [routerLink]="'/subscriptions'" class="view-plan">View Plans</a>
+                </div>
+              </div>
+              <div class="clearfix"></div>
+            </div>
+            <div class="divider"></div>
+            <div class="form-group clearfix ">
+              <div class="col-md-3 col-sm-3">
+                <label class="">Name </label>
+              </div>
+              <div class="col-md-9 col-sm-9">
+                <div class="row ">
+                  <div class="col-md-6 col-sm-6 col-xs-6  firstname-right-padding">
+                    <input class="form-control input-block " name="first_name" id="exampleInputEmail3" placeholder="First Name"
+                      required type="text" [(ngModel)]="settingInfo.first_name" #FirstName="ngModel" />
+                    <div *ngIf="FirstName.invalid && (FirstName.dirty || FirstName.touched) && !serverError.first_name">
+                      <!-- <p class="text-danger" *ngIf="FirstName.errors.required">Please enter First name</p> -->
+                    </div>
+                    <p class="text-danger" *ngIf="serverError.first_name">{{ serverError.first_name }}</p>
+                  </div>
+                  <div class="col-md-6 col-sm-6 col-xs-6 lastname-left-padding">
+                    <input class="form-control input-block " name="last_name" id="exampleInputEmail6 " placeholder="Last Name"
+                      required type="text" [(ngModel)]="settingInfo.last_name" #LastName="ngModel" />
+                    <div *ngIf="LastName.invalid && (LastName.dirty || LastName.touched) && !serverError.last_name">
+                      <!-- <p class="text-danger" *ngIf="LastName.errors.required">Please enter Last name</p> -->
+                    </div>
+                    <p class="text-danger" *ngIf="serverError.last_name">{{ serverError.last_name }}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="form-group clearfix ">
+              <div class="col-md-3 col-sm-3">
+                <label class=" ">Company</label>
+              </div>
+              <div class="col-md-9 col-sm-9">
+                <div class=" ">
+                  <input class="form-control input-block " required id="exampleInputEmail4 " placeholder="Company Name"
+                    name="company_name" [(ngModel)]="settingInfo.company_name" type="text " />
+                  <div>
+                    <!-- <p class="text-danger" *ngIf="username.errors.required">Please enter Company Name</p> -->
+                  </div>
+                  <!-- <p class="text-danger" *ngIf="serverError.user_name">{{ serverError.user_name }}</p> -->
+                </div>
+              </div>
+              <div class="clearfix"></div>
+            </div>
+            <div class="form-group clearfix ">
+              <div class="col-md-3 col-sm-3">
+                <label class=" ">Address</label>
+              </div>
+              <div class="col-md-9 col-sm-9">
+                <div class=" ">
+                  <div class="addess-setting">
+                    <textarea class="form-control" cols="5" rows="1" name="street_address" placeholder="Street Address"
+                      [(ngModel)]="settingInfo.street_address" #streetAddress="ngModel">{{ settingInfo.street_address}}</textarea>
+                    <!-- <div *ngIf="streetAddress.invalid && (streetAddress.dirty || streetAddress.touched) && !serverError.street_address">
+                      <p class="text-danger" *ngIf="streetAddress.errors.required">Please enter Street Address</p>
+                    </div> -->
+                    <p class="text-danger" *ngIf="serverError.street_address">{{serverError.street_address}}</p>
+                    <div class="city-postal-block ">
+                      <div class="row ">
+                        <div class="col-md-8 col-sm-8 no-padding-right city-name-input">
+                          <input class="form-control input-block " id="exampleInputEmail5" placeholder="City" name="city"
+                            [(ngModel)]="settingInfo.city" type="text" #City="ngModel" />
+                          <!-- <div *ngIf="City.invalid && (City.dirty || City.touched) && !serverError.city">
+                            <p class="text-danger " *ngIf="City.errors.required ">Please enter City Name</p>
+                          </div> -->
+                          <p class="text-danger " *ngIf="serverError.city">{{serverError.city}}</p>
+                        </div>
+                        <div class="col-md-4 col-sm-4 no-padding-left postal-code-input">
+                          <input class="form-control input-block post-code-input " id="exampleInputEmail7 " placeholder="Postal code "
+                            type="text" name="postal_code" [(ngModel)]="settingInfo.postal_code" #PostalCode="ngModel" />
+                          <!-- <div *ngIf="PostalCode.invalid && (PostalCode.dirty || PostalCode.touched) && !serverError.postal_code ">
+                            <p class="text-danger " *ngIf="PostalCode.errors.required ">Please enter Postal Code</p>
+                          </div> -->
+                          <p class="text-danger " *ngIf="serverError.postal_code ">{{ serverError.postal_code }}</p>
+                        </div>
+                        <div class="clearfix ">
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="country-name-wrap">
+                    <select class="form-control " name="country_name " [(ngModel)]="settingInfo.country" #CountryName="ngModel">
+                      <option value="null">Country</option>
+                      <option *ngFor="let country of countries" [value]="country.country_name" [selected]='country.country_name==settingInfo.country'>{{
+                        country.country_name }}</option>
+                    </select>
+                    <p class="text-danger" *ngIf="serverError.country ">{{ serverError.country }}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!--   <div class="form-group clearfix ">
+              <div class="col-md-3">
+                <label class="">Timezone</label>
+              </div>
+              <div class="col-md-9">
+                <select class="form-control " required name="time_zone" [(ngModel)]="settingInfo.time_zone" #TimeZome="ngModel"> required
+                  <option>Timezone</option>
+                  <option *ngFor="let time of timeZone " [value]="time.id " [selected]='time.id==settingInfo.time_zone'>{{ time.name }}</option>
+                </select>
+                <div class="info-line ">
+                  Timezone can only be updated once every 24 hours.
+                </div>
+                <div *ngIf="TimeZome.invalid && (TimeZome.dirty || TimeZome.touched) && !serverError.time_zone ">
+                  <p class="text-danger" *ngIf="TimeZome.errors.required">Please enter time zome</p>
+                </div>
+                <p class="text-danger" *ngIf="serverError.time_zone">{{ serverError.time_zone }}</p>
+              </div>
+            </div>-->
+            <div class="form-group clearfix ">
+              <div class="col-md-3 col-sm-3">
+                <label class=" ">VAT Number</label>
+              </div>
+              <div class="col-md-9 col-sm-9">
+                <div class="validate-vat-wrap">
+                  <div class="input-group">
+                    <input class="form-control warnimg-icon" placeholder="Enter VAT Number " type="text" name="vat_number"
+                      [(ngModel)]="settingInfo.vat_number" #VatNumber="ngModel" />
+                    <span class="input-group-btn "><button class="btn btn-default btn-validate" (click)="checkVatNumber(settingInfo.vat_number)"
+                        type="button">Validate</button></span>
+                  </div>
+                  <div *ngIf="VatNumber.invalid && (VatNumber.dirty || VatNumber.touched) && !serverError.vat_number">
+                  </div>
+                  <p class="text-danger" *ngIf="serverError.vat_number">{{ serverError.vat_number }}</p>
+                </div>
+              </div>
+            </div>
+            <div class="divider ">
+            </div>
+            <div class="form-group clearfix ">
+              <div class="col-md-3 col-sm-3">
+                <label class=" ">Options</label>
+              </div>
+              <div class="col-md-9 col-sm-9">
+                <div class="row ">
+                  <div class="col-md-12 col-sm-12 col-xs-12 setting-option">
+                    <div class="option-text">
+                      Homepage <span class="info-tooltip"><img [src]="ImgPath+'Icon_Info.svg'" class="main-icon" width="14"
+                          alt="Icon_Info.svg">
+                        <span class="custom-tooltip tooltip-arrow-top">This is your default page each <br> time you log
+                          into Photobash.</span>
+                      </span>
+                    </div>
+                    <div class="option-input">
+                      <select class="form-control " name="homepage " [(ngModel)]="settingInfo.homepage" #Homepage="ngModel">
+                        <option value="dashboard" [selected]='"dashboard"==settingInfo.homepage'>Dashboard</option>
+                        <option value="packs" [selected]='"packs"==settingInfo.homepage'>Packs</option>
+                        <option value="images" [selected]='"images"==settingInfo.homepage'>Images</option>
+                        <option value="kits" [selected]='"kits"==settingInfo.homepage'>Kits</option>
+                        <option value="models" [selected]='"models"==settingInfo.homepage'>Models</option>
+                        <option value="purchases" [selected]='"purchases"==settingInfo.homepage'>Purchases</option>
+                        <option value="collections" [selected]='"collections"==settingInfo.homepage'>Collections</option>
+                        <!-- <option *ngFor="let country of countries" [value]="country.country_name" [selected]='country.country_name==settingInfo.country'>{{ country.country_name }}</option> -->
+                      </select>
+                    </div>
+                  </div>
+                </div>
+                <div class="row ">
+                  <div class="col-md-6 col-sm-6 col-xs-6 no-padding-right  checkbox-option-row">
+                    <div class="checkbox checkbox-white ">
+                      <input id="download-confim" name="is_download" type="checkbox" [checked]="settingInfo.is_download=='1' || settingInfo.is_download==1"
+                        (click)="settingInfo.is_download=(settingInfo.is_download==1 || settingInfo.is_download=='1') ? 0 : 1" />
+                      <label for="download-confim">Download Confirmation</label>
+                    </div>
+                  </div>
+                  <div class="col-md-6 col-sm-6 col-xs-6 no-padding-right checkbox-option-row">
+                    <div class="checkbox checkbox-white ">
+                      <input id="receive-updates" name="is_email" type="checkbox" [checked]="settingInfo.is_email=='1' || settingInfo.is_email==1"
+                        (click)="settingInfo.is_email=(settingInfo.is_email==1 || settingInfo.is_email=='1') ? 0 : 1" />
+                      <label for="receive-updates">Receive Email Updates</label>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="form-group clearfix ">
+              <div class="col-md-9 col-md-offset-3 col-sm-9 col-sm-offset-3">
+                <button class="btn setting-btn" name="waiting" type="button" value="waiting" disabled="disabled" *ngIf="settingUpdate; else setting">
+                  <b class="bold">Saving Changes...</b>
+                </button>
+                <ng-template #setting>
+                  <button class="btn setting-btn" name="Submit" type="submit" value="Login">Save Changes</button>
+                </ng-template>
+                <button class="btn setting-btn setting-modal-close" data-dismiss="modal">Cancel</button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!--Subscription Detail MODAL-->
+<div aria-labelledby="myModalLabel " [hidden]="hideModal" class="modal fade " id="subscriptions-detial-modal" role="dialog"
+  tabindex="-1" *ngIf="isLoggedIn">
+  <div class="modal-dialog settings-modal comman-modal subscription-detial-modal" role="document ">
+    <div class="modal-content">
+      <div class="modal-header comman-header-modal">
+        <button aria-label="Close" class="close btn-close-modal checkoutPurchaseClose" data-dismiss="modal" type="button ">
+          <span aria-hidden="true "><img [src]="ImgPath+'Icon_Basic_Close.svg'" width="18" alt="Icon_Basic_Close.svg"></span>
+        </button>
+        <h3 class="text-center heading">Subscription Details</h3>
+      </div>
+      <div class="modal-body">
+        <div class="form-group clearfix ">
+          <div class="col-md-3 col-sm-3 col-xs-3">
+            <label class="subscription-label">Subscription</label>
+          </div>
+          <div class="col-md-9 col-sm-9 col-xs-9">
+            <div class="subscripation-block">
+              <span class="info-line">
+                <font *ngIf="userPlanDetails.planName">{{userPlanDetails.planName}}</font> <b class="bold">{{userPlanDetails.subscriptionName
+                  || 'No Subscription'}}</b>
+              </span>
+              <span><b class="text-montserrat text-blue"><span class="doller-icon">$</span>{{userPlanDetails.amount ||
+                  '0'}}</b>/<font>mo</font></span>
+              <span><b class="bold text-dark-Gray">{{userPlanDetails.credit || '0'}}</b> Credits</span>
+              <span><b class="bold text-dark-Gray" *ngIf="userPlanDetails.facilities">{{userPlanDetails.facilities.numbeOfUsers
+                  || 1}}</b><b class="bold text-dark-Gray" *ngIf="!userPlanDetails.facilities">1</b> user(s)</span>
+            </div>
+          </div>
+        </div>
+        <div class="divider"></div>
+        <div class="form-group clearfix ">
+          <div class="col-md-3 col-sm-3 col-xs-3">
+            <label class="subscription-label">Payment Status</label>
+          </div>
+          <div class="col-md-9 col-sm-9 col-xs-9">
+            <div class="subscripation-block form-group">
+              <ng-container *ngIf="userPlanDetails.subscriptionStatus; else noSubscription">
+                <span class="info-line" *ngIf="userPlanDetails.subscriptionStatus==1">
+                  <font class="text-active">Active</font>
+                </span>
+                <span class="info-line" *ngIf="userPlanDetails.subscriptionStatus==3">
+                  <font class="text-expired">Expired</font>
+                </span>
+                <span class="info-line" *ngIf="userPlanDetails.subscriptionStatus==2">
+                  <font class="text-cancelled">Cancelled</font>
+                </span>
+                <span>
+                  <ng-container *ngIf="userPlanDetails.subscriptionStatus==1">
+                    <a href="javascript:;" *ngIf="!cancellingSubscription" (click)="cancelSubscription()" class="cancel-subscription-status">
+                      Cancel Subscription
+                      <img width="10" [src]="ImgPath+'Icon_Basic_S_Cancel_Gray.svg'" alt="Icon_Basic_S_Cancel_Gray.svg" />
+                      <img width="10" [src]="ImgPath+'Icon_Basic_Close_Red.svg'" alt="Icon_Basic_Close_Red.svg" class="hover-icon" />
+                    </a>
+                    <a href="javascript:;" *ngIf="cancellingSubscription">
+                      <img width="10" [src]="ImgPath+'Icon_Basic_S_Cancel_Gray.svg'" alt="Icon_Basic_S_Cancel_Gray.svg" />
+                      Cancelling Subscription...
+                    </a>
+                  </ng-container>
+                  <ng-container *ngIf="userPlanDetails.subscriptionStatus==2 || userPlanDetails.subscriptionStatus==3">
+                    <a href="javascript:;" *ngIf="!cancellingSubscription" (click)="renewSubscription()" class="renew-subscription-status">
+                      Renew Subscription
+                      <img width="10" [src]="ImgPath+'Icon_Renew_Grey.svg'" alt="Icon_Renew_Grey.svg" />
+                      <img width="10" [src]="ImgPath+'Icon_Renew_Blue.svg'" alt="Icon_Renew_Blue.svg" class="hover-icon" />
+                    </a>
+                    <a href="javascript:;" *ngIf="cancellingSubscription">
+                      <img width="10" [src]="ImgPath+'Icon_Basic_S_Cancel_Gray.svg'" alt="Icon_Basic_S_Cancel_Gray.svg" />
+                      Renewing Subscription...
+                    </a>
+                  </ng-container>
+                </span>
+              </ng-container>
+              <ng-template #noSubscription>
+                <span class="info-line">
+                  <font>No payment for subscription yet</font>
+                </span>
+              </ng-template>
+            </div>
+            <div class="billing-dates-detial clearfix">
+              <div class="date">
+                <div *ngIf="userPlanDetails.purchasedAt">
+                  <font class="text-regular">Purchased</font> {{userPlanDetails.purchasedAt}}
+                </div>
+                <div *ngIf="userPlanDetails.nextPayment">
+                  <font class="text-regular">
+                    <ng-container *ngIf="userPlanDetails.subscriptionStatus==1">
+                      Next Payment
+                    </ng-container>
+                    <ng-container *ngIf="userPlanDetails.subscriptionStatus!=1">
+                      Expiration Date
+                    </ng-container>
+                  </font> {{userPlanDetails.nextPayment}}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="divider"></div>
+        <div class="form-group clearfix ">
+          <div class="col-md-9 col-sm-9 col-xs-9 col-md-offset-3 col-sm-offset-3 col-xs-offset-3">
+            <button class="btn setting-btn continueAsguest" name="Submit" type="submit" value="Login" data-dismiss="modal"
+              data-target="#modal-settings" data-toggle="modal">Back to Settings</button>
+            <button class="btn setting-btn setting-modal-close" type="button" data-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!--ADMIN LOGIN MODAL-->
+<div aria-labelledby="myModalLabel" class="modal fade" id="admin-login-modal" role="dialog" tabindex="-1" *ngIf="isLoggedIn && user && user.user_role=='1'">
+  <div class="modal-dialog account-modal comman-modal" role="document">
+    <div class="modal-content">
+      <div class="modal-header comman-header-modal">
+        <button aria-label="Close " class="close btn-close-modal" data-dismiss="modal" type="button ">
+          <span aria-hidden="true "><img [src]="ImgPath+'Icon_Basic_Close.svg'" width="18" alt="Icon_Basic_Close.svg"></span>
+        </button>
+        <img [src]="ImgPath+'Black_Icon_Lock.svg'" class="checkout-lock-icon" width="24" alt="Black_Icon_Lock.svg">
+        <h3 class="text-center heading">Admin Login</h3>
+      </div>
+      <div class="modal-body">
+        <div class="">
+          <div>
+            <form name="Login_Form" #adminLoginForm="ngForm" (submit)="loginAsPhotographer(adminLoginForm)" novalidate>
+              <div class="form-group">
+                <input autocomplete="off" class="form-control input-block" id="InputPassword" name="password"
+                  placeholder="Password" type="password" required [(ngModel)]="adminPassword" />
+                <p *ngIf="photoLoginError" class="text-danger">{{photoLoginError}}</p>
+              </div>
+              <div class="form-group login-extras clearfix">
+                <div class="pull-left">
+                  <div class="checkbox checkbox-white">
+                    <input id="remember-me" type="checkbox" [(ngModel)]="adminRemember" name="adminRemember" />
+                    <label for="remember-me">
+                      Remember Me?
+                    </label>
+                  </div>
+                </div>
+              </div>
+              <button class="btn btn-default btn-block login-btn" name="waiting" type="button" value="waiting" disabled=""
+                *ngIf="adminLoggingin; else login">
+                <b class="bold">Please wait..</b>
+              </button>
+              <ng-template #login>
+                <button class="btn btn-default btn-block login-btn" name="Submit" type="submit" value="Login">
+                  <b class="bold">Continue</b>
+                </button>
+              </ng-template>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!--PURCHASE MODAL-->
+<div aria-labelledby="myModalLabel" class="modal fade" id="purchase-modal" role="dialog" tabindex="-1" *ngIf="!isLoggedIn">
+  <app-payment-modal [amount]="cartData.price" [paymentFor]="3" (onCreditCardPaymentDone)="onCreditCardPaymentDoneForCartPurchase($event)"
+    [cartData]="cartData"></app-payment-modal>
+</div>
+<!--PURCHASE MODAL-->
+<!--signup-promotion-->
+<div aria-labelledby="myModalLabel" class="modal fade" id="signup-promotion" role="dialog" tabindex="-1" *ngIf="!isLoggedIn">
+  <div class="modal-dialog signup-promotion-modal" role="document">
+    <div class="modal-content">
+      <div class="modal-body">
+        <div class="top-section">
+          <button aria-label="Close" class="close btn-close-modal" data-dismiss="modal" type="button">
+            <span aria-hidden="true">
+              <img [src]="ImgPath+'Icon_Basic_Close.svg'" width="18" alt="Icon_Basic_Close.svg">
+            </span>
+          </button>
+          <h4 class="text-center">You're currently browsing as a Guest,<br>why not <font class="text-blue">Join for
+              Free</font>?</h4>
+        </div>
+        <div class="main-section">
+          <div class="promotion-content">
+            <h4 class="bold">When you Sign Up:</h4>
+            <ul>
+              <li>User Dashboard</li>
+              <li>Store Purchases Online</li>
+              <li>Monthly Subcriptions</li>
+              <li>Unlock Single Image Gallery</li>
+              <li>Create & Manage Collections</li>
+              <li>And much more...</li>
+            </ul>
+          </div>
+          <div class="clearfix"></div>
+          <div class="footer-section">
+            <button class="btn btn-primary bold" data-target="#signup-modal" data-toggle="modal" data-dismiss="modal"
+              data-backdrop="static" data-keyboard="false"><b>Sign Up</b></button>
+            <button class="btn btn-default bold continueAsguest" data-target="#purchase-modal" data-toggle="modal"
+              data-dismiss="modal" data-backdrop="static" data-keyboard="false">Countinue as Guest</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!--signup-promotion-->
+
+<!-- Logged in user details -->
+<div aria-labelledby="myModalLabel" class="modal fade modal-dissmissed" id="logged-in-details-modal" role="dialog"
+  tabindex="-1">
+  <div class="modal-dialog comman-modal active-login-modal" role="document">
+    <div class="modal-content">
+      <div class="modal-header comman-header-modal">
+        <span class="active-user-count" *ngIf="loginData.length>0">
+          <span class="text-blue">{{loginData.length}}</span>/<span class="total">{{number_of_logins || 1}}</span>
+        </span>
+        <button aria-label="Close" class="close btn-close-modal" data-dismiss="modal" type="button">
+          <span aria-hidden="true">
+            <img [src]="ImgPath+'Icon_Basic_Close.svg'" width="18" alt="Icon_Basic_Close.svg">
+          </span>
+        </button>
+        <h2 class="modal-title">
+          Active Logins
+        </h2>
+      </div>
+      <div class="modal-body">
+        <div class="row" *ngIf="retryLogin">
+          <div class="col-sm-12">
+            <div class="alert alert-info">You have exceeded your number of logins. Please logout from another device.</div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-sm-12">
+            <div class="table-responsive">
+              <table class="table table-bordered active-login-table">
+                <thead>
+                  <!-- <th style="padding: 1em">Login IP</th> -->
+                  <!-- <th style="padding: 1em">Login User Agent</th> -->
+                  <!-- <th style="padding: 1em">Logged In Since</th> -->
+                  <!-- <th style="padding: 1em">Action</th> -->
+                </thead>
+                <tbody>
+                  <ng-container *ngIf="loginData.length>0; else noLoginDetails">
+                    <tr *ngFor="let log of loginData">
+                      <td width="180" class="ip-address">
+                        <h4 class="bold text-center">{{log.loggedInIP}}</h4>
+                      </td>
+                      <td class="detail-td">
+                        <p class="title"><b class="bold"><span *ngIf="log.loggedInCity">{{log.loggedInCity}},</span>
+                            <span *ngIf="log.loggedInRegion">{{log.loggedInRegion}},</span><span *ngIf="log.loggedInCountry">{{log.loggedInCountry}}</span></b></p>
+                        <!-- <p class="title bold">{{log.loggedInUseAgent}}</p> -->
+                        <p class="date">{{log.loggedInTime}}</p>
+                      </td>
+                      <td class="action-td text-center" width="130">
+                        <ng-container *ngIf="(!user || !user.loginId || log.loginId != user.loginId); else currentlyActive">
+                          <a href="javascript:;" (click)="logoutThisUser(log, userId)" class="btn btn-theme-white">
+                            Logout
+                          </a>
+                        </ng-container>
+                        <ng-template #currentlyActive>
+                          <a href="javascript:;" class="btn btn-theme-white">
+                            <!-- (click)="signOut()" -->
+                            Active Now
+                          </a>
+                        </ng-template>
+                      </td>
+                    </tr>
+                  </ng-container>
+                  <ng-template #noLoginDetails>
+                    <tr *ngFor="let item of numberOfLoggedInArray" style="height: 75px;">
+                      <td colspan="4">{{messageForLogin}}</td>
+                    </tr>
+                  </ng-template>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Logged in user details -->
+<a data-toggle="modal" data-target="#logged-in-details-modal" id="logged-in-details-modal-btn" href="javascript:;"
+  data-dismiss="modal"></a>
+
+<!-- Add Credits -->
+<div aria-labelledby="myModalLabel" class="modal fade" id="add-credit-modal" role="dialog" tabindex="-1" *ngIf="isLoggedIn && user.user_plan">
+  <div class="modal-dialog comman-modal credit-purchase-modal" role="document">
+    <div class="modal-content">
+      <div class="modal-header comman-header-modal">
+        <button aria-label="Close" class="close btn-close-modal checkoutPurchaseClose" data-dismiss="modal" type="button">
+          <span aria-hidden="true">
+            <img [src]="ImgPath+'Icon_Basic_Close.svg'" width="18" alt="Icon_Basic_Close.svg">
+          </span>
+        </button>
+        <h2 class="modal-title">
+          Credit Packs
+        </h2>
+      </div>
+      <div class="">
+        <div class="credits-plan-wrap " id="plans-block">
+          <div class="">
+            <div class="plans-block">
+              <div class="enter-block">
+                <div class="tab-content">
+                  <div class="credit-table-wrapper">
+                    <form *ngIf="!loadingCustomCredit">
+                      <div class="table-tile clearfix" *ngFor="let list of creditList; let i = index">
+                        <div class="left">
+                          <div class="price clearfix">
+                            <div class="radio custom-radio">
+                              <input class="radio-btn" type="radio" name="checkCredit" [value]="list.credit_id"
+                                [(ngModel)]="checkCredit">
+                              <label class="radio-label" for="checkbox{{list.credit_id}}" (click)="customCreditSelect(list)">
+                                <b>
+                                  <font class="doller-icon">$</font>{{list.amount || 0}}
+                                </b>
+                              </label>
+                              <!-- <small *ngIf="list.applicableTax">+ ${{ list.applicableTax }} (VAT {{applicableTaxPer || 0}}%)</small> -->
+                            </div>
+                          </div>
+                        </div>
+                        <div class="right">
+                          <div class="credit-point clearfix">
+                            <h4 class="info-credit-bonus">{{list.credit || 0}}
+                              <span class="credit">credits</span>
+                              <span *ngIf="getBonusCredits(list.credit, list.bonus)>0">
+                                <span class="per-divided">/</span>
+                                <span class="bonus">+{{getBonusCredits(list.credit, list.bonus) || 0}}
+                                  <font>bonus</font>
+                                </span>
+                              </span>
+                            </h4>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="table-tile clearfix purchase-creadit-price">
+                        <div class="left">
+                          <div class="price clearfix ">
+                            <div class="radio custom-radio amount-check">
+                              <input class="radio-btn" type="radio" id="checkbox00" name="checkCredit" [value]="0"
+                                [(ngModel)]="checkCredit">
+                              <label class="radio-label" for="checkbox00" (click)="customCreditPuch()">
+                                <b>
+                                  <font class="doller-icon">$</font>
+                                </b>
+                              </label>
+                              <span>
+                                <input class="form-control" name="amount" (ngModelChange)="customCreditPuch()" (focus)="customCreditPuch()"
+                                  (blur)="customCreditPuch()" [(ngModel)]="amount" placeholder="" type="text"
+                                  autocomplete="off" maxlength="3" min="5" minvalue onlyNumbers>
+                                <p *ngIf="amountError" class="text-danger">Amount should be more or equal to 5</p>
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="right">
+                          <div class="credit-point clearfix">
+                            <h4 class="info-credit-bonus">{{credit || 0}}
+                              <span class="credit">credits</span>
+                              <span *ngIf="customBonus>0">
+                                <span class="per-divided">/</span>
+                                <span class="bonus">+{{customBonus || 0}}
+                                  <font>bonus</font>
+                                </span>
+                              </span>
+                            </h4>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="one-time-credits">
+                        <div class="price">
+                          <h4>
+                            <font class="doller-icon">$</font><span *ngIf="checkCredit == 0">{{amount || 0 }}</span><span
+                              *ngIf="checkCredit != 0">{{selectedCustomCredits.amount || 0 }} </span>
+                          </h4>
+                          <!-- <small *ngIf="selectedCustomCredits.applicableTax">+${{selectedCustomCredits.applicableTax}}</small> -->
+                        </div>
+                        <div class="credit">
+                          <h4><span class="credit-points" *ngIf="checkCredit == 0">{{credit + customBonus || 0 }}
+                            </span><span class="credit-points" *ngIf="checkCredit!=0">{{selectedCustomCredits.totalCredits
+                              || 0}}</span>
+                            <span>credits</span>
+                            <br>
+                            <span>/one time</span>
+                          </h4>
+                        </div>
+                      </div>
+                      <div class="text-center btn-block">
+                        <ng-container *ngIf="amount>4 || selectedCustomCredits.amount > 4">
+                          <a href="javascript:;" *ngIf="isLoggedIn; else notLoggedIn" class="btn btn btn-theme-white add-credit-btn continueAsguest"
+                            data-target="#custom-credit-modal" data-toggle="modal" data-dismiss="modal" (click)="amountError = false; "
+                            data-backdrop="static" data-keyboard="false">Add Credits</a>
+                        </ng-container>
+                        <ng-container *ngIf="amount<=4 && selectedCustomCredits.amount <= 4">
+                          <a href="javascript:;" *ngIf="isLoggedIn; else notLoggedIn" class="btn btn btn-theme-white add-credit-btn continueAsguest">Add
+                            Credits</a>
+                        </ng-container>
+                        <ng-template #notLoggedIn>
+                          <a href="javascript:;" class="btn btn btn-theme-white add-credit-btn continueAsguest"
+                            data-target="#login-modal" data-toggle="modal">Add Credits</a>
+                        </ng-template>
+                      </div>
+                    </form>
+                    <ng-container *ngIf="loadingCustomCredit">
+                      <loader></loader>
+                    </ng-container>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Add Credits -->
+<!--PURCHASE MODAL-->
+<div aria-labelledby="myModalLabel" class="modal fade" id="custom-credit-modal" role="dialog" tabindex="-1" *ngIf="isLoggedIn">
+  <app-payment-modal #customPay [amount]="selectedCustomCredits.amount" (onCreditCardPaymentDone)="onCreditCardPaymentDoneForAddCredit($event)"
+    [paymentFor]="2" [creditData]="selectedCustomCredits" [bonus]="customBonus" [checkCredit]="checkCredit" [credit]="credit"></app-payment-modal>
+</div>
+<!--PURCHASE MODAL-->
+<!--IMPORT REQUEST FORM MODAL-->
+<div aria-labelledby="myModalLabel" class="modal fade" id="send-import-request-form" role="dialog" tabindex="-1">
+  <div class="modal-dialog account-modal comman-modal import-confirm-modal" role="document">
+    <div class="modal-content">
+      <div class="modal-header comman-header-modal">
+        <button aria-label="Close " class="close btn-close-modal" data-dismiss="modal" type="button ">
+          <span aria-hidden="true ">
+            <img [src]="ImgPath+'Icon_Basic_Close.svg'" width="18" alt="Icon_Basic_Close.svg">
+          </span>
+        </button>
+        <img [src]="ImgPath+'Icon_Import_Purchases_Dark_Gray.svg'" class="checkout-lock-icon" width="24" alt="Icon_Import_Purchases.svg">
+        <h3 class="text-center heading">Import Purchases</h3>
+      </div>
+      <div class="modal-body">
+        <div class="">
+          <div>
+            <p class="import-notication-message">Please confirm the email address associated<br /> with your previous
+              purchases.</p>
+            <form name="Login_Form" #importReq="ngForm" (submit)="sendPackImportRequest(importReq)" novalidate>
+              <div class="form-group comman-form-group">
+                <input autocomplete="off" class="form-control input-block" id="InputPassword" name="email" placeholder="Email"
+                  type="text" required [(ngModel)]="oldEmail" />
+                <p *ngIf="importReqError.email" class="text-danger">{{importReqError.email}}</p>
+              </div>
+              <div class="divider-section"></div>
+              <div class="row" *ngIf="sendingImportRequest; else loginTemplate">
+                <div class="col-sm-7">
+                  <button class="btn btn-default btn-block login-btn" name="waiting" type="button" value="waiting"
+                    disabled="">
+                    <b class="bold">Please wait..</b>
+                  </button>
+                </div>
+                <div class="col-sm-5">
+                  <button class="btn btn-default btn-block login-btn btn-cancle" type="button" disabled>
+                    <b class="bold">Cancel</b>
+                  </button>
+                </div>
+              </div>
+              <ng-template #loginTemplate>
+                <div class="row">
+                  <div class="col-sm-7">
+                    <button class="btn btn-default btn-block login-btn" name="Submit" type="submit" value="Login">
+                      <b class="bold">Confirm</b>
+                    </button>
+                  </div>
+                  <div class="col-sm-5">
+                    <button class="btn btn-default btn-block login-btn btn-cancle" type="button" data-dismiss="modal">
+                      <b class="bold">Cancel</b>
+                    </button>
+                  </div>
+                </div>
+              </ng-template>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!--IMPORT REQUEST FORM MODAL-->
+<a id="set-account-type-btn" data-toggle="modal" data-target="#set-account-type" href="javascript:;" data-dismiss="modal"></a>
+<a id="import-request-confirmalert-btn" data-toggle="modal" data-target="#import-request-confirmalert" href="javascript:;"
+  data-dismiss="modal"></a>
+<!--Import send confirmation request -->
+<div aria-labelledby="myModalLabel" class="modal fade" id="import-request-confirmalert" role="dialog" tabindex="-1">
+  <div class="modal-dialog  comman-modal import-request-alert-modal" role="document">
+    <div class="modal-content">
+      <div class="modal-body">
+        <button aria-label="Close" class="close btn-close-modal" data-dismiss="modal" type="button ">
+          <img [src]="ImgPath+'Icon_Basic_Close.svg'" width="18" alt="Icon_Basic_Close.svg" class="main-img">
+          <img [src]="ImgPath+'Icon_Basic_Close_Blue.svg'" width="18" alt="Icon_Basic_Close_Blue.svg" class="hover-img">
+        </button>
+        <div class="img-block">
+          <img class="theme-logo" [src]="ImgPath+'Payment_Success.svg'" alt="Payment_Success.svg" width="50" />
+        </div>
+        <div class="content-block">
+          <h3 class="text-heading heading no-margin">Request Link Sent!</h3>
+          <p [innerHTML]="importMessage"></p>
+        </div>
+        <div class="text-center">
+          <button class="btn btn-theme-white" data-dismiss="modal">Continue</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div aria-labelledby="myModalLabel" class="modal fade" id="set-account-type" role="dialog" tabindex="-1">
+  <div class="modal-dialog account-type-modal comman-modal" role="document">
+    <div class="modal-content">
+      <div class="">
+        <div class="account-type-block">
+          <button aria-label="Close " class="close btn-close-modal" data-dismiss="modal" type="button ">
+            <img [src]="ImgPath+'Icon_Basic_Close.svg'" width="18" alt="Icon_Basic_Close.svg" class="main-img">
+            <img [src]="ImgPath+'Icon_Basic_Close_Blue.svg'" width="18" alt="Icon_Basic_Close_Blue.svg" class="hover-img">
+          </button>
+          <div class="text-center">
+            <h3 class="text-center no-margin heading"> <img [src]="ImgPath+'Icon_Checkmark_Blue.svg'" width="16" alt="Icon_Checkmark_Blue.svg"
+                *ngIf="selectedAccountType.id>0"> {{selectedAccountType.name}} <span *ngIf="selectedAccountType.id>0">License</span></h3>
+          </div>
+          <p class="text-center description-para" [innerHTML]="selectedAccountType.description"></p>
+
+          <div class="accout-type-tab">
+            <ul class="list-inline">
+              <ng-container *ngFor="let acType of accountTypes; let i = index">
+                <li [ngClass]="{'active': selectedAccountIndex == i}" (click)="setSelectedAccoutType(i)">
+                  <a href="javascript:;" [innerHTML]="acType.name" class="bold"></a>
+                </li>
+              </ng-container>
+            </ul>
+          </div>
+          <div class="detail-block">
+            <div class="detail-block-img" [hidden]="selectedAccountType.id" [ngStyle]="{'background-image':'url('+ServerImgPath+selectedAccountType.image+')'}"></div>
+            <ng-container *ngFor="let acType of accountTypes; let i = index">
+              <div [hidden]="selectedAccountType.id != acType.id" class="detail-block-img " [ngStyle]="{'background-image':'url('+ServerImgPath+acType.image+')'}"></div>
+            </ng-container>
+            <div class="detail-selection">
+              <div class="term-condition ">
+                <div class="checkbox checkbox-white ">
+                  <input id="accept-term" type="checkbox" [(ngModel)]="isTermsAcceptFinal">
+                  <label for="accept-term">
+                    I accept the
+                    <a target="_blank" routerLink="/terms"><b class="bold">Terms &amp; Conditions</b></a> and <a target="_blank"
+                      routerLink="/privacy-policy"><b class="bold">Privacy Policy</b></a>
+                  </label>
+                </div>
+                <p> You agree that Photobash may collect, use and disclose certain personal<br>
+                  data which you have provided in this form or hereafter during your<br>
+                  activity on this website, in accordance with our data protection policy.<br>
+                  By signing up you have agreed to receive email updates providing<br>
+                  information regarding your account or with updates about our website.<br>
+                </p>
+              </div>
+              <div *ngIf="changingAccType; else changeAcType">
+                <button class="btn btn-theme-white" disabled="">Please wait..</button>
+              </div>
+              <ng-template #changeAcType>
+                <div class=""><button class="btn btn-theme-white" [disabled]="!isTermsAcceptFinal" (click)="accountTypeSelected(selectedAccountIndex)">Complete
+                    Registration</button></div>
+              </ng-template>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div aria-labelledby="myModalLabel" class="modal fade" id="welcome-modal" role="dialog" tabindex="-1">
+      <div class="modal-dialog account-type-modal comman-modal" role="document">
+        <div class="modal-content">
+          <div class="">
+            <div class="account-type-block">
+              <button aria-label="Close " class="close btn-close-modal" data-dismiss="modal" type="button ">
+                <img [src]="ImgPath+'Icon_Basic_Close.svg'" width="18" alt="Icon_Basic_Close.svg" class="main-img">
+                <img [src]="ImgPath+'Icon_Basic_Close_Blue.svg'" width="18" alt="Icon_Basic_Close_Blue.svg" class="hover-img">
+              </button>
+              <div class="text-center">
+                <h3 class="text-center no-margin heading">
+                    Registration Completed!
+                </h3>
+              </div>
+              <p class="text-center description-para">
+                  Hi <span class="text-blue">Test User</span>, your account is ready.
+                  <br>
+                  What would you like to do next?
+              </p>
+    
+              <div class="accout-type-tab">
+                <ul class="list-inline">
+                  <ng-container *ngFor="let acType of accountTypes; let i = index">
+                    <li [ngClass]="{'active': selectedAccountIndex == i}" (click)="setSelectedAccoutType(i)">
+                      <a href="javascript:;" [innerHTML]="acType.name" class="bold"></a>
+                    </li>
+                  </ng-container>
+                </ul>
+              </div>
+              <div class="detail-block">
+                <div class="detail-block-img" [hidden]="selectedAccountType.id" [ngStyle]="{'background-image':'url('+ServerImgPath+selectedAccountType.image+')'}"></div>
+                <ng-container *ngFor="let acType of accountTypes; let i = index">
+                  <div [hidden]="selectedAccountType.id != acType.id" class="detail-block-img " [ngStyle]="{'background-image':'url('+ServerImgPath+acType.image+')'}"></div>
+                </ng-container>
+                <div class="detail-selection">
+                  <!-- <div class="term-condition ">
+                    <div class="checkbox checkbox-white ">
+                      <input id="accept-term" type="checkbox" [(ngModel)]="isTermsAcceptFinal">
+                      <label for="accept-term">
+                        I accept the
+                        <a target="_blank" routerLink="/terms"><b class="bold">Terms &amp; Conditions</b></a> and <a target="_blank"
+                          routerLink="/privacy-policy"><b class="bold">Privacy Policy</b></a>
+                      </label>
+                    </div>
+                    
+                  </div> -->
+                  <div class="add-browse-packs">
+                        
+                      <div class="addition-box">
+                        <div class="link" tabindex="0" ng-reflect-router-link="/packs">
+                          <button class="btn btn-theme-white"  (click)="accountTypeSelected(selectedAccountIndex)"> <span>
+                              <img class="theme-logo main" [src]="ImgPath+'Icon_Search.svg'" alt="Icon_Search.svg"width="16" class="front-img"/>
+                              <img class="theme-logo main" [src]="ImgPath+'Icon_Search_Blue.svg'" alt="Icon_Search_Blue.svg"width="16" class="hover-img" />
+                              Start Exploring...</span>
+                          </button>
+                             
+                        </div>
+                        <p>Discover our extensive libraries of images and 3D Models.</p>
+                        <div class="link" tabindex="0" ng-reflect-router-link="/kits">
+                          <span class="text-span">Or</span>
+                        </div>
+                      </div>
+                    </div>
+                  <div class="addition-box">
+                    <button class="btn btn-theme-white import-purchase-modal-btn"  (click)="accountTypeSelected(selectedAccountIndex)"> <span>
+                      <img class="theme-logo main" [src]="ImgPath+'Icon_Import_Purchases.svg'" alt="Icon_Import_Purchases.svg"width="16" class="front-img"/>
+                      <img class="theme-logo main" [src]="ImgPath+'Icon_Import_Purchases_Blue.svg'" alt="Icon_Import_Purchases_Blue.svg"width="16" class="hover-img"/>
+                      Import Purchases</span>
+                    </button>
+                    <p>Import previous purchases from photobash.org <br>
+                      You can always do this later from your Purchases page.
+                    </p>
+                  </div>  
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  
+<style>
+    .sectionHide {
+      display: none;
+    }
+
+    .sectionShow {
+      display: block;
+    }
+
+  </style>

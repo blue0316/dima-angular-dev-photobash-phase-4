@@ -1,0 +1,67 @@
+<app-header (isLoggedIn)="checkLogin($event)"></app-header>
+<!--  -->
+<div class="models-component-warp">
+  <ng-container>
+    <div
+      class="toggle-button left-filter hover-tooltip"
+      (click)="toggleFilter()"
+      [ngClass]="{ 'toggle-on': showFilterToggle }"
+    >
+      <img [src]="gridFilter.ImgPath + 'Icon_Basic_S_Right.svg'" width="20" class="main-img" />
+      <img
+        [src]="gridFilter.ImgPath + 'Icon_Basic_S_Right_Blue.svg'"
+        width="20"
+        class="hover-img"
+      />
+      <span _ngcontent-c1="" class="info-tooltip">
+        <span _ngcontent-c1="" class="custom-tooltip custom-tooltip-left tooltip-arrow-left">
+          <ng-container *ngIf="showFilterToggle">
+            Switch to Default
+          </ng-container>
+          <ng-container *ngIf="!showFilterToggle">
+            Switch to Sidebar
+          </ng-container>
+        </span>
+      </span>
+    </div>
+    <!--  -->
+    <ng-container *ngIf="showFilterToggle">
+      <app-aside-filter
+        [filters]="{ categories: gridFilter.categories, filters: gridFilter.filters }"
+        (catFilterAdded)="onCatFilterAdd($event)"
+        (filterUpdated)="onFilterUpdate($event)"
+        (clearFilter)="gridFilter.clearAllFilter()"
+        [totalItems]="gridFilter.totalItems"
+        [selectedSort]="gridFilter.sortyBy"
+        (updateSortOption)="gridFilter.sortKits($event)"
+      ></app-aside-filter>
+    </ng-container>
+  </ng-container>
+  <!--  -->
+  <div [ngClass]="{ 'image-container-wrapper-rightside': showFilterToggle }">
+    <app-models-grid-filter
+      [isUserLoggedIn]="isLoggedIn"
+      (onSearch)="updateFilter($event)"
+      (onClearAllFilter)="clearAllFilter()"
+    ></app-models-grid-filter>
+    <app-models-grid
+      #modelGrid
+      [modelList]="models"
+      [isLoading]="isLoading"
+      [isLoaded]="isLoaded"
+      [isUserLoggedIn]="isLoggedIn"
+      [showFilterToggle]="showFilterToggle"
+    ></app-models-grid>
+  </div>
+  <app-footer [ngClass]="{ 'footer-rightside': showFilterToggle }"></app-footer>
+</div>
+
+<!-- Mobile View Warper -->
+<div class="image-component-mobile nofound-warp gray-background">
+  <div class="nofound-image nofound-single-block">
+    <div class="nofound-content text-light text-center">
+      <p>This features is not available on mobile version.</p>
+      <p>Please visit our desktop version.</p>
+    </div>
+  </div>
+</div>

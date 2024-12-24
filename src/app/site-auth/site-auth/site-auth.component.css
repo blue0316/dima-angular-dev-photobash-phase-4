@@ -1,0 +1,123 @@
+/* .centered {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  height: 100vh;
+}
+
+.warn {
+  color: red;
+}
+
+.jumbotron {
+  width: 40%;
+}
+
+@media only screen and (max-width: 768px) {
+  .jumbotron {
+    width: 90%;
+  }
+} */
+
+.login-wrapper {
+  position: fixed;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 100%;
+  height: 100%;
+}
+
+.login-form-wrapper {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 100%;
+}
+
+.loginform-header {
+  padding: 10px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.loginform-header img {
+  padding: 10px;
+  width: 220px;
+  margin: 0 auto;
+}
+
+.login-wrap {
+  padding: 20px 40px 30px;
+  display: table;
+  width: 100%;
+}
+.login-wrapper .login-form-wrapper .warn{
+  color: #e61d1d;
+}
+.form-signin .form-control {
+  position: relative;
+  font-size: 16px;
+  height: auto;
+  padding: 10px;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+}
+
+.form-signin input[type="text"],
+.form-signin input[type="password"] {
+  margin-bottom: 5px;
+  background: #fff;
+  border: 1px solid #ddd;
+  box-shadow: none;
+  font-size: 16px;
+}
+
+.form-signin .btn-lock {
+  background-color: #fbfbfb;
+  color: #343539;
+  font-size: 18px;
+  padding: 10px 0;
+  border: solid 1px rgba(104, 104, 104, 0.24) !important;
+  width: 100%;
+  font-weight: 700;
+  font-family: 'FrutigerNeueLTPro-Bold';
+  text-transform: capitalize;
+}
+
+.form-signin .btn-lock:hover {
+  color: #4a94ff;
+  background: #fff;
+}
+
+.admin-login-name {
+  color: #797979;
+  font-size: 14px;
+  font-family: 'FrutigerNeueLTPro-Regular';
+}
+
+.login-wrap .pswd-fld .form-control {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  background-image: url('/assets/admin/images/Icon_Lock.svg');
+  background-repeat: no-repeat;
+  background-position: 97% 50%;
+  padding-right: 30px;
+  background-size: 20px;
+}
+
+.form-signin {
+  max-width: 430px;
+  margin: 0px auto 0;
+  background: #f9f9f9;
+}
+
+.main-login-wrapper .login-wrapper {
+  background: #2c343f url('/assets/admin/img/lock-bg.jpg');
+  background-size: cover;
+  background-repeat: repeat;
+}

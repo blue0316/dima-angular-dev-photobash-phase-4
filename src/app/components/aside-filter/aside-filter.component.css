@@ -1,0 +1,445 @@
+/***********************
+** Start Sidebar Menu **
+***********************/
+
+aside {
+  position: fixed;
+  width: 340px;
+  /*height: 100%;*/
+  height: calc(100% - 60px);
+  overflow-y: auto;
+  overflow-x: hidden;
+  z-index: 9;
+  background: #f2f3f2;
+  direction: rtl;
+  /*top: 0px;
+  padding-top: 60px;*/
+  top: 60px;
+  padding-top: 0px;
+  -webkit-overflow-scrolling: touch;
+}
+aside::-webkit-scrollbar{
+    width:7px;
+    background-color:#f7f7f7;
+}
+aside::-webkit-scrollbar:horizontal{
+    height:12px;
+}
+aside::-webkit-scrollbar-track{
+    border:1px #cccccc solid;
+    border-radius:10px;
+    -webkit-box-shadow: 0 0 2px #cac9c9 inset;
+    box-shadow: 0 0 2px #cac9c9 inset;
+    background-color: #f7f7f7;
+}
+aside::-webkit-scrollbar-thumb{
+    background-color:#a1a1a1;
+    border:1px solid #cccccc;
+    border-radius:16px;
+}
+aside::-webkit-scrollbar-thumb:hover{
+    background-color:#a1a1a1;
+    border:1px solid #cccccc;
+}
+aside::-webkit-scrollbar-thumb:active{
+    background-color:#a1a1a1;
+    border:1px solid #cccccc;
+}
+
+.aside-update {
+  top: 0px;
+  padding-top: 0px;
+  height: 100%;
+}
+aside .panel-group {
+    margin-bottom: 0px;
+}
+
+.logo {
+  background-color: rgb(195, 195, 195);
+  height: 90px;
+  font-family: sans-serif;
+  font-size: 22px;
+  padding: 10px 20px;
+  text-transform: uppercase;
+}
+
+.logo span span {
+  color: rgb(25, 118, 210);
+}
+
+.logo select {
+  display: block;
+  height: 20px;
+  margin-top: 22px;
+  width: 40px;
+  font-size: 10px;
+  text-transform: capitalize;
+}
+
+ul li label i:first-child {
+  color: rgb(119, 119, 119);
+}
+
+/* Start Radio inputs */
+input[name='menu'],
+input[name='dropdowns'] {
+  display: none;
+}
+
+input[type='radio']:checked ~ label {
+  color: rgb(124, 179, 66);
+}
+
+input[type='radio']:checked ~ label > i:first-child {
+  color: rgb(124, 179, 66);
+}
+
+input:not(checked) ~ label {
+  color: rgb(60, 33, 33);
+}
+/* End Radio inputs */
+
+/* Start Checkbox inputs */
+input[type='checkbox']:checked ~ ul {
+  display: block;
+}
+
+#uparrow,
+#downarrow {
+  float: right;
+}
+
+input[name='dropdowns']:checked ~ label > #downarrow {
+  display: none;
+}
+
+input[name='dropdowns']:checked ~ label > #uparrow {
+  display: inline-block;
+}
+
+input[name='dropdowns']:not(checked) ~ label > #uparrow {
+  display: none;
+}
+
+/* End Checkbox inputs */
+
+/* Start Menu */
+
+ul li {
+  font-family: Roboto, sans-serif;
+  font-size: 15px;
+  font-weight: 600;
+  margin-top: 20px;
+  text-transform: capitalize;
+}
+
+ul li label i {
+  width: 50px;
+  margin-right: 5px;
+  text-align: center;
+}
+
+ul li label {
+  display: inline-block;
+  width: 240px;
+}
+
+ul li label:hover {
+  cursor: pointer;
+}
+
+.main {
+  list-style-type: none;
+  padding-left: 0;
+}
+
+.drop {
+  display: none;
+}
+
+.drop li {
+  display: block;
+  font-size: 14px;
+  padding-left: 20px;
+}
+
+.drop li label {
+  width: 105px;
+}
+
+/* End Menu */
+
+/***********************
+** End Sidebar Menu   **
+***********************/
+aside.left-filter .collapsing {
+  transition: none;
+}
+nav {
+  background: rgb(24, 117, 209);
+  height: 50px;
+  margin-left: 265px;
+}
+.panel.panel-default {
+  direction: ltr;
+  border-radius: 0px;
+}
+.bold-heading {
+  font-size: 14px;
+  font-family: Montserrat;
+  color: #222327;
+  font-weight: 600;
+  text-transform: uppercase;
+  position: relative;
+  padding-left: 20px;
+  padding-right: 15px;
+  line-height: normal;
+}
+.bold-heading .icon {
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 12px;
+}
+.bold-heading .icon img{
+  width: 12px;
+}
+.bold-heading .icon.cat-ico {
+  /*top: 40%;*/
+  top: 50%;
+}
+.panel-default>.panel-heading{
+  border-bottom: 1px solid #ddd;
+}
+.panel-body {
+    padding: 10px 15px 8px 15px;
+}
+.panel-default>.panel-heading+.panel-collapse>.panel-body{
+  border:none;
+}
+.bold-heading .sign-ico {
+  position: absolute;
+  right: -4px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+.bold-heading .sign-ico font{
+  position: absolute;
+  font-size: 25px;
+  color: #cecece;
+  top: 0;
+  left: 0;
+  line-height: 18px;
+  font-weight: normal;
+}
+.bold-heading .sign-ico font.pluse{
+  opacity: 0;
+  z-index: -1;
+  left: 4px;
+}
+.bold-heading .sign-ico font.minus{
+  top: -1.9px;
+  left: 4px;
+  font-size: 39px;
+}
+.bold-heading .sign-ico:hover font{
+  color: #4995ff;
+}
+.collapsed > .bold-heading > .sign-ico font.pluse{
+  opacity: 1;
+  z-index: 1;
+}
+.collapsed > .bold-heading > .sign-ico font.minus{
+  opacity: 0;
+  z-index: -1;
+}
+
+
+.panel-body ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
+.panel-body ul li {
+  cursor: pointer;
+  color: #5b5b5b;
+  font-family: 'FrutigerNeueLTPro-Regular';
+  font-size: 15px;
+  position: relative;
+  /*z-index: 1;*/
+  padding: 4px 0px 4px 30px;
+  text-transform: capitalize;
+  white-space: nowrap;
+  font-weight: 400;
+  margin: 0;
+}
+.name-count-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.name-count-wrap:hover .name{
+  color:#4995ff;
+}
+.name-count-wrap .name {
+  white-space: nowrap;
+  word-wrap: normal;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-transform: capitalize;
+  display: inline-block;
+  position: relative;
+  z-index: 1;
+}
+.name-count-wrap .count {
+  color: #e3e3e3;
+  display: inline-block;
+  position: relative;
+  font-weight: 400;
+  font-size: 13px;
+}
+.divider-leftbar {
+  height: 1px;
+  margin: 3px -15px 5px -40px;
+  overflow: hidden;
+  background-color: #e5e5e5;
+}
+.divider-leftbar-packs {
+  height: 1px;
+  margin: 6px 0px 6px 0px;
+  overflow: hidden;
+  width: calc(100% - 27px);
+  background-color: #e5e5e5;
+}
+.has-dropdown .icon {
+  position: absolute;
+  left: 0;
+  top: 6px;
+  width: 15px;
+  height: 15px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.has-dropdown .icon img{
+  position: absolute;
+  /*transition: 0.5s ease;*/
+  transform: rotate(180deg);
+  width: 10px
+}
+.has-dropdown .icon.collapsed img,
+.has-dropdown .name-count-wrap.collapsed  .icon img{
+  transform: rotate(0deg)
+}
+.has-dropdown .name-count-wrap:hover img.hover-img{
+  opacity: 1;
+  z-index: 1;
+}
+.has-dropdown .icon img.hover-img{
+  opacity: 0;
+  z-index: -1;
+}
+.has-dropdown .icon:hover img.hover-img{
+  opacity: 1;
+  z-index: 1;
+}
+.has-dropdown .icon.arrow-blue img.hover-img{
+  opacity: 1;
+  z-index: 1;
+}
+
+.panel-body ul li:hover .icon img.hover-img{
+  opacity: 1;
+  z-index: 1;
+}
+.panel-body ul li:hover .name-count-wrap .name{
+  color:#4995ff;
+}
+
+
+.dropdown-item-block ul{
+  /*margin: 4px 0px;*/
+  position: relative;
+}
+
+.dropdown-item-block ul li{
+  padding-left: 18px;
+  position: relative;
+}
+.panel-body ul li:hover .dropdown-item-block ul li .name-count-wrap .name{
+  color: #5b5b5b;
+}
+.panel-body ul li:hover .dropdown-item-block ul li:hover .name-count-wrap .name{
+   color:#4995ff;
+}
+.dropdown-item-block ul.filter-ul li{
+  padding-left: 0px;
+  position: relative;
+}
+
+
+.dropdown-item-block ul li:before{
+    position: absolute;
+    content: "";
+    width: 1px;
+    left: 0px;
+    height: 100%;
+    top: 9px;
+    border-left: 1px solid #d6d6d6;
+}
+
+.dropdown-item-block ul li:last-child::before{
+  height: 40%;
+}
+
+.dropdown-item-block ul li.onlyone-li:before{
+  height: 0% !important;
+}
+
+.dropdown-item-block ul.filter-ul li:before{
+    display: none;
+}
+
+
+
+
+.name-count-wrap .checkbox{
+  margin: 0px;
+}
+.has-dropdown .name-count-wrap .checkbox label{
+  color: #5d5d5d;
+}
+.has-dropdown .name-count-wrap .checkbox label:hover{
+  color: #4995ff;
+}
+.has-dropdown .name-count-wrap .checkbox.text-blue label{
+  color: #4995ff;
+}
+
+.has-dropdown .name-count-wrap .checkbox label.disabled-pack-checkbox,
+.has-dropdown .name-count-wrap .checkbox label.disabled-pack-checkbox:hover 
+{
+   color: rgba(167, 164, 164, 0.72);
+}
+
+@media screen and (max-width: 1199px)  and (min-width: 768px)
+{
+  aside {
+  width: 250px;
+  }
+}
+@media screen and (max-width: 991px) 
+{
+  aside {
+  display: none;
+  }
+}

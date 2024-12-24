@@ -1,0 +1,49 @@
+
+@media(max-width: 1600px){
+    .collection-header .search-block {
+        width: 500px;
+    }
+}
+
+@media(max-width: 1490px) and (min-width: 1451px){
+    .collection-header .search-block {
+        width: 370px;
+    }
+}
+
+@media(max-width: 1400px){
+    .collection-filter-wrapper {
+        padding: 0px 0 0;
+    }
+    .collection-edits.purchase-edits.collection-edits {
+        padding-top: 0px;
+    }
+    .account-header .middle-section{
+        margin-top: 34px;
+    }
+    .collection-header .search-block{
+        width: 100%;
+        padding: 0 20px;
+    }
+    .account-header .collection-edits ul li.delete-icon-li {
+        padding-right: 0px;
+        line-height: 20px;
+        height: 20px;
+    }
+    .account-header .collection-edits ul li a{
+        height: 20px;
+    }
+    .account-header .collection-edits ul li a.delete-icon span{
+        top: 0;
+    }
+    .account-header .collection-edits ul li a.delete-icon span img{
+        width: 15px;
+    }
+    .account-header .collection-edits{
+        padding-top: 0px;
+    }
+    .account-header .collection-edits ul{
+        display: flex;
+        align-items: center;
+    }
+}

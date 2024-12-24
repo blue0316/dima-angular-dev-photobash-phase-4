@@ -1,0 +1,115 @@
+.image-container-wrapper-rightside {
+  padding-left: 340px;
+}
+.toggle-button {
+  height: 105px;
+  position: absolute;
+  width: 45px;
+  /* background: rgba(104, 104, 104, 0.24); */
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-pack: center;
+  justify-content: center;
+  top: 60px;
+  cursor: pointer;
+  border-left: 7px solid rgba(104, 104, 104, 0.24);
+  z-index: 9;
+}
+.toggle-button.toggle-on {
+  left: 340px;
+  /*position: fixed;*/
+  height: 70px;
+}
+/*.toggle-button.toggle-on.aside-update {
+  top: 0px;
+  z-index: 10;
+}
+.toggle-button.toggle-on.aside-update.aside-filter-fixed
+{
+  top:63px;
+}
+.toggle-button.toggle-on.aside-update.aside-update img
+{
+    left: -7px;
+    border-bottom-left-radius: 2px;
+    border-top-left-radius: 2px;
+    padding: 7px 2px;
+    width: 10px;
+}
+.toggle-button.toggle-on.aside-update.aside-update .main-img
+{
+  background: #949490;
+}
+.toggle-button.toggle-on.aside-update.aside-update .hover-img
+{
+  background: #cbcbcb;
+}*/
+.toggle-button:hover {
+  border-left-color: #4995ff;
+}
+.toggle-button img {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  right: 12px;
+  cursor: pointer;
+  width: 10px;
+}
+.toggle-button .hover-img {
+  opacity: 0;
+}
+.toggle-button:hover img.hover-img {
+  opacity: 1;
+}
+.toggle-button:hover img.main-img {
+  opacity: 0;
+}
+
+.toggle-button.toggle-on img {
+  transform: translateY(-50%) rotate(180deg);
+}
+.custom-tooltip-left {
+  right: 24px;
+  transform: translate(20px, 65px);
+  width: 160px;
+}
+.toggle-button:hover .custom-tooltip-right {
+  opacity: 1;
+  display: block;
+  visibility: visible;
+}
+.tooltip-arrow-left::after {
+  content: '';
+  position: absolute;
+  top: 8px;
+  left: 0;
+  margin-left: -5px;
+  border-width: 6px 6px 6px 0;
+  border-style: solid;
+  border-color: transparent #3f3e43 transparent transparent;
+}
+.toggle-on .custom-tooltip-left {
+  right: 28px;
+  /*transform: translate(14px, 67px);*/
+  transform: translate(20px, 47px);
+}
+
+@media screen and (max-width: 1199px)  and (min-width: 768px)
+{
+  .image-container-wrapper-rightside {
+    padding-left: 250px;
+  }
+  .toggle-button.toggle-on {
+    left: 250px;
+  }
+}
+
+@media screen and (max-width: 991px) 
+{
+  .toggle-button {
+  display: none;
+  }
+  .image-container-wrapper-rightside {
+    padding-left: 0px;
+  }
+}

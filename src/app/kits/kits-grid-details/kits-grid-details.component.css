@@ -1,0 +1,29 @@
+.slick-track{
+	width: 100%;
+}
+.slick-dots li button{
+	width: 8px;
+	height: 8px;
+	cursor: pointer;
+/*	background: #000;*/
+	border-radius: 50%;
+	border:1px solid #7e7e7e;
+	margin: 0 5px;
+}
+.slick-dots li button:hover{
+	background-color: #7e7e7e;
+}
+.slick-dots li button.active:hover{
+	border-color: #fff;
+	background-color: #fff;
+}
+.slick-dotted.slick-slider{
+	margin-bottom: 0px !important;
+}
+
+.quick-look-warp:hover .overlay{
+	z-index: -1;
+}
+.quick-look-warp.quick-look-kit-warp a{
+    cursor: default;
+}

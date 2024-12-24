@@ -1,0 +1,134 @@
+<app-header (isLoggedIn)="checkLogin($event)"></app-header>
+<div
+  class="gray-background height-balance"
+  *ngIf="dataLoaded; else loader"
+></div>
+<ng-template #loader>
+  <br />
+  <loader></loader>
+</ng-template>
+<button
+  type="button"
+  class="btn btn-primary"
+  id="download-archives-btn"
+  data-toggle="modal"
+  data-target="#purchase-download-modal"
+  [ngStyle]="{ display: 'none' }"
+>
+  Open Download Popup
+</button>
+<!-- <button
+  type="button"
+  class="btn btn-primary"
+  (click)="closeModal(template)"
+  id="download-archives-close-btn"
+  [ngStyle]="{ display: 'none' }"
+>
+  Close Download Popup
+</button> -->
+<!--DOWNLOAD ARCHIVES MODAL-->
+<div
+  aria-labelledby="myModalLabel"
+  class="modal fade "
+  id="purchase-download-modal"
+  role="dialog"
+  data-backdrop='static' 
+  data-keyboard='false'
+>
+  <div class="modal-dialog account-modal comman-modal download-files-modal" role="document">
+    <div class="modal-content login-model-content">
+      <div class="modal-header comman-header-modal" id="download-info-modal">
+        <button
+          aria-label="Close "
+          class="close btn-close-modal"
+          type="button "
+          (click)="closeModal()"
+        >
+          <span aria-hidden="true ">
+            <img
+              [src]="ImgPath + 'Icon_Basic_Close.svg'"
+              alt="Icon_Basic_Close.svg"
+              width="18"
+            />
+          </span>
+        </button>
+        <h3 class="text-center heading" [innerHTML]="packDetails.packName"></h3>
+      </div>
+      <div class="modal-body">
+        <ng-container *ngIf="!showDeadLinkError; else showDeadLinkErrorMessage">
+          <div class="download-files-details">
+            <h4 class="bold">
+              Download
+              <ng-container
+                *ngIf="packDetails.type == 2; else packDownloadText"
+              >
+                Kit</ng-container
+              >
+              <ng-template #packDownloadText>
+                Pack
+              </ng-template>
+            </h4>
+            <div class="download-info">
+              <span>{{ packDetails.files.length }} Files</span>
+              <span>{{ packDetails.packSize }}</span>
+              <span>Expires in {{ packDetails.timeLeft | secondsToTime }}</span>
+            </div>
+          </div>
+          <ng-container
+            *ngIf="packDetails.files && packDetails.files.length > 0"
+          >
+            <div
+              class="rar-files"
+              *ngFor="let pack of packDetails.files; let i = index"
+            >
+              <div class="name-and-size">
+                <h4 class="bold">{{ pack.name }}</h4>
+                <span>{{ pack.size }}</span>
+              </div>
+              <div class="download-icon">
+                <a
+                  [href]="pack.path"
+                  class="download-pack"
+                  id="download-pack-btn-{{ i }}"
+                  [download]="pack.name"
+                  target="_blank"
+                ></a>
+                <a href="javascript:;">
+                  <img
+                    [src]="ImgPath + 'Icon_Download.svg'"
+                    width="20"
+                    alt="Icon_Download.svg"
+                    (click)="downloadThisPack('download-pack-btn-' + i)"
+                    class="front-img"
+                  />
+                  <img
+                    [src]="ImgPath + 'Icon_Download_Blue.svg'"
+                    width="20"
+                    alt="Icon_Download.svg"
+                    (click)="downloadThisPack('download-pack-btn-' + i)"
+                    class="hover-img"
+                  />
+                </a>
+              </div>
+            </div>
+            <div class="text-center download-all-btn">
+              <button
+                class="btn btn-default login-btn btn-block"
+                type="button"
+                (click)="downloadAllPacks()"
+              >
+                <b class="bold">Download All</b>
+              </button>
+            </div>
+          </ng-container>
+        </ng-container>
+        <ng-template #showDeadLinkErrorMessage>
+          <div class="alert alert-info" style="margin: 1em">
+            This link is dead.
+          </div>
+        </ng-template>
+      </div>
+    </div>
+  </div>
+</div>
+<app-footer></app-footer>

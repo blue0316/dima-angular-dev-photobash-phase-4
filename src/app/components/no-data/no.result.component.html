@@ -1,0 +1,50 @@
+<!--ACCOUNT PAGE SUB HEADER-->
+<!-- <div class="account-header">
+	<div class="col-md-6">
+		<ul class="list-inline option-list">
+			<li>
+				<div class="dropdown account-filter-dropdown">
+				  <button class="btn btn-default account-filter-btn dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+				    COLLECTIONS
+				    <span class="caret-default"><img [src]="ImgPath+'Icon_Basic_Down_Black.svg'" width="12" alt="Icon_Basic_Down_Black.svg"></span>
+				  </button>
+				  <ul class="dropdown-menu dropdown-reset" aria-labelledby="dropdownMenu1">
+				    <li><a href="account-pack-download.php">Armor (25)</a></li>
+				    <li><a href="account-image-download.php">Clouds (25)</a></li>
+				    <li><a href="account-image-download.php">Forest (25)</a></li>
+				  </ul>
+				</div>
+			</li>
+			<li>|</li>
+			<li><span class="selected">Forests</span></li>
+		</ul>
+	</div>
+	<div class="col-md-4 pull-right text-right">
+	  <div class="collection-edits">
+	  	<ul class="list-inline no-margin">
+	  		<li><a href="">Rename</a></li>
+	  		<li><a href="" class="delete-icon"><span class=""></span></a></li>
+	  	</ul>
+	  </div>
+	</div>
+	<div class="clearfix"></div>
+</div> -->
+<!--ACCOUNT PAGE SUB HEADER END-->
+<div class="no-result-section gray-background text-center ">
+	<h2><img [src]="ImgPath+'Icon_Empty.svg'" width="35" alt="Icon_Empty.svg"> &nbsp;No Results Found</h2>
+	 <ul class="search-tips">
+	 	<li>Try to simplify your search</li>
+	 	<li>Use different keywords</li>
+	 	<li>Make sure words are spelled correctly</li>
+	 </ul>	
+</div>
+<script type="text/javascript">
+	var window_height       = $(window).outerHeight();
+	var theme_header_height = $('.theme-header').outerHeight();
+	var site_footer_height  = $('.site-footer').outerHeight();
+	var account_header      = $('.account-header').outerHeight();
+	var height_sum          =  theme_header_height + site_footer_height +account_header;
+	var no_result_warp_height = window_height - height_sum;
+	console.log(site_footer_height);
+	$('.no-result-section').outerHeight(no_result_warp_height);
+</script>

@@ -1,0 +1,130 @@
+<app-header></app-header>
+<div class="gray-background" *ngIf="isDataLoaded; else loading">
+<div class="single-packdetail-container">
+ <a href="javascript:;" class="move-arrow left"><img [src]="ImgPath+'Icon_Basic_Left.svg'" width="25"></a>
+  <div class="theme-container">
+ 	<div class="col-md-11 center-block">
+ 	 <div class="package-detail-warp">
+ 	  <div class="row">
+ 	  <div class="col-md-5">
+ 	 	<div class="detail-img">
+ 	 		<a href="javascript:;" *ngIf="(packageDetails.image && packageDetails.image.image) else noImage">
+ 	 			<!-- <img [src]="ImgPath+'pack-1.jpg'" class="img-responsive center-block"> -->
+ 	 			<img [src]="ServerImgPath+packageDetails.image.image" class="img-responsive center-block">
+ 	 		</a>
+ 	 		<ng-template #noImage>
+ 	 			<a href="javascript:;">
+ 	 			<img [src]="ImgPath+'pack-1.jpg'" class="img-responsive center-block">
+ 	 		</a>
+ 	 		</ng-template>
+ 	 	</div>
+ 	 </div>
+ 	  <div class="col-md-7">
+ 	 	<div class="package-detail">
+ 	 	 <header class="">
+ 	 	  <h2 class="package-name pull-left" *ngIf="packageDetails.pack_name">
+ 	 	  	{{packageDetails.pack_name}}
+ 	 	  </h2>
+ 	 	  <div class="creadits pull-right" *ngIf="packageDetails.price_credits"><span class="count"><b>{{packageDetails.price_credits}}</b></span> Credits</div>
+ 	 	  <div class="clearfix"></div>
+ 	 	 </header>
+ 	 	 <div class="description" *ngIf="packageDetails.pack_description">
+ 	 	 	<h4 class="heading"><b class="bold">Description</b></h4>
+			<p>{{packageDetails.pack_description}}</p>
+ 	 	 </div>
+ 	 	</div>
+ 	 	<div class="detail-info">
+ 	 	 <div class="row">
+ 	 		<div class="col-md-6">
+ 	 			<ul>
+ 	 				<li *ngIf="packageDetails.photo_count">
+ 	 				  <span class="icon">
+ 	 				  	<img [src]="ImgPath+'Icon_Details_PhotoCount.svg'" class="" width="20">
+ 	 				  </span>
+ 	 				  <div class="title"><b class="bold">Photo Count</b></div>
+ 	 				  <div class="value nowarp">{{packageDetails.photo_count}}</div>
+ 	 				</li>
+ 	 				<li *ngIf="packageDetails.size">
+ 	 				  <span class="icon">
+ 	 				  	<img [src]="ImgPath+'Icon_Details_FileSize.svg'" class="" width="20">
+ 	 				  </span>
+ 	 				  <div class="title"><b class="bold">File Size</b></div>
+ 	 				  <div class="value nowarp">{{packageDetails.size}}</div>
+ 	 				</li>
+ 	 				<li *ngIf="packageDetails.format">
+ 	 				  <span class="icon">
+ 	 				  	<img [src]="ImgPath+'Icon_Details_Format.svg'" class="" width="15">
+ 	 				  </span>
+ 	 				  <div class="title"><b class="bold">Format</b></div>
+ 	 				  <div class="value nowarp">{{packageDetails.format}}</div>
+ 	 				</li> 
+ 	 				<li *ngIf="packageDetails.camera_model">
+ 	 				  <span class="icon">
+ 	 				  	<img [src]="ImgPath+'Icon_Details_Camera.svg'" class="" width="20">
+ 	 				  </span>
+ 	 				  <div class="title"><b class="bold">Camera Model</b></div>
+ 	 				  <div class="value ">{{packageDetails.camera_model}}</div>
+ 	 				</li>  	 					 				 	 				
+ 	 			</ul>
+ 	 		</div>
+ 	 		<div class="col-md-6">
+ 	 			<ul>
+ 	 				<li *ngIf="packageDetails.min_resolution">
+ 	 				  <span class="icon">
+ 	 				  	<img [src]="ImgPath+'Icon_Details_MinRes.svg'" class="" width="20">
+ 	 				  </span>
+ 	 				  <div class="title"><b class="bold">Min Resolution</b></div>
+ 	 				  <div class="value nowarp">{{packageDetails.min_resolution}}</div>
+ 	 				</li>
+ 	 				<li *ngIf="packageDetails.max_resolution">
+ 	 				  <span class="icon">
+ 	 				  	<img [src]="ImgPath+'Icon_Details_MaxRes.svg'" class="" width="20">
+ 	 				  </span>
+ 	 				  <div class="title"><b class="bold">Max Resolution</b></div>
+ 	 				  <div class="value nowarp">{{packageDetails.max_resolution}}</div>
+ 	 				</li>
+ 	 				<li *ngIf="packageDetails.focal_range">
+ 	 				  <span class="icon">
+ 	 				  	<img [src]="ImgPath+'Icon_Details_Focal.svg'" class="" width="20">
+ 	 				  </span>
+ 	 				  <div class="title"><b class="bold">Focal Range</b></div>
+ 	 				  <div class="value nowarp">{{packageDetails.focal_range}}</div>
+ 	 				</li> 
+ 	 				<li *ngIf="packageDetails.location">
+ 	 				  <span class="icon">
+ 	 				  	<img [src]="ImgPath+'Icon_Details_Location.svg'" class="" width="20">
+ 	 				  </span>
+ 	 				  <div class="title"><b class="bold">Location</b></div>
+ 	 				  <div class="value nowarp">{{packageDetails.location}}</div>
+ 	 				</li>  	 					 				 	 				
+ 	 			</ul>
+ 	 		</div> 	 		
+ 	 	 </div>
+ 	 	</div>
+ 	 </div>
+ 	 </div>
+ 	</div>
+ 	<div class="btn-block text-center">
+ 	 	<a href="javascript:;" class="btn btn-white pack-download-btn btn-white-img">
+ 	 	  <span class="warp"><img [src]="ImgPath+'Icon_Download_Blue.svg'" width="18"> Download</span>
+ 	 	</a>
+ 	 </div>
+  </div>
+ </div>
+ <a href="javascript:;" class="move-arrow right"><img [src]="ImgPath+'Icon_Basic_Right.svg'" width="25"></a>
+</div>
+ <div class="quick-look-warp">
+ 	<div>
+ 		<a href="javascript:;"><img [src]="ImgPath+'MilanCathedralGothicChurch.jpg'" width="100%"></a>
+ 	</div>
+ 	<div class="overlay">
+ 		
+ 	</div>
+ </div>
+
+</div>
+<ng-template #loading>
+	<br><br>
+  	<loader></loader>
+</ng-template>
+<app-footer></app-footer>

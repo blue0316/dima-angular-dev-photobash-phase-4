@@ -1,0 +1,90 @@
+<footer >
+  <div class="site-footer">
+    <div class="footer-container row">
+      <div class="col-md-2 col-sm-6">
+        <div class="footer-block block-update">
+          <h3 class="header">Navigate</h3>
+          <ul>
+            <li><a routerLink="/packs">Packs</a></li>
+            <li><a routerLink="/images">Images</a></li>
+            <li><a routerLink="/kits">Kits</a></li>
+            <li><a routerLink="/models">Models</a></li>
+           <!--  <li><a routerLink="/about">About</a></li> -->
+            <li><a routerLink="/subscriptions">Pricing</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="col-md-3 col-sm-6">
+        <div class="footer-block block-update">
+          <h3 class="header">learn More</h3>
+          <ul *ngIf="pages">
+            <li><a routerLink="/about">About</a></li>
+            <li>
+              <a routerLink="/faq">FAQ</a>
+            </li>
+            <li *ngFor="let page of pages">
+              <a routerLink="/{{page.slug}}">{{page.title}}</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div class="clearfix hidden-md visible-sm"></div>
+      <div class="col-md-4 col-sm-6">
+        <div class="footer-block footer-news-letter">
+          <h3 class="header">NEWSLETTER</h3>
+          <h4 class="newsletter-head">Stay up to date with our latest releases.</h4>
+          <form (submit)="subscribeToNewsletter()">
+            <div class="input-group">
+              <input type="text" class="form-control" [(ngModel)]="email" name="email" placeholder="Email address"
+                aria-describedby="basic-addon2">
+              <span class="input-group-btn">
+                <button class="btn btn-default" type="submit">Join</button>
+              </span>
+            </div>
+            <p class="text-danger" *ngIf="errorMessage">{{errorMessage}}</p>
+          </form>
+        </div>
+      </div>
+      <div class="col-md-3 col-sm-6">
+        <div class="footer-block block-update">
+          <h3 class="header">CONNECT</h3>
+          <ul>
+            <li>
+              <a routerLink="/support"><img [src]="ImgPath+'Icon_Social_Contact.svg'" width="25" alt="Icon_Social_Contact.svg">Contact
+                Us</a>
+            </li>
+            <li *ngIf="fbURL">
+              <a target="_blank" [href]="fbURL"><img [src]="ImgPath+'Icon_Social_Facebook.svg'" width="25" alt="Icon_Social_Facebook.svg">
+                Facebook</a>
+            </li>
+            <li *ngIf="instaURL">
+              <a target="_blank" [href]="instaURL"><img [src]="ImgPath+'Icon_Social_Instagram.svg'" width="25" alt="Icon_Social_Instagram.svg">
+                Instagram</a>
+            </li>
+            <li *ngIf="youtubeURL">
+              <a target="_blank" [href]="youtubeURL">
+                <img [src]="ImgPath+'Icon_Social_Youtube.svg'" width="25" alt="Icon_Social_Youtube.svg"> Youtube</a>
+            </li>
+            <li *ngIf="tweetURL">
+              <a target="_blank" [href]="tweetURL">
+                <img [src]="ImgPath+'Icon_Social_Twitter.svg'" width="25" alt="Icon_Social_Twitter.svg"> Twitter</a>
+            </li>
+            <li *ngIf="pinURL">
+              <a target="_blank" [href]="pinURL">
+                <img [src]="ImgPath+'Icon_Social_Pinterest.svg'" width="25" alt="Icon_Social_Pinterest.svg"> Pinterest</a>
+            </li>
+            <li *ngIf="lintURL">
+              <a target="_blank" [href]="lintURL">
+                <img [src]="ImgPath+'Icon_Social_LinkedIn.svg'" width="25" alt="Icon_Social_LinkedIn.svg"> LinkedIn</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="copy-right row no-margin">
+    <div class="col-md-12 text-center">
+      <p>©{{currentYear}} Copyright <b>PHOTOBASH</b> | All Rights Reserved</p>
+    </div>
+  </div>
+</footer>

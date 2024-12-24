@@ -1,0 +1,289 @@
+<!-- SEARCH AND FILTER BLOCK START -->
+<div class="search-warp search-warp-kits">
+  <div class="search-block center-block clearfix ">
+    <div class="icon ">
+      <img
+        [src]="ImgPath + 'Icon_Modal_3D_blue.svg'"
+        (click)="clearAllFilter()"
+        alt="Icon_Modal_3D_blue.svg"
+        class="hover-icon"
+        width="40"
+      />
+      <img
+        [src]="ImgPath + 'Icon_Modal_3D_blue.svg'"
+        (click)="clearAllFilter()"
+        alt="Icon_Modal_3D_blue.svg"
+        class="main-icon"
+        width="40"
+      />
+    </div>
+    <form (submit)="onSearchKit()">
+      <div class="input input-group">
+        <div class="search-box">
+          <input
+            aria-label="Amount (to the nearest dollar) "
+            class="form-control "
+            placeholder="Search... "
+            type="text"
+            [(ngModel)]="searchKey"
+            id="suggestion-tags"
+            autocomplete="off"
+            name="search"
+          />
+          <ng-container *ngIf="searchKey">
+            <span class="clear-input-img" (click)="clearSearchInput()"
+              ><i class="fa fa-times"></i
+            ></span>
+          </ng-container>
+        </div>
+        <span class="input-group-addon">
+          <button type="submit" class="search-submit-btn">
+            <img
+              [src]="ImgPath + 'Icon_Search.svg'"
+              width="15"
+              class="front-img"
+              alt="Icon_Search.svg"
+            />
+            <img
+              [src]="ImgPath + 'Icon_Search_Blue.svg'"
+              width="15"
+              class="hover-img"
+              alt="Icon_Search_Blue.svg"
+            />
+          </button>
+        </span>
+      </div>
+    </form>
+  </div>
+
+  <div class="filter-block text-center ">
+    <ul class="list-inline filter-block-ul ">
+      <li>
+        <span class="head ">CATEGORIES</span>
+        <div class="btn-group">
+          <button
+            aria-expanded="false"
+            aria-haspopup="true"
+            class="btn dropdown-toggle"
+            data-toggle="dropdown"
+            type="button"
+          >
+            <span *ngIf="selectedCategory == 0">All Categories</span>
+            <span *ngIf="selectedCategory != 0">{{ selectedCategoryName }}</span>
+            <span class="drop-arrow"></span>
+          </button>
+          <ul class="dropdown-menu">
+            <li>
+              <a href="javascript:; " (click)="onCategoryChange(null, null, null)"
+                >All Categories</a
+              >
+            </li>
+            <li><div role="separator" class="divider"></div></li>
+            <ng-container *ngIf="categories.length > 0">
+              <li
+                *ngFor="let cat of categories; let i = index"
+                [ngClass]="{
+                  'has-sub': cat.subCategory && cat.subCategory.length > 0
+                }"
+              >
+                <div *ngIf="sectionOrder != cat.section_order_by" role="separator" class="divider">
+                  {{ setNextSection(cat.section_order_by) }}
+                </div>
+                <a
+                  href="javascript:;"
+                  data-toggle="tooltip"
+                  data-placement="bottom"
+                  (click)="onCategoryChange(cat.id, i, null)"
+                  class="delay-tooltip"
+                  [ngClass]="{ 'text-blue': catId == cat.id || isSubcatSelected(cat.subCategory) }"
+                  >{{ cat.category_name }}
+                  <span class="custom-tooltip tooltip-arrow-right" *ngIf="cat.description">
+                    <span class="description-content" [innerHTML]="cat.description"></span>
+                  </span>
+                </a>
+                <ul *ngIf="cat.subCategory && cat.subCategory.length > 0">
+                  <div class="custom-scrollbar">
+                    <li *ngFor="let subcat of cat.subCategory; let j = index" class="delay-tooltip">
+                      <a
+                        href="javascript:;"
+                        (click)="onCategoryChange(subcat.id, i, j)"
+                        [ngClass]="{ 'text-blue': catId == subcat.id }"
+                      >
+                        {{ subcat.category_name }}
+                      </a>
+                      <span class="custom-tooltip tooltip-arrow-right" *ngIf="subcat.description">
+                        <span class="description-content" [innerHTML]="subcat.description"></span>
+                      </span>
+                    </li>
+                  </div>
+                </ul>
+              </li>
+            </ng-container>
+          </ul>
+        </div>
+      </li>
+      <li class="sort-block">
+        <span class="head">SORT</span>
+        <div class="btn-group">
+          <button
+            aria-expanded="false"
+            aria-haspopup="true"
+            class="btn dropdown-toggle"
+            data-toggle="dropdown"
+            type="button"
+          >
+            <span *ngIf="sortyBy == 1">Recent</span><span *ngIf="sortyBy == 2">Popular</span
+            ><span *ngIf="sortyBy == 3">Price</span
+            ><span *ngIf="sortyBy == 4">Name</span>&nbsp;<span class="drop-arrow"></span>
+          </button>
+          <ul class="dropdown-menu">
+            <li>
+              <a href="javascript:;" (click)="sortKits(1)" [ngClass]="{ 'text-blue': sortyBy == 1 }"
+                >Recent</a
+              >
+            </li>
+            <li>
+              <a href="javascript:;" (click)="sortKits(2)" [ngClass]="{ 'text-blue': sortyBy == 2 }"
+                >Popular</a
+              >
+            </li>
+            <li>
+              <a href="javascript:;" (click)="sortKits(3)" [ngClass]="{ 'text-blue': sortyBy == 3 }"
+                >Price</a
+              >
+            </li>
+            <li>
+              <a href="javascript:;" (click)="sortKits(4)" [ngClass]="{ 'text-blue': sortyBy == 4 }"
+                >Name</a
+              >
+            </li>
+          </ul>
+        </div>
+      </li>
+    </ul>
+  </div>
+</div>
+
+<div
+  class="gray-background image-collection-head-warp package-filter-warp"
+  [ngClass]="{ 'no-filter-add': !selectedFilters.length }"
+  *ngIf="selectedFilters.length"
+>
+  <!--Need to add slider to manage overflow of tags-->
+  <div class="filter-tag" style="display: block" *ngIf="selectedFilters.length > 0">
+    <span class="arrow arrow-left">
+      <img
+        [src]="ImgPath + 'Icon_Basic_S_Left.svg'"
+        alt="Icon_Basic_S_Left.svg"
+        class="main-img"
+        width="20"
+      />
+      <img
+        [src]="ImgPath + 'Icon_Basic_S_Left_Blue.svg'"
+        alt="Icon_Basic_S_Left_Blue.svg"
+        class="hover-img"
+        width="20"
+      />
+    </span>
+    <ul class="list-inline no-margin tag-slider text-left carousel slide multi-item-carousel">
+      <ng-container>
+        <li *ngFor="let filt of selectedFilters; let i = index" class="item">
+          <a>
+            <span class="catg-icon">
+              <!-- For category -->
+              <img
+                [src]="ImgPath + 'Categories_Filter.svg'"
+                alt="Categories_Filter.svg"
+                width="20"
+                *ngIf="filt.type == 1"
+              />
+              <!-- For Camera Angle -->
+              <img
+                [src]="ImgPath + 'Camera-Angles_Filter.svg'"
+                alt="Camera-Angles_Filter.svg"
+                width="20"
+                *ngIf="filt.type == 2"
+              />
+              <!-- For Resolution -->
+              <img
+                [src]="ImgPath + 'Resolution_Filter.svg'"
+                alt="Resolution_Filter.svg"
+                width="20"
+                *ngIf="filt.type == 3"
+              />
+              <!-- For Mood Light -->
+              <img
+                [src]="ImgPath + 'Mood_Lighting_Filter.svg'"
+                alt="Mood_Lighting_Filter.svg"
+                width="20"
+                *ngIf="filt.type == 4"
+              />
+              <!-- For Location -->
+              <img
+                [src]="ImgPath + 'Location_Filter.svg'"
+                alt="Aerialview_Camera_Angles_Filter.svg"
+                width="20"
+                *ngIf="filt.type == 5"
+              />
+              <!-- For Pack -->
+              <img
+                [src]="ImgPath + 'Images_Filter.svg'"
+                alt="Images.svg"
+                width="20"
+                *ngIf="filt.type == 6"
+              />
+            </span>
+            <span [innerHTML]="filt.name"></span>
+            <span class="close-icon">
+              <img
+                [src]="ImgPath + 'Icon_Basic_S_Cancel.svg'"
+                alt="Icon_Basic_S_Cancel.svg"
+                class="main-img"
+                width="10"
+                (click)="removeFilterByClickingCross(filt)"
+              />
+              <img
+                [src]="ImgPath + 'Icon_Basic_S_Cancel_Blue_Update.svg'"
+                alt="Icon_Basic_S_Cancel_Blue_Update.svg"
+                class="hover-img"
+                width="10"
+                (click)="removeFilterByClickingCross(filt)"
+              />
+            </span>
+          </a>
+        </li>
+      </ng-container>
+    </ul>
+    <span class="arrow arrow-right">
+      <img
+        [src]="ImgPath + 'Icon_Basic_S_Right.svg'"
+        alt="Icon_Basic_S_Right.svg"
+        class="main-img"
+        width="20"
+      />
+      <img
+        [src]="ImgPath + 'Icon_Basic_S_Right_Blue.svg'"
+        alt="Icon_Basic_S_Right_Blue.svg"
+        class="hover-img"
+        width="20"
+      />
+    </span>
+    <span class="fliter-close-icon pull-right">
+      <a href="javascript:;" (click)="clearAllFilter()">
+        <img
+          [src]="ImgPath + 'Icon_Basic_S_Cancel.svg'"
+          alt="Icon_Basic_S_Cancel.svg"
+          class="main-img"
+          width="12"
+        />
+        <img
+          [src]="ImgPath + 'Icon_Basic_S_Cancel_Blue_Update.svg'"
+          alt="Icon_Basic_S_Cancel_Blue_Update.svg"
+          class="hover-img"
+          width="12"
+        />
+      </a>
+    </span>
+  </div>
+  <div class="clearfix"></div>
+</div>

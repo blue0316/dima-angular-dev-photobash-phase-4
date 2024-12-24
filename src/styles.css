@@ -1,0 +1,72 @@
+/* You can add global styles to this file, and also import other style files */
+.text-danger {
+  color: rgba(255, 0, 0, 0.6);
+  font-weight: 600;
+  font-size: 13px;
+}
+.slick-list {
+  width: 100%;
+}
+.slick-dots {
+  bottom: 10px !important;
+  z-index: 10000;
+  opacity: 0;
+}
+.slick-slider:hover .slick-dots {
+  opacity: 1;
+}
+.slick-dots li button {
+  width: 10px !important;
+  height: 10px !important;
+  cursor: pointer;
+  border-radius: 50%;
+  border: 2px solid #7e7e7e !important;
+  margin: 0 5px;
+  padding: 0px !important;
+}
+.slick-dots li button:before {
+  display: none;
+}
+.slick-dots li:hover button {
+  background-color: #7e7e7e;
+}
+.slick-dots li.slick-active button,
+.slick-dots li.slick-active button:hover {
+  background: #fff;
+  border-color: #fff !important;
+}
+.slick-dotted.slick-slider {
+  margin-bottom: 0px !important;
+}
+.slick-arrow {
+  width: 50% !important;
+  background-color: transparent !important;
+  height: 100% !important;
+  z-index: 1;
+}
+.slick-arrow:before,
+.slick-arrow:after {
+  opacity: 0 !important;
+}
+body.modal-open-checkout {
+  overflow: hidden;
+}
+body.modal-open-checkout .modal {
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+body.modal-open-checkoutPurchase .modal {
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+body.modal-open-checkoutPurchase {
+  overflow: hidden;
+  padding-right: 15px;
+}
+button:disabled {
+  cursor: not-allowed !important;
+}
+._5h0i._88va {
+  background: #000000 !important;
+}

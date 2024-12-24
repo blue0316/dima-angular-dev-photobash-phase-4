@@ -1,0 +1,259 @@
+<!-- SEARCH AND FILTER BLOCK START -->
+<div class=" search-warp search-warp-kits">
+  <div class="search-block center-block clearfix ">
+    <div class="icon ">
+      <img
+        [src]="ImgPath + 'Icon_Modal_3D_blue.svg'"
+        (click)="clearAllFilter()"
+        alt="Icon_Modal_3D_blue.svg"
+        class="hover-icon"
+      />
+      <img
+        [src]="ImgPath + 'Icon_Modal_3D_blue.svg'"
+        (click)="clearAllFilter()"
+        alt="Icon_Modal_3D_blue.svg"
+        class="main-icon"
+      />
+    </div>
+    <form (submit)="onSearchModel()">
+      <div class="input input-group">
+        <div class="search-box">
+          <input
+            aria-label="Amount (to the nearest dollar) "
+            class="form-control "
+            placeholder="Search... "
+            type="text"
+            [(ngModel)]="searchKeyword"
+            [value]="searchKeyword"
+            id="suggestion-tags"
+            autocomplete="off"
+            name="search"
+          />
+          <ng-container *ngIf="searchKeyword">
+            <span class="clear-input-img" (click)="clearSearchInput()"
+              ><i class="fa fa-times"></i
+            ></span>
+          </ng-container>
+        </div>
+        <span class="input-group-addon">
+          <button type="submit" class="search-submit-btn">
+            <img
+              [src]="ImgPath + 'Icon_Search.svg'"
+              width="15"
+              class="front-img"
+              alt="Icon_Search.svg"
+            />
+            <img
+              [src]="ImgPath + 'Icon_Search_Blue.svg'"
+              width="15"
+              class="hover-img"
+              alt="Icon_Search_Blue.svg"
+            />
+          </button>
+        </span>
+      </div>
+    </form>
+  </div>
+
+  <div class="filter-block text-center ">
+    <ul class="list-inline filter-block-ul ">
+      <li>
+        <span class="head ">CATEGORIES</span>
+        <div class="btn-group">
+          <button
+            aria-expanded="false"
+            aria-haspopup="true"
+            class="btn dropdown-toggle"
+            data-toggle="dropdown"
+            type="button"
+          >
+            <span *ngIf="!selectedCategory || selectedCategory == 0">All Categories</span>
+            <span *ngIf="selectedCategory && selectedCategory != 0">{{
+              selectedCategoryName
+            }}</span>
+            <span class="drop-arrow"></span>
+          </button>
+          <ul class="dropdown-menu">
+            <li>
+              <a href="javascript:; " (click)="onCategoryChange(null, null, null)"
+                >All Categories</a
+              >
+              <div role="separator" class="divider"></div>
+            </li>
+            <ng-container *ngIf="categories.length > 0">
+              <li
+                *ngFor="let cat of categories; let i = index"
+                [ngClass]="{
+                  'has-sub': cat.subCategory && cat.subCategory.length > 0
+                }"
+              >
+                <div
+                  *ngIf="sectionOrder != cat.section_order_by"
+                  [hidden]="cat.section_order_by == 1"
+                  role="separator"
+                  class="divider"
+                >
+                  {{ setNextSection(cat.section_order_by) }}
+                </div>
+                <a
+                  href="javascript:;"
+                  data-toggle="tooltip"
+                  data-placement="bottom"
+                  (click)="onCategoryChange(cat.id, i, null)"
+                  class="delay-tooltip"
+                  [ngClass]="{ 'text-blue': catId == cat.id || isSubcatSelected(cat.subCategory) }"
+                  >{{ cat.category_name }}
+                  <span class="custom-tooltip tooltip-arrow-right" *ngIf="cat.description">
+                    <span class="description-content" [innerHTML]="cat.description"></span>
+                  </span>
+                </a>
+                <ul *ngIf="cat.subCategory && cat.subCategory.length > 0">
+                  <div class="custom-scrollbar">
+                    <li *ngFor="let subcat of cat.subCategory; let j = index" class="delay-tooltip">
+                      <a
+                        href="javascript:;sss"
+                        (click)="onCategoryChange(subcat.id, i, j)"
+                        [ngClass]="{ 'text-blue': catId == subcat.id }"
+                      >
+                        {{ subcat.category_name }}
+                      </a>
+                      <span class="custom-tooltip tooltip-arrow-right" *ngIf="subcat.description">
+                        <span class="description-content" [innerHTML]="subcat.description"></span>
+                      </span>
+                    </li>
+                  </div>
+                </ul>
+              </li>
+            </ng-container>
+          </ul>
+        </div>
+      </li>
+      <li class="filter-block-li">
+        <span class="head">FILTER</span>
+        <div class="btn-group">
+          <button
+            aria-expanded="false"
+            aria-haspopup="true"
+            class="btn dropdown-toggle"
+            data-toggle="dropdown"
+            type="button"
+            *ngIf="
+              !clickedOn || (!filteredArray['kit'] || !filteredArray['kit'].length);
+              else filtered
+            "
+          >
+            None &nbsp;
+            <span class="drop-arrow"></span>
+          </button>
+          <ng-template #filtered>
+            <button
+              aria-expanded="false"
+              aria-haspopup="true"
+              class="btn dropdown-toggle"
+              data-toggle="dropdown"
+              type="button"
+            >
+              Filtered&nbsp; <span class="drop-arrow"></span>
+            </button>
+          </ng-template>
+          <ul class="dropdown-menu">
+            <li><a href="javascript:;" (click)="clearFilter()">None</a></li>
+            <ng-container *ngFor="let filter of filters; let i = index">
+              <li class="divider" role="separator"></li>
+              <li
+                [ngClass]="{
+                  'has-sub': filter.data && filter.data.length > 0,
+                  'open-dropdown': filter.reqParam == clickedOn
+                }"
+              >
+                <a
+                  href="javascript:;"
+                  [innerHTML]="filter.name"
+                  [ngClass]="{
+                    'text-blue': allParams[filter.reqParam] && allParams[filter.reqParam].length > 0
+                  }"
+                ></a>
+                <ul
+                  class="filter-with-check"
+                  *ngIf="filter.data && filter.data.length > 0"
+                  [ngClass]="{ show: filter.reqParam == clickedOn }"
+                >
+                  <div class="custom-scrollbar custom-filter-scrollbar">
+                    <ng-container *ngFor="let d of filter.data; let j = index">
+                      <li class="pack-required-tooltip">
+                        <div
+                          class="checkbox checkbox-white"
+                          [ngClass]="{
+                            'purchased-pack': d.isPurchased,
+                            'text-blue':
+                              allParams[filter.reqParam] &&
+                              allParams[filter.reqParam].indexOf(d.id) > -1
+                                ? true
+                                : false
+                          }"
+                        >
+                          <input
+                            class="filter"
+                            id="filter-li-{{ j }}-{{ i }}"
+                            type="checkbox"
+                            [checked]="
+                              allParams[filter.reqParam] &&
+                              allParams[filter.reqParam].indexOf(d.id) > -1
+                                ? true
+                                : false
+                            "
+                            (change)="updateFilter(i, j)"
+                          />
+                          <label for="filter-li-{{ j }}-{{ i }}" [innerHTML]="d.name"></label>
+                        </div>
+                      </li>
+                      <li class="divider" *ngIf="j == numberOfPurchasedPacks - 1"></li>
+                    </ng-container>
+                  </div>
+                </ul>
+              </li>
+            </ng-container>
+          </ul>
+        </div>
+      </li>
+      <li class="sort-block">
+        <span class="head">SORT</span>
+        <div class="btn-group">
+          <button
+            aria-expanded="false"
+            aria-haspopup="true"
+            class="btn dropdown-toggle"
+            data-toggle="dropdown"
+            type="button"
+          >
+            <span *ngIf="sortyBy == 1">Recent</span><span *ngIf="sortyBy == 2">Popular</span
+            ><span *ngIf="sortyBy == 3">Price</span
+            ><span *ngIf="sortyBy == 4">Name</span>&nbsp;<span class="drop-arrow"></span>
+          </button>
+          <ul class="dropdown-menu">
+            <li>
+              <a href="javascript:;" (click)="sortKits(1)" [ngClass]="{ 'text-blue': sortyBy == 1 }"
+                >Recent</a
+              >
+            </li>
+            <li>
+              <a href="javascript:;" (click)="sortKits(2)" [ngClass]="{ 'text-blue': sortyBy == 2 }"
+                >Popular</a
+              >
+            </li>
+            <li>
+              <a href="javascript:;" (click)="sortKits(3)" [ngClass]="{ 'text-blue': sortyBy == 3 }"
+                >Price</a
+              >
+            </li>
+            <li>
+              <a href="javascript:;" (click)="sortKits(4)" [ngClass]="{ 'text-blue': sortyBy == 4 }"
+                >Name</a
+              >
+            </li>
+          </ul>
+        </div>
+      </li>
+    </ul>
+  </div>
+</div>

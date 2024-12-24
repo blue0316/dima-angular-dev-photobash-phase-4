@@ -1,0 +1,12 @@
+<app-header (isLoggedIn)="checkLogin($event)"></app-header>
+<div class="about-section" *ngIf="isDataLoaded; else loader">
+  <div [innerHTML]="aboutContent.description | safeHtml"></div>
+</div>
+<ng-template #loader>
+  <div class="gray-background about-page">
+    <br>
+    <loader></loader>
+    <br>
+  </div>
+</ng-template>
+<app-footer></app-footer>

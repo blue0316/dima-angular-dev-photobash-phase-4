@@ -1,0 +1,84 @@
+<div class="landing-model-purchase-container">
+  <div class="landing-account-header clearfix">
+    <div class="block-heading">
+      Purchases
+      <div class="seprator">
+        <span class="line"></span>
+        <span>Images/Models</span>
+      </div>
+    </div>
+    <div class="view-all">
+      <a [routerLink]="['/purchases']" [queryParams]="{ type: 'image' }"
+        >View All</a
+      >
+    </div>
+  </div>
+  <div class="landing-image-purchase">
+    <ng-container *ngIf="!isLoading; else loader">
+      <div>
+        <div
+          class="column"
+          *ngFor="let index of [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13]"
+        >
+          <div
+            class="tile-blank active"
+            *ngIf="index < items.length && items[index]"
+            [routerLink]="['/purchases']"
+            [queryParams]="{
+              type: items[index].type == 1 ? 'image' : 'model',
+              imgId: items[index].image_id
+            }"
+          >
+            <div class="pack-tile">
+              <div class="pack-img">
+                <img
+                  [src]="ImgPathser + items[index].image_thumbnail"
+                  [alt]="items[index].pack_name"
+                />
+              </div>
+            </div>
+          </div>
+          <!-- for pack -->
+          <div class="tile-blank intial-tile" *ngIf="index == items.length">
+            <div class="add-browse-packs">
+              <!-- add browse pack-->
+              <div class="addition-box">
+                <div [routerLink]="['/images']" class="link">
+                  <span class="text-span">Browse Images</span>
+                </div>
+                <div class="line-divider">
+                  <span class="icon-block">
+                    <img
+                      class="front-img"
+                      [src]="ImgPath + 'Icon_Search.svg'"
+                      width="16"
+                      alt="Icon_Search.svg"
+                    />
+                    <img
+                      class="hover-img"
+                      [src]="ImgPath + 'Icon_Search_Blue.svg'"
+                      width="16"
+                      alt="Icon_Search.svg"
+                    />
+                  </span>
+                </div>
+
+                <div [routerLink]="['/models']" class="link">
+                  <span class="text-span">Browse Models</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div
+            class="tile-blank no-image-tile"
+            *ngIf="!items[index] && index != items.length"
+          ></div>
+        </div>
+      </div>
+    </ng-container>
+    <div class="clearfix"></div>
+  </div>
+</div>
+<ng-template #loader>
+  <loader></loader>
+</ng-template>

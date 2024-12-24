@@ -1,0 +1,134 @@
+input[type=radio]{
+  display: inline;
+  width: 28px;
+  height: 20px;
+  position: absolute;
+  opacity: 0;
+  left: 16px;
+  top: 7px;
+  z-index: 1;
+}
+.payment-type{
+  margin-left: 5px;
+  color: #1c1d20;
+  font-size: 14.8px;
+}
+.payment-type-image {
+  position: relative;
+  top: -3px;
+  left: 8px;
+  opacity: 0;
+}
+.selected-payment .payment-type-image {
+  opacity: 1;
+}
+.checkout-modal .custom-radio{
+	margin-top: 0px;
+	padding-top: 10px;
+}
+.checkout-modal .custom-radio-label{
+  min-height: 20px;
+  margin-bottom: 0;
+  cursor: pointer;
+  font-size: 24px;
+  color: #4995ff;
+  padding-right: 0;
+  padding-left: 30px;
+  line-height: 37px;
+  display: inline;
+  position: relative;
+}
+.checkout-modal .custom-radio-label:after{
+  content: '';
+  position: absolute;
+  display: inline-block;
+  opacity: 0;
+  border-radius: 50%;
+  border: .3px solid #ccc;
+  height: 18px;
+  width: 18px;
+  left: 0;
+  top: 8px;
+  -webkit-transition: all 0.5s cubic-bezier(0.4, 0.25, 0.3, 1);
+  transition: all 0.5s cubic-bezier(0.4, 0.25, 0.3, 1);
+  border: 4px solid #fff;
+  box-shadow: 0 0 0 1px #ccc;
+}
+.checkout-modal .custom-radio-label:before{
+	content: '';
+	position: absolute;
+	display: inline-block;
+	border-radius: 50%;
+	border: .3px solid #ccc;
+	height: 18px;
+	width: 18px;
+	left: 0;
+	top: 8px;
+	-webkit-transition: all 0.5s cubic-bezier(0.4, 0.25, 0.3, 1);
+	transition: all 0.5s cubic-bezier(0.4, 0.25, 0.3, 1);
+	border: 4px solid #fff;
+	box-shadow: 0 0 0 1px #ccc;
+}
+
+.custom-radio input[type='radio']:checked + .custom-radio-label:after {
+  opacity: 1;
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(30%, #4995ff), to(#2d81f6));
+  background: linear-gradient(to bottom, #4995ff 30%, #2d81f6 100%);
+}
+
+.checkbox-block{
+	position: relative;
+}
+.checkbox-block .icon-block{
+  position: absolute;
+  right: 0px;
+  top: 20px;
+}
+.remember-block {
+ position: relative;
+}
+.remember-block .icon-block{
+  position: absolute;
+  right: 0;
+  top: -3px;
+}
+.remember-block .checkbox{
+	margin-bottom: 0px;
+	padding-bottom: 30px;
+}
+.tax-detail{
+	position: absolute;
+}
+.divide-line{
+	display: block;
+	border-top: 1px solid #dbdcdd;
+	margin: 0 -40px;
+}
+
+.checkout-modal{
+	width: 460px;
+}
+
+.checkout-modal .btn-price{
+	font-weight: 500; 
+	margin-top: 25px;
+}
+
+.creditcard-pay-block.change-bg,.paypal-pay-block.change-bg{
+  background-color: #fefefe;
+  margin: 0px -40px;
+  padding: 0 40px;
+}
+
+.paypal-pay-block .custom-radio{
+  margin-bottom: 0;
+  padding-bottom: 10px;
+}
+.btnblock-payment{
+	position: relative;
+}
+.btnblock-payment .tax-detail{
+	position: absolute;
+	right: 0px;
+	top:-18px;
+}

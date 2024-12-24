@@ -1,0 +1,465 @@
+<!-- ---------------------
+---- Start Sidebar Menu --
+---------------------- -->
+
+<aside class="left-filter">
+  <!-- Menu -->
+  <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+    <div class="panel panel-default">
+      <div class="panel-heading" role="tab" id="headingOne">
+        <h4 class="panel-title">
+          <a
+            role="button"
+            data-toggle="collapse"
+            href="#collapseOne"
+            aria-expanded="true"
+            aria-controls="collapseOne"
+          >
+            <div class="bold-heading">
+              <span class="icon cat-ico">
+                <img
+                  [src]="ImgPath + 'asidefilter/Categories_Filter.svg'"
+                  width="15"
+                  class="front-img"
+                  alt="Categories_Filter.svg"
+                />
+              </span>
+              <span>Categories</span>
+              <span class="sign-ico">
+                <font class="pluse">+</font>
+                <font class="minus">-</font>
+              </span>
+            </div>
+          </a>
+        </h4>
+      </div>
+      <div
+        id="collapseOne"
+        class="panel-collapse collapse in"
+        role="tabpanel"
+        aria-labelledby="headingOne"
+      >
+        <div class="panel-body">
+          <ul>
+            <li (click)="onCatFilterAdded(null, null, null)">
+              <div class="name-count-wrap">
+                <span class="name" [ngClass]="{ 'text-blue': !selectedFilters.category }"
+                  >All Categories</span
+                >
+                <span class="count">{{ totalItems || 0 }}</span>
+              </div>
+            </li>
+            <ng-container *ngIf="filters.categories && filters.categories.length; else loader">
+              <ng-container *ngFor="let cat of filters.categories; let i = index">
+                {{ newSection(cat.section_order_by) }}
+                <li *ngIf="section != cat.section_order_by"><div class="divider-leftbar"></div></li>
+                <li [ngClass]="{ 'has-dropdown': cat.subCategory && cat.subCategory.length }">
+                  <ng-container *ngIf="cat.subCategory && cat.subCategory.length">
+                    <div
+                      class="icon"
+                      data-toggle="collapse"
+                      [ngClass]="{
+                        collapsed: selectedFilters.category != cat.id,
+                        'arrow-blue': selectedFilters.category == cat.id
+                      }"
+                      [attr.data-target]="'#toggle-categories-' + i"
+                    >
+                      <img
+                        [src]="ImgPath + 'Icon_Basic_S_Down.svg'"
+                        width="15"
+                        class="front-img"
+                        alt="Icon_Basic_S_Down.svg"
+                      />
+                      <img
+                        [src]="ImgPath + 'Icon_Basic_S_Down_Blue.svg'"
+                        width="15"
+                        class="hover-img"
+                        alt="Icon_Basic_S_Down_Blue.svg"
+                      />
+                    </div>
+                  </ng-container>
+                  <div class="name-count-wrap" (click)="onCatFilterAdded(cat.id, i, null)">
+                    <!--  <div class="divider-leftbar"></div> -->
+                    <span
+                      class="name"
+                      [ngClass]="{ 'text-blue': selectedFilters.category == cat.id }"
+                      >{{ cat.category_name }}</span
+                    >
+                    <span class="count">{{ cat.total }}</span>
+                  </div>
+                  <ng-container *ngIf="cat.subCategory && cat.subCategory.length">
+                    <div
+                      id="toggle-categories-{{ i }}"
+                      class="collapse dropdown-item-block"
+                      [ngClass]="{ in: selectedFilters.category == cat.id }"
+                    >
+                      <ul>
+                        <ng-container *ngFor="let subCat of cat.subCategory; let j = index">
+                          <li
+                            [ngClass]="{ 'onlyone-li': cat.subCategory.length === 1 }"
+                            (click)="onCatFilterAdded(subCat.id, i, j)"
+                          >
+                            <div class="name-count-wrap">
+                              <span
+                                class="name text-width"
+                                [ngClass]="{ 'text-blue': selectedFilters.subcat == subCat.id }"
+                                >{{ subCat.category_name }}</span
+                              >
+                              <span class="count">{{ subCat.total }}</span>
+                            </div>
+                            <span
+                              class="custom-tooltip tooltip-arrow-left"
+                              *ngIf="subCat.description"
+                            >
+                              <span
+                                class="description-content text-nowarp"
+                                [innerHTML]="subCat.description"
+                              ></span>
+                            </span>
+                          </li>
+                        </ng-container>
+                      </ul>
+                    </div>
+                  </ng-container>
+                </li>
+              </ng-container>
+            </ng-container>
+          </ul>
+        </div>
+      </div>
+      <!-- Filters -->
+      <ng-container *ngIf="filters.filters">
+        <div class="panel-heading" role="tab" id="headingFilter">
+          <h4 class="panel-title">
+            <a
+              role="button"
+              data-toggle="collapse"
+              href="#collapseFilter"
+              aria-expanded="true"
+              aria-controls="collapseOne"
+            >
+              <div class="bold-heading">
+                <span class="icon cat-ico">
+                  <img
+                    [src]="ImgPath + 'asidefilter/Filter_Gray.svg'"
+                    width="15"
+                    class="front-img"
+                    alt="Filter_Gray.svg"
+                  />
+                </span>
+                <span>Filters</span>
+                <span class="sign-ico">
+                  <font class="pluse">+</font>
+                  <font class="minus">-</font>
+                </span>
+              </div>
+            </a>
+          </h4>
+        </div>
+        <div
+          id="collapseFilter"
+          class="panel-collapse collapse in"
+          role="tabpanel"
+          aria-labelledby="headingFilter"
+        >
+          <div class="panel-body">
+            <ul>
+              <ng-container *ngIf="filters.filters && filters.filters.length">
+                <li (click)="onClearFilter()" [ngClass]="{ 'text-blue': !isFilterSelected() }">
+                  None
+                </li>
+                <li><div class="divider-leftbar"></div></li>
+                <ng-container *ngFor="let filter of filters.filters; let i = index">
+                  <li *ngIf="filter && filter.reqParam == 'pack' && isLoggedIn()">
+                    <div class="divider-leftbar"></div>
+                  </li>
+                  <li
+                    [ngClass]="{ 'has-dropdown': true }"
+                    *ngIf="filter.reqParam != 'pack' || (filter.reqParam == 'pack' && isLoggedIn())"
+                  >
+                    <div
+                      class="name-count-wrap"
+                      [ngClass]="{
+                        collapsed:
+                          !selectedFilters[filter.reqParam].length || !isOpen[filter.reqParam]
+                      }"
+                      data-toggle="collapse"
+                      [attr.data-target]="'#toggle-filter-' + i"
+                      (click)="isOpen[filter.reqParam] = isOpen[filter.reqParam] ? false : true"
+                    >
+                      <span
+                        class="name"
+                        [ngClass]="{ 'text-blue': selectedFilters[filter.reqParam].length }"
+                        >{{ filter.name }}</span
+                      >
+                      <span class="count">{{ filter.total }}</span>
+                      <div
+                        class="icon"
+                        [ngClass]="{ 'arrow-blue': selectedFilters[filter.reqParam].length }"
+                      >
+                        <img
+                          [src]="ImgPath + 'Icon_Basic_S_Down.svg'"
+                          width="15"
+                          class="front-img"
+                          alt="Icon_Basic_S_Down.svg"
+                        />
+                        <img
+                          [src]="ImgPath + 'Icon_Basic_S_Down_Blue.svg'"
+                          width="15"
+                          class="hover-img"
+                          alt="Icon_Basic_S_Down_Blue.svg"
+                        />
+                      </div>
+                    </div>
+
+                    <div
+                      id="toggle-filter-{{ i }}"
+                      class="collapse dropdown-item-block"
+                      [ngClass]="{
+                        in: selectedFilters[filter.reqParam].length || isOpen[filter.reqParam]
+                      }"
+                    >
+                      <ul class="filter-ul">
+                        <ng-container *ngIf="filter.reqParam == 'pack' && isLoggedIn()">
+                          <div class="custom-scrollbar custom-filter-scrollbar">
+                            <ng-container *ngFor="let d of filter.data; let j = index">
+                              <li
+                                [ngClass]="{
+                                  'onlyone-li': filter.data.length === 1,
+                                  'purchased-pack-li': d.isPurchased
+                                }"
+                                class="pack-required-tooltip"
+                              >
+                                <div class="name-count-wrap">
+                                  <div
+                                    class="checkbox checkbox-white"
+                                    [ngClass]="{
+                                      'purchased-pack': d.isPurchased,
+                                      'text-blue':
+                                        selectedFilters[filter.reqParam].indexOf(d.id) > -1
+                                    }"
+                                  >
+                                    <input
+                                      class="filter"
+                                      type="checkbox"
+                                      id="filter-li-{{ i }}-{{ j }}"
+                                      (click)="onFilterUpdate(i, j)"
+                                      [checked]="
+                                        selectedFilters[filter.reqParam].indexOf(d.id) > -1
+                                      "
+                                      [disabled]="
+                                        !d.isPurchased && !getUserPlanDetails().viewAllPacks
+                                      "
+                                    />
+                                    <label
+                                      [ngClass]="{
+                                        'disabled-pack-checkbox':
+                                          !d.isPurchased && !getUserPlanDetails().viewAllPacks
+                                      }"
+                                      for="filter-li-{{ i }}-{{ j }}"
+                                      ><span class="text-width">{{ d.name }}</span></label
+                                    >
+                                  </div>
+                                </div>
+                                <span
+                                  class="custom-tooltip custom-tooltip-required tooltip-arrow-left"
+                                  *ngIf="!d.isPurchased && !getUserPlanDetails().viewAllPacks"
+                                >
+                                  <span class="description-content text-nowarp "
+                                    >View All Packs
+                                    <font class="disabled">(Subscription Required)</font></span
+                                  >
+                                </span>
+                              </li>
+
+                              <li
+                                *ngIf="
+                                  filter.data[j + 1] &&
+                                  filter.data[j + 1].isPurchased == 0 &&
+                                  d.isPurchased
+                                "
+                              >
+                                <div class="divider-leftbar-packs"></div>
+                              </li>
+                            </ng-container>
+                          </div>
+                        </ng-container>
+                        <ng-container *ngIf="filter.reqParam != 'pack'">
+                          <ng-container *ngFor="let options of filter.data; let j = index">
+                            <li
+                              [ngClass]="{
+                                'onlyone-li': filter.data.length === 1,
+                                'purchased-pack-li': options.isPurchased
+                              }"
+                            >
+                              <div class="name-count-wrap">
+                                <div
+                                  class="checkbox checkbox-white"
+                                  [ngClass]="{
+                                    'purchased-pack': options.isPurchased,
+                                    'text-blue':
+                                      selectedFilters[filter.reqParam].indexOf(options.id) > -1
+                                  }"
+                                >
+                                  <input
+                                    class="filter"
+                                    type="checkbox"
+                                    id="filter-li-{{ i }}-{{ j }}"
+                                    (click)="onFilterUpdate(i, j)"
+                                    [checked]="
+                                      selectedFilters[filter.reqParam].indexOf(options.id) > -1
+                                    "
+                                  />
+                                  <label for="filter-li-{{ i }}-{{ j }}"
+                                    ><span class="text-width">{{ options.name }}</span></label
+                                  >
+                                </div>
+                              </div>
+                              <span
+                                class="custom-tooltip  tooltip-arrow-left"
+                                *ngIf="options.description"
+                              >
+                                <span
+                                  class="description-content text-nowarp"
+                                  [innerHTML]="options.description"
+                                ></span>
+                              </span>
+                            </li>
+                          </ng-container>
+                        </ng-container>
+                      </ul>
+                    </div>
+                  </li>
+                </ng-container>
+              </ng-container>
+            </ul>
+          </div>
+        </div>
+      </ng-container>
+      <!-- Resolution -->
+      <ng-container *ngIf="filters.resolution">
+        <div class="panel-heading" role="tab" id="headingResolution">
+          <h4 class="panel-title">
+            <a
+              role="button"
+              data-toggle="collapse"
+              href="#collapseResolution"
+              aria-expanded="true"
+              aria-controls="collapseOne"
+            >
+              <div class="bold-heading">
+                <span class="icon cat-ico">
+                  <img
+                    [src]="ImgPath + 'asidefilter/Resolution_Gray.svg'"
+                    width="15"
+                    class="front-img"
+                    alt="Resolution_Gray.svg"
+                  />
+                </span>
+                <span>Resolution</span>
+                <span class="sign-ico">
+                  <font class="pluse">+</font>
+                  <font class="minus">-</font>
+                </span>
+              </div>
+            </a>
+          </h4>
+        </div>
+        <div
+          id="collapseResolution"
+          class="panel-collapse collapse in"
+          role="tabpanel"
+          aria-labelledby="headingResolution"
+        >
+          <div class="panel-body">
+            <ul>
+              <ng-container *ngIf="filters.resolution && filters.resolution.length">
+                <ng-container *ngFor="let resol of filters.resolution; let i = index">
+                  <li [ngClass]="{ 'has-dropdown': true }" (click)="onResolutionFilterAdded(i)">
+                    <div class="name-count-wrap">
+                      <span
+                        class="name"
+                        [ngClass]="{
+                          'text-blue':
+                            selectedFilters.resol == resol.id ||
+                            (resol.id == 0 && index == 1 && !selectedFilters.resol)
+                        }"
+                        [innerHTML]="resol.name"
+                      ></span>
+                      <span class="count">{{ resol.total }}</span>
+                    </div>
+                  </li>
+                </ng-container>
+              </ng-container>
+            </ul>
+          </div>
+        </div>
+      </ng-container>
+      <!-- Sort -->
+      <!-- Resolution -->
+      <div class="panel-heading" role="tab" id="headingSort">
+        <h4 class="panel-title">
+          <a
+            role="button"
+            data-toggle="collapse"
+            href="#collapseSort"
+            aria-expanded="true"
+            aria-controls="collapseOne"
+          >
+            <div class="bold-heading">
+              <span class="icon cat-ico">
+                <img
+                  [src]="ImgPath + 'asidefilter/Sort_Gray.svg'"
+                  width="15"
+                  class="front-img"
+                  alt="Resolution_Gray.svg"
+                />
+              </span>
+              <span>Sort</span>
+              <span class="sign-ico">
+                <font class="pluse">+</font>
+                <font class="minus">-</font>
+              </span>
+            </div>
+          </a>
+        </h4>
+      </div>
+      <div
+        id="collapseSort"
+        class="panel-collapse collapse in"
+        role="tabpanel"
+        aria-labelledby="headingSort"
+      >
+        <div class="panel-body">
+          <ul>
+            <li (click)="onSort(1)">
+              <div class="name-count-wrap">
+                <span class="name" [ngClass]="{ 'text-blue': !selectedSort || selectedSort == 1 }"
+                  >Recent</span
+                >
+              </div>
+            </li>
+            <li (click)="onSort(2)">
+              <div class="name-count-wrap">
+                <span class="name" [ngClass]="{ 'text-blue': selectedSort == 2 }">Popular</span>
+              </div>
+            </li>
+            <li (click)="onSort(3)">
+              <div class="name-count-wrap">
+                <span class="name" [ngClass]="{ 'text-blue': selectedSort == 3 }">Price</span>
+              </div>
+            </li>
+            <li (click)="onSort(4)">
+              <div class="name-count-wrap">
+                <span class="name" [ngClass]="{ 'text-blue': selectedSort == 4 }">Name</span>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</aside>
+<ng-template #loader>
+  <loader></loader>
+</ng-template>

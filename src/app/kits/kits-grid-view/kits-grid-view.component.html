@@ -1,0 +1,97 @@
+<div
+  class="package-box thumbnailurl package-gallery-ul"
+  data-imgwidth=""
+  data-imgheight=""
+  (click)="kitDetails.showQuickViewImage = true"
+>
+  <a href="javascript:void(0);" class="clickevent package-anchor" [attr.data-index]="i">
+    <div class="pack-tile">
+      <div
+        class="pack-tile-header"
+        [attr.pack-title-length]="kitDetails.kit_name_char_length"
+        [ngClass]="[
+          kitDetails.line2_char_length > 25 || kitDetails.kit_name_char_length > 16
+            ? 'main-head-large-' + kitDetails.kit_name_char_length
+            : ''
+        ]"
+      >
+        <div class="icon">
+          <img
+            [src]="ImgPath + 'Icons_Details_Models_Light_Gray.svg'"
+            width="25"
+            alt="Icons_Details_Models_Light_Gray.svg"
+            class="default-icon"
+          />
+          <img
+            [src]="ImgPath + 'Icon_Modal_3D_blue.svg'"
+            width="25"
+            alt="Icon_Modal_3D_blue.svg"
+            class="active-icon"
+          />
+        </div>
+        <div class="title text-center ">
+          <h3
+            class="main-head"
+            [ngClass]="[
+              kitDetails.kit_name_char_length > 16
+                ? 'main-head-large-' + kitDetails.kit_name_char_length
+                : ''
+            ]"
+            [innerHTML]="kitDetails.kit_name"
+          ></h3>
+          <h4
+            class="sub-head "
+            [ngClass]="[
+              kitDetails.line2_char_length > 25
+                ? 'sub-head-large-' + kitDetails.line2_char_length
+                : ''
+            ]"
+          >
+            <span class="pack-count ">{{ kitDetails.plus_model_count || 5 }} </span>
+            <span [innerHTML]="kitDetails.line2"></span>
+          </h4>
+        </div>
+      </div>
+      <div class="pack-img">
+        <img
+          *ngIf="kitDetails && kitDetails.images && getThumbnailImage(kitDetails.images)"
+          [src]="ServerImgPath + getThumbnailImage(kitDetails.images)"
+          class="img-responsive pack-img"
+          (load)="loadingImage = true"
+          [alt]="kitDetails.kit_name"
+        />
+        <img
+          *ngIf="kitDetails && !kitDetails.images"
+          [src]="ImgPath + 'no-image.jpg'"
+          class="img-responsive pack-img "
+          (load)="loadingImage = true"
+          alt="no-image.jpg"
+        />
+        <div class="discount-tag" *ngIf="kitDetails.discount > 0 && !kitDetails.isPurchased">
+          <span class="tag-name">{{ kitDetails.discount }}%<span>OFF</span></span>
+        </div>
+      </div>
+    </div>
+    <div class="new-tag" *ngIf="kitDetails.isNew == 1">
+      <span class="tag-name">NEW!</span>
+    </div>
+    <div
+      class="price-tag"
+      [ngClass]="{ 'discount-tag-color': kitDetails.discount > 0 && !kitDetails.isPurchased }"
+    >
+      <span *ngIf="!isLoggedIn"><span class="doller-icon">$</span>{{ kitDetails.price }}</span>
+      <span *ngIf="isLoggedIn">
+        <span *ngIf="!kitDetails.isPurchased"
+          ><span class="doller-icon"></span>{{ kitDetails.price_credits }}</span
+        >
+        <span *ngIf="kitDetails.isPurchased">
+          <img
+            [src]="ImgPath + 'Icon_Checkmark_White.svg'"
+            width="25"
+            alt="Icon_Checkmark_White.svg"
+          />
+        </span>
+      </span>
+    </div>
+  </a>
+</div>

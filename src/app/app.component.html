@@ -1,0 +1,19 @@
+<div class="loading-overlay" #spinnerElement style="display: none;">
+  <loader></loader>
+</div>
+<ng-container *ngIf="devToolClosed; else devToolOpened">
+  <router-outlet></router-outlet>
+</ng-container>
+
+<ng-template #devToolOpened>
+  <br />
+  <div class="container">
+    <div class="col-sm-12">
+      <div class="text-center">
+        <img class="img-responsive" src="/assets/img/no-access.png" alt="" style="width:100%" />
+      </div>
+      <br />
+      <!-- <div class="alert alert-info">You need to enable JavaScript to run this web page</div> -->
+    </div>
+  </div>
+</ng-template>

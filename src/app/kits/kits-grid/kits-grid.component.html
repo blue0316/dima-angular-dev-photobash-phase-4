@@ -1,0 +1,25 @@
+<ng-container *ngIf="kitList.length > 0">
+  <div class="package-gallery-holder">
+    <div class="pictureView package-viewchange package-picflex">
+      <div class="package-resultitem" *ngFor="let kit of kitList; let i = index">
+        <app-kits-grid-view [kitDetails]="kit" [i]="i"></app-kits-grid-view>
+        <div class="package-detailview">
+          <app-kits-grid-details
+            [kitDetails]="kit"
+            [kitIndex]="i"
+            [kitLength]="kitList.length"
+          ></app-kits-grid-details>
+        </div>
+      </div>
+    </div>
+    <div class="clearfix"></div>
+  </div>
+</ng-container>
+<ng-container *ngIf="isLoading">
+  <loader></loader>
+</ng-container>
+<ng-container *ngIf="!kitList.length && !isLoading">
+  <div class="loader-warp">
+    <no-data></no-data>
+  </div>
+</ng-container>

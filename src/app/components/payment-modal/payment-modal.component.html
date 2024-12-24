@@ -1,0 +1,373 @@
+<div class="modal-dialog account-modal checkout-modal comman-modal" role="document">
+  <div class="modal-content">
+    <div class="modal-header comman-header-modal">
+      <button
+        aria-label="Close"
+        class="close btn-close-modal checkoutPurchaseClose"
+        data-dismiss="modal"
+        type="button"
+      >
+        <span aria-hidden="true">
+          <img [src]="ImgPath + 'Icon_Basic_Close.svg'" width="18" alt="Icon_Basic_Close.svg" />
+        </span>
+      </button>
+      <img
+        class="checkout-lock-icon"
+        [src]="ImgPath + 'Black_Icon_Lock.svg'"
+        width="30"
+        height="30"
+        alt="Black_Icon_Lock.svg"
+      />
+      <h2 class="modal-title">Checkout</h2>
+    </div>
+    <div class="modal-body">
+      <div class="">
+        <ng-container *ngIf="amount == 0 && paymentFor == 3">
+          <div class="form-group">
+            <div class="email-block">
+              <img
+                class="checkout-email-icon"
+                [src]="ImgPath + 'Checkout_Donate.svg'"
+                width="18"
+                alt="Checkout_Donate.svg"
+              />
+              <input
+                autocomplete="off"
+                class="form-control input-block"
+                name="amount"
+                placeholder="Choose a price"
+                type="text"
+                onlyNumbers
+                [(ngModel)]="donationAmount"
+              />
+              <p class="text-danger" *ngIf="paymentError.donationAmount">
+                {{ paymentError.donationAmount }}
+              </p>
+            </div>
+          </div>
+        </ng-container>
+        <div class="form-group">
+          <div class="email-block">
+            <img
+              class="checkout-email-icon"
+              [src]="ImgPath + 'Checkout_Name.svg'"
+              width="18"
+              alt="Checkout_Email.svg"
+            />
+            <input
+              autocomplete="off"
+              class="form-control input-block"
+              name="userName"
+              placeholder="Your name"
+              type="text"
+              required
+              [(ngModel)]="paymentData.name"
+            />
+          </div>
+          <p class="text-danger" *ngIf="paymentError.name">
+            {{ paymentError.name }}
+          </p>
+        </div>
+        <div class="form-group">
+          <div class="email-block">
+            <img
+              class="checkout-email-icon"
+              [src]="ImgPath + 'Checkout_Email.svg'"
+              width="18"
+              alt="Checkout_Email.svg"
+            />
+            <input
+              autocomplete="off"
+              class="form-control input-block"
+              name="userEmail"
+              placeholder="Email address"
+              type="email"
+              required
+              [(ngModel)]="paymentData.email"
+            />
+          </div>
+          <p class="text-danger" *ngIf="paymentError.email">
+            {{ paymentError.email }}
+          </p>
+        </div>
+        <div class="form-group">
+          <div class="email-block">
+            <img
+              class="checkout-email-icon"
+              [src]="ImgPath + 'Checkout_Country.svg'"
+              width="18"
+              alt="Checkout_Email.svg"
+            />
+            <select
+              class="form-control "
+              name="country_name "
+              [(ngModel)]="paymentData.country"
+              (change)="onCountryChange()"
+              [disabled]="isCountryDisabled"
+            >
+              <option value="" [selected]="!paymentData.country">Country</option>
+              <option *ngFor="let country of countries" [value]="country.country_name">{{
+                country.country_name
+              }}</option>
+            </select>
+          </div>
+          <p class="text-danger" *ngIf="paymentError.country">
+            {{ paymentError.country }}
+          </p>
+        </div>
+        <div class="form-group term-condition">
+          <div class="checkbox checkbox-white ">
+            <input
+              id="{{ randomString }}-accept-term"
+              name="isTermsAccepted"
+              type="checkbox"
+              [(ngModel)]="isTermsAccepted"
+            />
+            <label for="{{ randomString }}-accept-term">
+              I accept the
+              <a target="_blank" routerLink="/terms"><b class="bold">Terms &amp; Conditions</b></a>
+              and
+              <a target="_blank" routerLink="/privacy-policy"><b class="bold">Privacy Policy</b></a>
+            </label>
+            <p class="text-danger" *ngIf="paymentError.term">
+              {{ paymentError.term }}
+            </p>
+          </div>
+        </div>
+        <ng-container *ngIf="amount || donationAmount">
+          <div class="divide-line"></div>
+          <div class="creditcard-pay-block" [ngClass]="{ 'change-bg': payementType == 'CC' }">
+            <div class="checkbox-block">
+              <div class="radio custom-radio">
+                <input
+                  type="radio"
+                  name="payementType{{ randomString }}"
+                  [(ngModel)]="payementType"
+                  value="CC"
+                  id="creadit-select{{ randomString }}"
+                  (click)="payementType = 'CC'"
+                />
+                <label
+                  for="creadit-select{{ randomString }}"
+                  class="custom-radio-label"
+                  (click)="payementType = 'CC'"
+                >
+                  <span
+                    class="payment-type"
+                    [ngClass]="{ 'selected-payment': payementType == 'CC' }"
+                    >Credit Card
+                    <img
+                      class="payment-type-image"
+                      [src]="ImgPath + 'Icon_Checkmark_Blue.svg'"
+                      width="16"
+                      alt="Icon_Checkmark_Blue.svg"
+                    />
+                  </span>
+                </label>
+              </div>
+              <div class="pull-right icon-block">
+                <img src="/assets/cc-image.png" width="150" />
+              </div>
+            </div>
+            <ng-container *ngIf="payementType == 'CC'">
+              <div class="card-input-info form-group">
+                <div class="card-block">
+                  <input
+                    class="form-control input-block"
+                    id="Card-number-{{ randomString }}"
+                    name="cardNumber"
+                    placeholder="Card number"
+                    type="text"
+                    required
+                    [(ngModel)]="paymentData.number"
+                    [textMask]="{ mask: cardMask, guide: false }"
+                  />
+                  <img
+                    class="checkout-email-icon"
+                    [src]="ImgPath + 'Checkout_CreditCard.svg'"
+                    width="18"
+                    alt="Checkout_CreditCard.svg"
+                  />
+                </div>
+                <p class="text-danger" *ngIf="paymentError.number">
+                  {{ paymentError.number }}
+                </p>
+                <div class="date-cvv-block">
+                  <div class="row">
+                    <div class="col-md-8 col-sm-8 col-xs-8 no-padding-right">
+                      <div class="date-year-block">
+                        <input
+                          class="form-control input-block"
+                          [textMask]="{ mask: dateMask }"
+                          required
+                          id="{{ randomString }}"
+                          placeholder="MM / YY"
+                          name="month-year"
+                          type="text"
+                          [(ngModel)]="expiryMonthYear"
+                        />
+                        <img
+                          class="checkout-email-icon"
+                          [src]="ImgPath + 'Checkout_ExpirationDate.svg'"
+                          width="18"
+                          alt="Checkout_ExpirationDate.svg"
+                        />
+                      </div>
+                      <p class="text-danger" *ngIf="paymentError.expiryMonth">
+                        {{ paymentError.expiryMonth }}
+                      </p>
+                    </div>
+                    <div class="col-md-4 col-sm-4 col-xs-4 no-padding-left">
+                      <div class="cvv-number">
+                        <input
+                          class="form-control input-block "
+                          required
+                          placeholder="CVV"
+                          name="CVV"
+                          type="text"
+                          [(ngModel)]="paymentData.cvv"
+                          maxlength="4"
+                        />
+                        <img
+                          class="checkout-email-icon"
+                          [src]="ImgPath + 'Checkout_CVC.svg'"
+                          width="18"
+                          alt="Checkout_CVC.svg"
+                        />
+                      </div>
+                      <p class="text-danger" *ngIf="paymentError.cvv">
+                        {{ paymentError.cvv }}
+                      </p>
+                    </div>
+                    <div class="clearfix"></div>
+                  </div>
+                </div>
+              </div>
+              <div class="remember-block">
+                <div class="checkbox checkbox-white ">
+                  <input
+                    id="Remember-me-{{ randomString }}"
+                    name="remember-card-details"
+                    type="checkbox"
+                    [checked]="storeCardData"
+                    (change)="storeCardData = !storeCardData"
+                  />
+                  <label for="Remember-me-{{ randomString }}">Remember me?</label>
+                </div>
+                <div class="pull-right icon-block">
+                  <img [src]="ImgPath + 'Checkout_3DSecure2.png'" width="80" />
+                </div>
+              </div>
+            </ng-container>
+          </div>
+          <div class="divide-line"></div>
+          <div class="paypal-pay-block" [ngClass]="{ 'change-bg': payementType == 'PP' }">
+            <div class="checkbox-block">
+              <div class="radio custom-radio">
+                <input
+                  type="radio"
+                  name="payementType{{ randomString }}"
+                  [(ngModel)]="payementType"
+                  value="PP"
+                  id="paypal-select"
+                  (click)="payementType = 'PP'"
+                />
+                <label class="custom-radio-label" for="paypal-select" (click)="payementType = 'PP'">
+                  <span
+                    class="payment-type"
+                    [ngClass]="{ 'selected-payment': payementType == 'PP' }"
+                    >PayPal
+                    <img
+                      class="payment-type-image"
+                      [src]="ImgPath + 'Icon_Checkmark_Blue.svg'"
+                      width="16"
+                      alt="Icon_Checkmark_Blue.svg"
+                  /></span>
+                </label>
+              </div>
+              <div class="pull-right icon-block">
+                <img [src]="ImgPath + 'paypal-logo.svg'" width="80" />
+              </div>
+            </div>
+          </div>
+          <div class="divide-line"></div>
+          <p class="text-danger" *ngIf="!isPaymentTypeSelected">
+            Please select payment mode
+          </p>
+        </ng-container>
+        <ng-container *ngIf="!isLoading; else loadingButton">
+          <div class="btnblock-payment">
+            <small *ngIf="parseFloat(applicableTax)" class="pull-right tax-detail">
+              (incl. {{ applicableTax || 0 }}% VAT)
+            </small>
+            <button
+              type="button"
+              class="btn btn-block btn-default btn-price no-margin"
+              id="{{ randomString }}-btn-price"
+              (click)="pay()"
+            >
+              <ng-container *ngIf="!isRecurring; else recurringPay">
+                <ng-container *ngIf="!payementType; else paySelected">
+                  <span>
+                    <ng-container *ngIf="paymentFor != 3 && amount && !donationAmount">
+                      Place Order
+                    </ng-container>
+                    <ng-container *ngIf="paymentFor == 3">
+                      <ng-container *ngIf="!amount && donationAmount == 0; else placeOrderText">
+                        Purchase for free</ng-container
+                      >
+                    </ng-container>
+                    <span *ngIf="amount; else ZeroAmount" class="dollor"
+                      >${{
+                        (parseFloat(amount) + parseFloat((amount * applicableTax) / 100)).toFixed(2)
+                      }}</span
+                    >
+                  </span>
+                </ng-container>
+              </ng-container>
+            </button>
+          </div>
+        </ng-container>
+      </div>
+    </div>
+  </div>
+</div>
+<ng-template #ZeroAmount>
+  <ng-container *ngIf="donationAmount == 0"> $0.00 </ng-container>
+  <ng-container *ngIf="donationAmount > 0"> ${{ donationAmount }} </ng-container>
+</ng-template>
+<ng-template #paySelected>
+  <ng-container *ngIf="payementType == 'CC'; else payByPP">
+    <span
+      >Pay with Card
+      <span *ngIf="amount; else ZeroAmount" class="dollor"
+        >${{ (parseFloat(amount) + parseFloat((amount * applicableTax) / 100)).toFixed(2) }}</span
+      ></span
+    >
+  </ng-container>
+</ng-template>
+<ng-template #payByPP>
+  <span
+    >Pay with PayPal
+    <span *ngIf="amount; else ZeroAmount" class="dollor"
+      >${{ (parseFloat(amount) + parseFloat((amount * applicableTax) / 100)).toFixed(2) }}</span
+    ></span
+  >
+</ng-template>
+
+<ng-template #loadingButton>
+  <button type="button" disabled class="btn btn-block btn-default btn-price no-margin">
+    Please wait....
+  </button>
+</ng-template>
+<ng-template #recurringPay>
+  <span
+    >Subscribe
+    <span *ngIf="amount; else ZeroAmount" class="dollor"
+      >${{ (parseFloat(amount) + parseFloat((amount * applicableTax) / 100)).toFixed(2) }}/mo</span
+    ></span
+  >
+</ng-template>
+<ng-template #placeOrderText>
+  Place Order
+</ng-template>

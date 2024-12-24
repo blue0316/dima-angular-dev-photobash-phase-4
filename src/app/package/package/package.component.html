@@ -1,0 +1,558 @@
+<app-header (isLoggedIn)="checkLogin($event)" (cartPurchased)="cartPurchased($event)"></app-header>
+<!-- (categoryId)="getCategoryId($event)" -->
+<!--  -->
+<div class="packages-component-warp" >
+<div class="toggle-button left-filter hover-tooltip" (click)="toggleSidebar()" [ngClass]="{'toggle-on': showFilterToggle}">
+    <img [src]="ImgPath+ 'Icon_Basic_S_Right.svg'" width="20" class="main-img" />
+    <img [src]="ImgPath+ 'Icon_Basic_S_Right_Blue.svg'" width="20" class="hover-img" />
+    <span _ngcontent-c1="" class="info-tooltip">
+    <span _ngcontent-c1="" class="custom-tooltip custom-tooltip-left tooltip-arrow-left">
+    <ng-container *ngIf="showFilterToggle">
+        Switch to Default
+    </ng-container>
+    <ng-container *ngIf="!showFilterToggle">
+        Switch to Sidebar
+    </ng-container>
+    </span>
+</span>
+</div>
+<ng-container *ngIf="showFilterToggle">
+    <app-aside-filter [totalItems]="totalItems" [selectedSort]="sortyBy" [filters]="{'filters': filters, 'categories': categories}" (catFilterAdded)="onCatFilterAdd($event)" (filterUpdated)="onFilterUpdate($event)" (clearFilter)="clearFilter()" (updateSortOption)="sortPack($event)"></app-aside-filter>
+</ng-container>
+<!--SEARCH AND FILTER BLOCK START-->
+<div [ngClass]="{'image-container-wrapper-rightside': showFilterToggle}">
+<div class=" search-warp " [hidden]="showSearchBox"> 
+<div class="search-block center-block clearfix ">
+    <div class="icon ">
+            <img [src]="ImgPath+ 'Icon_PhotobashCamera_Reset.svg'" (click)="clearAllFilter()" alt="Icon_PhotobashCamera_Reset.svg" class="hover-icon" />
+            <img [src]="ImgPath+ 'Icon_PhotobashCamera_Blue.svg'" (click)="clearAllFilter()" alt="Icon_PhotobashCamera_Blue.svg" class="main-icon" />
+    </div>
+    <form (submit)="searchPacks()">
+        <div class="input input-group">
+         <div class="search-box">
+            <input aria-label="Amount (to the nearest dollar) " class="form-control " placeholder="Search... " type="text" [(ngModel)]="searchKeyword" id="suggestion-tags" autocomplete="off" name="search" />
+            <ng-container *ngIf="searchKeyword">
+                <span class="clear-input-img" (click)="clearSearchInput()"><i class="fa fa-times"></i></span>
+            </ng-container>
+            <!-- <input aria-label="Amount (to the nearest dollar) " class="form-control " placeholder="Search.. " type="text" [(ngModel)]="searchKeyword" name="search" (ngModelChange)="getTags($event)" autocomplete="off"/>
+            <div class="suggestion-box" *ngIf="suggestedTags && suggestedTags.length>0">
+                <ul>
+                    <li *ngFor="let tag of suggestedTags" (click)="setSeachKeyword(tag.tag_name)" [innerHTML]="tag.tag_name + ' ('+tag.result_count+')'"></li>
+                </ul>
+            </div> -->            
+        </div>
+            <span class="input-group-addon"  (click)="searchPacks()">
+                <button type="submit" class="search-submit-btn">
+                    <img [src]="ImgPath+ 'Icon_Search.svg'" width="15" class="front-img" alt="Icon_Search.svg"/>
+                    <img [src]="ImgPath+ 'Icon_Search_Blue.svg'" width="15" class="hover-img" alt="Icon_Search_Blue.svg"/>
+                </button>
+            </span>
+        </div>
+    </form>
+</div>
+
+<div class="filter-block text-center ">
+    <ul class="list-inline filter-block-ul ">
+        <li>
+            <span class="head ">CATEGORIES</span>
+            <div class="btn-group">
+                <button aria-expanded="false" aria-haspopup="true" class="btn dropdown-toggle" data-toggle="dropdown" type="button">
+                <span *ngIf="catId==0 ">All Categories</span>
+                <span *ngIf="catId!=0 ">{{catName}}</span>
+                <span class="drop-arrow"></span>
+                </button>
+                <ul class="dropdown-menu">
+                    <li>
+                         <a href="javascript:; " (click)="catFilterAdded(null, null, null)">All Categories</a>
+                    </li>
+                    <ng-container *ngIf="categories.length>0">
+                        <li *ngFor="let cat of categories; let i=index " [ngClass]="{ 'has-sub': cat.subCategory.length>0}">
+                             <div *ngIf="section_order!=cat.section_order_by" role="separator" class="divider">
+                                {{setNextSection(cat.section_order_by)}}
+                              </div>
+                              <a href="javascript:;" data-toggle="tooltip" data-placement="bottom" [ngClass]="{'text-blue': catId == cat.id || isSubcatSelected(cat.subCategory)}"  (click)="catFilterAdded(cat.id, i, null)" class="delay-tooltip">{{cat.category_name}}
+                                <span class="custom-tooltip tooltip-arrow-right" *ngIf="cat.description">
+                                    <span class="description-content" [innerHTML]="cat.description"></span>
+                                </span>
+                              </a>
+                              <div *ngIf="i==0">
+                                    {{ setvalueVer(cat.section_order_by) }} 
+                              </div>
+                              <ul *ngIf="cat.subCategory.length>0">
+                               <div class="custom-scrollbar">
+                                  <li *ngFor="let subcat of cat.subCategory; let j = index;" class="delay-tooltip">
+                                    <a href="javascript:;" (click)="catFilterAdded(subcat.id, i, j)"  [ngClass]="{'text-blue': catId == subcat.id}">
+                                        {{ subcat.category_name }}                                     
+                                    </a>
+                                    <span class="custom-tooltip tooltip-arrow-right" *ngIf="subcat.description">
+                                        <span class="description-content" [innerHTML]="subcat.description"></span>
+                                    </span>   
+                                  </li>
+                                </div>
+                              </ul>
+                        </li>            
+                    </ng-container>
+                </ul>
+            </div>
+        </li>
+        <li>
+            <span class="head">FILTER</span>
+                <div class="btn-group">
+                    <button aria-expanded="false" aria-haspopup="true" class="btn dropdown-toggle" data-toggle="dropdown" type="button" *ngIf="!isFilterApplied">None&nbsp;
+                        <span class="drop-arrow"></span>
+                    </button>
+                    <button aria-expanded="false" aria-haspopup="true" class="btn dropdown-toggle" data-toggle="dropdown" type="button" *ngIf="isFilterApplied">Filtered&nbsp;
+                        <span class="drop-arrow"></span>
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li>
+                            <a href="javascript:;" (click)="clearFilter()">None</a>
+                        </li>
+                        <li class="divider" role="separator">
+                        </li>
+                        <li *ngFor="let filter of filters; let i=index" [ngClass]="{'active-filter': (allParams[filter.reqParam] && allParams[filter.reqParam].length>0), 'has-sub': filter.data
+                        && filter.data.length>0, 'open-dropdown': filter.reqParam == clickedOn}">
+                            <a href="javascript:;" [ngClass]="{'text-blue': (allParams[filter.reqParam] && allParams[filter.reqParam].length>0)}">{{filter.name}}</a>
+                            <ul class="filter-with-check" *ngIf="filter.data && filter.data.length>0">
+                             <div class="custom-scrollbar">
+                                <li *ngFor="let d of filter.data; let j=index;">
+                                    <div class="checkbox checkbox-white"  [ngClass]="{'text-blue': (allParams[filter.reqParam] && allParams[filter.reqParam].split(',').indexOf(d.id)>-1) ? true : false}">
+                                        <input class="filter" id="filter-li-{{j}}-{{i}}" type="checkbox" (click)="filterUpdated(i, j)" [checked]="(allParams[filter.reqParam] && allParams[filter.reqParam].split(',').indexOf(d.id)>-1) ? true : false" />
+                                        <label for="filter-li-{{j}}-{{i}}">
+                                            {{ d.name }}
+                                        </label>
+                                    </div>
+                                    <span class="custom-tooltip tooltip-arrow-right" *ngIf="d.description">
+                                        <span class="description-content" [innerHTML]="d.description"></span>
+                                    </span>
+                                </li>
+                             </div>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+        </li>
+        <li class="sort-block">
+            <span class="head">SORT</span>
+            <div class="btn-group">
+                <button aria-expanded="false" aria-haspopup="true" class="btn dropdown-toggle" data-toggle="dropdown" type="button"><span *ngIf="sortyBy==1">Recent</span><span *ngIf="sortyBy==2">Popular</span><span *ngIf="sortyBy==3">Price</span><span *ngIf="sortyBy==4">Name</span>&nbsp;<span class="drop-arrow"></span></button>
+                <ul class="dropdown-menu">
+                    <li>
+                        <a href="javascript:;" (click)="sortPack(1)" [ngClass]="{'text-blue': sortyBy == 1}">Recent</a>
+                    </li>
+                    <li>
+                        <a href="javascript:;" (click)="sortPack(2)" [ngClass]="{'text-blue': sortyBy == 2}">Popular</a>
+                    </li>
+                    <li>
+                        <a href="javascript:;" (click)="sortPack(3)" [ngClass]="{'text-blue': sortyBy == 3}">Price</a>
+                    </li>
+                    <li>
+                        <a href="javascript:;" (click)="sortPack(4)" [ngClass]="{'text-blue': sortyBy == 4}">Name</a>
+                    </li>
+                </ul>
+            </div>
+        </li>
+    </ul>
+</div>
+</div>
+<div class="gray-background image-collection-head-warp package-filter-warp" [ngClass]="{'no-filter-add': !selectedFilters.length}" *ngIf="selectedFilters.length">
+    <!--Need to add slider to manage overflow of tags-->
+    <div class="package-filter-tag" [ngClass]="{'no-data': !packages.length}">
+    <div class="filter-tag" style="display: block" *ngIf="selectedFilters.length>0">
+        <span class="arrow arrow-left">
+            <img [src]="ImgPath+ 'Icon_Basic_S_Left.svg'" alt="Icon_Basic_S_Left.svg" class="main-img" width="20" />
+            <img [src]="ImgPath+ 'Icon_Basic_S_Left_Blue.svg'" alt="Icon_Basic_S_Left_Blue.svg" class="hover-img" width="20" />
+        </span>
+        <ul class="list-inline no-margin tag-slider text-left carousel slide multi-item-carousel">
+            <ng-container>
+                <li *ngFor="let filt of selectedFilters; let i = index" class="item">
+                    <a>
+                        <span class="catg-icon">
+                            <!-- For category -->
+                            <img [src]="ImgPath+ 'Categories_Filter.svg'" alt="Categories_Filter.svg" width="20" *ngIf="filt.type==1" />
+                            <!-- For Camera Angle -->
+                            <img [src]="ImgPath+ 'Camera-Angles_Filter.svg'" alt="Camera-Angles_Filter.svg" width="20" *ngIf="filt.type==2" />
+                            <!-- For Resolution -->
+                            <img [src]="ImgPath+ 'Resolution_Filter.svg'" alt="Resolution_Filter.svg" width="20" *ngIf="filt.type==3" />
+                            <!-- For Mood Light -->
+                            <img [src]="ImgPath+ 'Mood_Lighting_Filter.svg'" alt="Mood_Lighting_Filter.svg" width="20" *ngIf="filt.type==4" />
+                            <!-- For Location -->
+                            <img [src]="ImgPath+ 'Location_Filter.svg'" alt="Aerialview_Camera_Angles_Filter.svg" width="20" *ngIf="filt.type==5" />
+                            <!-- For Pack -->
+                            <img [src]="ImgPath+ 'Images_Filter.svg'" alt="Images.svg" width="20" *ngIf="filt.type==6" />
+                        </span>
+                        <span [innerHTML]="filt.name"></span>
+                        <span class="close-icon">
+                            <img [src]="ImgPath+ 'Icon_Basic_S_Cancel.svg'" alt="Icon_Basic_S_Cancel.svg" class="main-img" width="10" (click)="removeFilterByClickingCross(filt)"
+                            />
+                            <img [src]="ImgPath+ 'Icon_Basic_S_Cancel_Blue_Update.svg'" alt="Icon_Basic_S_Cancel_Blue_Update.svg" class="hover-img" width="10"
+                                (click)="removeFilterByClickingCross(filt)" />
+                        </span>
+                    </a>
+                </li>
+            </ng-container>
+        </ul>
+        <span class="arrow arrow-right">
+            <img [src]="ImgPath+ 'Icon_Basic_S_Right.svg'" alt="Icon_Basic_S_Right.svg" class="main-img" width="20" />
+            <img [src]="ImgPath+ 'Icon_Basic_S_Right_Blue.svg'" alt="Icon_Basic_S_Right_Blue.svg" class="hover-img" width="20" />
+        </span>
+        <span class="fliter-close-icon pull-right">
+            <a href="javascript:;" (click)="clearAllFilter()">
+                <img [src]="ImgPath+ 'Icon_Basic_S_Cancel.svg'" alt="Icon_Basic_S_Cancel.svg" class="main-img" width="12" />
+                <img [src]="ImgPath+ 'Icon_Basic_S_Cancel_Blue_Update.svg'" alt="Icon_Basic_S_Cancel_Blue_Update.svg" class="hover-img" width="12"
+                />
+            </a>
+        </span>
+    </div>
+    </div>
+    <div class="clearfix"></div>
+</div>
+<!--  -->
+<div class="package-gallery gray-background" *ngIf="isDataLoaded; else loader">
+    <div class="package-gallery-holder">
+        <div class="pictureView package-viewchange package-picflex">
+            <div class="package-resultitem" *ngFor="let pack of packages; let i=index">
+                <!-- Start of thumbnail display -->
+                <div class="package-box thumbnailurl package-gallery-ul" data-imgwidth="" data-imgheight="" (click)="pack.showQuickViewImage = true">
+                    <a href="javascript:void(0);" class="clickevent package-anchor" [attr.data-index]="i">
+                        <div class="pack-tile">
+                            <div class="pack-tile-header" [attr.pack-title-length]="pack.pack_name_char_length" [ngClass]="[ (pack.line2_char_length>25 || pack.pack_name_char_length>16) ? 'main-head-large-'+pack.pack_name_char_length :'']" >
+                                <div class="icon">
+                                    <img [src]="ImgPath+'Icon_PhotobashCamera.svg'" width="25" alt="Icon_PhotobashCamera.svg" class="default-icon">
+                                    <img [src]="ImgPath+'Icon_PhotobashCamera_Blue.svg'" width="25" alt="Icon_PhotobashCamera_Blue.svg" class="active-icon">
+                                </div>
+                                <div class="title text-center ">
+                                   <h3 class="main-head" [ngClass]="[ pack.pack_name_char_length>16 ? 'main-head-large-'+pack.pack_name_char_length :'']" [innerHTML]="pack.pack_name"></h3>
+                                   <h4 class="sub-head " [ngClass]="[ pack.line2_char_length>25 ? 'sub-head-large-'+pack.line2_char_length :'']"><span class="pack-count ">{{pack.plus_photo_count || 5}}+</span> <span [innerHTML]="pack.line2"></span></h4>
+                                </div>
+                            </div>
+                            <div class="pack-img" [attr.data-index]="i">
+                                <img *ngIf="pack && pack.images && pack.images[1]" [src]="ServerImgPath+pack.images[1]" class="img-responsive pack-img" (load)="loadingImage[i] = true" [alt]="pack.pack_name">
+                                <img *ngIf="pack && !pack.images" [src]="ImgPath+'no-image.jpg'" class="img-responsive pack-img " (load)="loadingImage[i] = true" alt="no-image.jpg"> 
+                                <div class="discount-tag" *ngIf="pack.discount && pack.discount > 0 && !pack.isPurchased">
+                                    <span class="tag-name">{{pack.discount}}%<span>OFF</span></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="new-tag" *ngIf="pack.isNew==1">
+                            <span class="tag-name">NEW!</span>
+                        </div>
+                        <div class="price-tag" [ngClass]="{ 'discount-tag-color': pack.discount > 0 && !pack.isPurchased}">
+                           <span *ngIf="!isUserLoggedIn"><span class="doller-icon">$</span>{{pack.price}}</span>
+                           <span *ngIf="isUserLoggedIn">
+                                <span *ngIf="!pack.isPurchased">{{pack.price_credits}}</span>
+                                <span *ngIf="pack.isPurchased">
+                                    <img [src]="ImgPath+'Icon_Checkmark_White.svg'" width="25" alt="Icon_Checkmark_White.svg" >
+                                </span>
+                            </span>
+                        </div>
+                    </a>
+                </div>
+                <div class="package-detailview ">
+                    <div class="single-img-warp">
+                        <a class="package-detailClose remove">
+                            <img [src]="ImgPath+ 'Icon_Basic_Close.svg' " width="20" alt="Icon_Basic_Close.svg">
+                        </a>                        
+                        <div class="single-pack-block-wraper">
+                            <a href="javascript:;" class="move-arrow left detailPrev" *ngIf="i!=0" title="Previous Pack">
+                                <img [src]="ImgPath+'Icon_Basic_Left.svg'" width="25" class="" alt="Icon_Basic_Left.svg">
+                            </a>
+                            <div class="theme-container">
+                                <div class="col-md-12 center-block ">
+                                    <div class="package-detail-warp ">                                    
+                                        <div class="row ">
+                                            <div class="col-md-5 ">
+                                                <div class="detail-img ">
+                                                    <img *ngIf="pack.images && pack.images[2]" [src]="ServerImgPath+pack.images[2]" class="img-responsive center-block " [alt]="pack.pack_name" [ngStyle]="{height: (windowWidth/(pack.cover_img_ratio*5))+'px'}">
+                                                    <img *ngIf="pack && !pack.images" [src]="ImgPath+'no-image.jpg'" class="img-responsive center-block" alt="no-image.jpg">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-7">
+                                                <div class="package-detail ">
+                                                    <header class=" ">
+                                                        <h2 class="package-name pull-left " [innerHTML]="pack.pack_name"></h2>
+                                                        <div class="creadits pull-right" *ngIf="isUserLoggedIn; else userNotLoggedIn">
+                                                            
+                                                            <div *ngIf="!pack.isPurchased && pack.discount == 0" >
+                                                            <span class="count"><b>{{pack.price_credits}}</b></span> Credits
+                                                            <span class="custom-tooltip tooltip-arrow-bottom">Equals about <b><span class="doller-icon">$</span>{{pack.price}}</b></span>
+                                                            </div>
+
+                                                            <div *ngIf="pack.isPurchased">
+                                                                <span class="purchased-text">
+                                                                    Purchased
+                                                                </span>
+                                                            </div>
+                                                            <div class="discount-credits" *ngIf="!pack.isPurchased  && pack.discount > 0">
+                                                            <span class="price-count"><b>{{pack.actual_price_credit}}</b><span class="discount-credits-text"> Credits</span><span class="custom-tooltip tooltip-arrow-bottom">Equals about <b><span class="doller-icon">$</span>{{pack.actual_price}}</b></span></span>
+                                                            <span class="discount-count"><b>{{pack.price_credits}}</b><span class="discount-credits-text"> Credits</span><span class="custom-tooltip tooltip-arrow-bottom">Equals about <b><span class="doller-icon">$</span>{{pack.price}}</b></span></span>  
+                                                            
+                                                            </div>
+                                                        </div>
+                                                        <ng-template #userNotLoggedIn>
+                                                        <div class="creadits pull-right" *ngIf="pack.discount == 0"><span class="count"><b><span class="doller-icon">$</span>{{pack.price}}</b></span></div>
+                                                        
+                                                        <div class="creadits pull-right" *ngIf=" pack.discount > 0"><span class="price-count"><b><span class="doller-icon">$</span>{{pack.actual_price}}</b></span><span class="discount-count" ><b><span class="doller-icon">$</span>{{pack.price}}</b></span></div>
+                                                        </ng-template>
+                                                        <div class="clearfix "></div>
+                                                    </header>
+                                                    <div class="description">
+                                                        <div class="description-heading clearfix">
+                                                            <h4><b class="bold">Description</b></h4>
+                                                            <h4 class="custom-shapes" *ngIf="pack.is_custom_shape=='1'">
+                                                                <img width="22" [src]="ImgPath+'Icon_CustomShapes_Gray.svg'" alt="Icon_CustomShapes_Gray.svg"/>
+                                                                <b class="bold">Custom Shapes</b>
+                                                                <span class="custom-tooltip tooltip-arrow-bottom">This Pack includes <b>Photoshop Custom Shapes</b></span>
+                                                            </h4>
+                                                        </div>
+                                                        <p>{{pack.pack_description}}</p>
+                                                    </div>
+                                                </div>
+                                                <div class="detail-info ">
+                                                    <div class="row ">
+                                                        <div class="col-md-6 col-sm-6">
+                                                            <ul>
+                                                                <li>
+                                                                    <span class="icon ">
+                                                                        <img [src]="ImgPath+'Icon_Details_PhotoCount.svg'" class=" " width="20 " alt="Icon_Details_PhotoCount.svg">
+                                                                    </span>
+                                                                    <div class="title "><b class="bold ">Photo Count</b></div>
+                                                                    <div class="value nowarp ">{{pack.photo_count || 0}}</div>
+                                                                </li>
+                                                                <li>
+                                                                    <span class="icon ">
+                                                                        <img [src]="ImgPath+'Icon_Details_FileSize.svg'" class=" " width="20 " alt="Icon_Details_FileSize.svg">
+                                                                    </span>
+                                                                    <div class="title "><b class="bold ">File Size</b></div>
+                                                                    <div class="value nowarp ">{{pack.size || 'N/A'}}</div>
+                                                                </li>
+                                                                <li>
+                                                                    <span class="icon ">
+                                                                        <img [src]="ImgPath+'Icon_Details_Format.svg'" class=" " width="15 " alt="Icon_Details_Format.svg">
+                                                                    </span>
+                                                                    <div class="title "><b class="bold ">Format</b></div>
+                                                                    <div class="value nowarp text-uppercase">{{pack.format || 'N/A'}}</div>
+                                                                </li>
+                                                                <li>
+                                                                    <span class="icon ">
+                                                                        <img [src]="ImgPath+'Icon_Details_Camera.svg'" class=" " width="20 " alt="Icon_Details_Camera.svg">
+                                                                    </span>
+                                                                    <div class="title "><b class="bold ">Camera Model</b></div>
+                                                                    <div class="value" [innerHTML]="pack.camera_model"></div>
+                                                                </li>
+                                                            </ul>
+                                                        </div>
+                                                        <div class="col-md-6 col-sm-6">
+                                                            <ul>
+                                                                <li>
+                                                                    <span class="icon ">
+                                                                        <img [src]="ImgPath+'Icon_Details_MinRes.svg'" class=" " width="20 " alt="Icon_Details_MinRes.svg">
+                                                                    </span>
+                                                                    <div class="title "><b class="bold ">Min Resolution</b></div>
+                                                                    <div class="value nowarp">{{pack.min_width || 'N/A'}} x {{pack.min_height}} px</div>
+                                                                </li>
+                                                                <li>
+                                                                    <span class="icon ">
+                                                                        <img [src]="ImgPath+'Icon_Details_MaxRes.svg'" class=" " width="20 " alt="Icon_Details_MaxRes.svg">
+                                                                    </span>
+                                                                    <div class="title "><b class="bold ">Max Resolution</b></div>
+                                                                    <div class="value nowarp ">{{pack.max_width || 'N/A'}} x {{pack.max_height}} px</div>
+                                                                </li>
+                                                                <li>
+                                                                    <span class="icon ">
+                                                                        <img [src]="ImgPath+'Icon_Details_Focal.svg'" class=" " width="20 " alt="Icon_Details_Focal.svg">
+                                                                    </span>
+                                                                    <div class="title "><b class="bold ">Focal Range</b></div>
+                                                                    <div class="value nowarp ">{{pack.focal_range || 'N/A'}}</div>
+                                                                </li>
+                                                                <li>
+                                                                    <span class="icon ">
+                                                                        <img [src]="ImgPath+'Icon_Details_Location.svg'" class=" " width="20 " alt="Icon_Details_Location.svg">
+                                                                    </span>
+                                                                    <div class="title "><b class="bold ">Location</b></div>
+                                                                    <div class="value nowarp ">{{pack.location || 'N/A'}}</div>
+                                                                </li>
+                                                            </ul>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>                                    
+                                    </div>
+                                    <!-- <div class="btn-block text-center" *ngIf="isUserLoggedIn && !pack.isPurchased">
+                                        <button class="btn btn-white pack-download-btn btn-white-img" (click)="purchasePack(i)" [disabled]="purchasingImage">
+                                            <span class="warp "><span *ngIf="!purchasingImage">Purchase</span><span *ngIf="purchasingImage">Please wait..</span></span>
+                                        </button>
+                                    </div> -->
+                                    <div class="btn-block text-center" *ngIf="isUserLoggedIn && pack.isPurchased">
+                                        <button class="btn btn-white pack-download-btn btn-white-img" [routerLink]="['/purchases']" [queryParams]="{pack: pack.id}">
+                                            <span class="warp">View Pack</span>
+                                        </button>
+                                    </div>
+                                    <!-- <div class="btn-block text-center" *ngIf="!isUserLoggedIn">
+                                        <a href="javascript:;" class="btn btn-white pack-download-btn btn-white-img " data-target="#purchase-modal" data-toggle="modal"
+                                            data-dismiss="modal" (click)="currentPackPrice=pack.price">
+                                            <span class="warp">Purchase</span>
+                                        </a>
+                                    </div> -->
+                                    <div class="btn-block text-center add-to-cart" *ngIf="!pack.isPurchased && !isUserLoggedIn">
+                                     <div class="btn-group">
+                                        <button aria-expanded="false" aria-haspopup="true" class="dropdown-toggle btn btn-white pack-download-btn btn-white-img" data-toggle="dropdown" type="button" *ngIf="!isUserLoggedIn">
+                                            <span class="warp">Add to Cart</span>
+                                        </button>
+                                        <!-- <button class="dropdown-toggle btn btn-white pack-download-btn btn-white-img"  type="button" *ngIf="isUserLoggedIn" (click)="addToCart(pack, userData.user_plan)">
+                                            <span class="warp">Add to Cart</span>
+                                        </button> -->
+                                        <ul class="dropdown-menu dropdown-reset dropdown-unique-arrow " *ngIf="plansDetail.length>0">
+                                            <li *ngFor="let plan of plansDetail" (click)="addToCart(pack, plan)">
+                                                <div class="info-tooltip">
+                                                    <img [src]="ImgPath+'Icon_Info.svg'" class="" width="14" alt="Icon_Info.svg">
+                                                    <span class="custom-tooltip tooltip-arrow-top">{{ plan.description }}</span>
+                                                </div>                                                
+                                                <a href="javascript:;">
+                                                    <div class="subs-paln">
+                                                        <span class="bold">{{ plan.account_type_name }}</span> 
+                                                        <span class="text-regular">License</span>
+                                                    </div>
+                                                    <div class="text-montserrat text-blue plan-price">
+                                                        <b *ngIf="plan.account_type=='1'"><span class="doller-icon">$</span>{{pack.price || 0}}</b>
+                                                        <b *ngIf="plan.account_type=='2'"><span class="doller-icon">$</span>{{pack.price*plan.indieMultiply || 0}}</b>
+                                                        <b *ngIf="plan.account_type=='3'"><span class="doller-icon">$</span>{{pack.price*plan.studioMultiply || 0}}</b>
+                                                        <!-- {{ plan.amount || 0 }} -->
+                                                    </div>                                             
+                                                </a>
+                                            </li>
+                                        </ul>
+                                     </div>
+                                    </div>
+                                    <div class="btn-block" *ngIf="isUserLoggedIn && !pack.isPurchased">
+                                    <div class="default-group-btn-section" >
+                                        <div class="input-group">
+                                            <span class="input-group-btn" [ngClass]="{'disabled': planFacilities && !planFacilities.viewAllPacks}">
+                                                <button class="input-group-addon left-group-btn" type="button" [routerLink]="['/images']" [queryParams]="{pack: pack.id, sort: 4}" *ngIf="planFacilities && planFacilities.viewAllPacks">      
+                                                    <img [src]="ImgPath+'Icon_ViewPack.svg'" width="18" class="front-img" alt="Icon_ViewPack.svg">
+                                                    <img [src]="ImgPath+'Icon_ViewPack_Blue.svg'" width="18" class="hover-img" alt="Icon_ViewPack_Blue.svg">
+                                                </button>
+                                                <button class="input-group-addon left-group-btn" type="button" *ngIf="planFacilities && !planFacilities.viewAllPacks">
+                                                    <img [src]="ImgPath+'Icon_ViewPack.svg'" width="18" class="front-img" alt="Icon_ViewPack.svg">
+                                                    <img [src]="ImgPath+'Icon_ViewPack_Light_Gray.svg'" width="18" class="hover-img-disabled" alt="Icon_ViewPack_Light_Gray.svg">
+                                                    <img [src]="ImgPath+'Icon_ViewPack_Blue.svg'" width="18" class="hover-img" alt="Icon_ViewPack_Blue.svg">
+                                                </button>
+                                                <span class="info-tooltip">
+                                                  <span class="custom-tooltip tooltip-arrow-top" *ngIf="planFacilities && planFacilities.viewAllPacks">
+                                                    View Pack                        
+                                                  </span>
+                                                <span class="custom-tooltip tooltip-arrow-top custom-tooltip-required text-nowarp" *ngIf="planFacilities && !planFacilities.viewAllPacks">
+                                                    View Pack <font class="disabled-text">(Purchase or Subscription Required)</font>
+                                                </span>
+                                                </span>                                                 
+                                            </span>
+                                            <button class="btn middle-group-btn" (click)="purchasePack(i)" [disabled]="purchasingImage">
+                                                <span *ngIf="!purchasingImage">Purchase</span>
+                                                <span *ngIf="purchasingImage">Please wait..</span>
+                                            </button>
+                                            <span class="input-group-btn">
+                                               <button class="input-group-addon right-group-btn" (click)="addToCart(pack, userData.user_plan)" type="button">
+                                                    <img [src]="ImgPath+'Icon_ShoppingCartAdd.svg'" width="22" class="front-img" alt="Icon_ShoppingCartAdd.svg">
+                                                    <img [src]="ImgPath+'Icon_ShoppingCartAdd_Blue.svg'" width="22" class="hover-img" alt="Icon_ShoppingCartAdd_Blue.svg">
+                                               </button>
+                                              <span class="info-tooltip">
+                                                <span class="custom-tooltip tooltip-arrow-top">
+                                                  Add to Cart                    
+                                                </span>
+                                              </span>                                                
+                                            </span>
+                                        </div>
+                                    </div>
+                                    </div>
+                                </div>
+                            </div>                        
+                            <a href="javascript:;" class="move-arrow right detailNext" *ngIf="i<packages.length-1" title="Next Pack">
+                                <img [src]="ImgPath+'Icon_Basic_Right.svg'" class="" width="25" alt="Icon_Basic_Right.svg">
+                            </a>
+                        </div>
+                        <div class="quick-look-warp" *ngIf="pack && pack.images && pack.images[3]" [ngStyle]="{height: (windowWidth/pack.quick_img_ratio)+'px', width: windowWidth+'px'}">
+                            <div *ngIf="pack.showQuickViewImage">
+                                <a href="javascript:;"><img [src]="ServerImgPath+pack.images[3]" width="100%" [alt]="pack.images[3]"></a>
+                            </div>
+                            <div class="overlay"></div>
+                            <div class="get-quick-look-icon">
+                                <a href="javascript:;">
+                                    <img [src]="ImgPath+ 'Icon_QuickLook.svg'" width="30" alt="Icon_QuickLook.svg">&nbsp;&nbsp;Quick Look
+                                </a>                                
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="clearfix"></div>
+</div>
+    <!-- <div class="infinite-loader" infiniteScroll [infiniteScrollDistance]="0 " [infiniteScrollThrottle]="50 " (scrolled)="loadMoreData() "></div> -->
+    <div *ngIf="dataLoading">
+        <loader-infinite></loader-infinite>
+    </div>
+    <div [hidden]="packages.length>0 || !isDataLoaded" class="loader-warp">
+        <no-data></no-data>
+    </div>
+</div>
+</div>
+<ng-template #loader>
+<div class="gray-background package-page">
+<loader></loader>
+
+</div>
+</ng-template>
+
+<style>
+.price-tag-model{
+    position: absolute;
+    right: 1px;
+    top: 60px;
+    color: #fff;
+    font-family: 'Montserrat';
+    font-weight: 600;
+    background: #4995ff;
+    padding: 3px 5px 3px 3px;
+    padding: 3px 5px 3px 3px;
+    font-size: 12px;
+    line-height: 15px;
+}
+.swal2-container-update{
+    display: flex;
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    -webkit-box-orient: horizontal;
+    -webkit-box-direction: normal;
+    -ms-flex-direction: row;
+    flex-direction: row;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: flex-end;
+    -webkit-box-pack: center;
+    -ms-flex-pack: center;
+    justify-content: flex-end;
+    padding: 10px;
+    background-color: transparent;
+    z-index: 1060;
+    overflow-x: hidden;
+}
+</style>
+<app-footer [ngClass]="{'footer-rightside': showFilterToggle}"></app-footer>
+<a id="trigger-search"></a>
+</div>
+
+
+<!-- Mobile View Warper -->
+<div class="image-component-mobile nofound-warp gray-background">
+  <div class="nofound-image nofound-single-block">
+    <div class="nofound-content text-light text-center">
+      <p>This features is not available on mobile version.</p>
+      <p>Please visit our desktop version.</p>
+    </div>
+  </div>
+</div>
+

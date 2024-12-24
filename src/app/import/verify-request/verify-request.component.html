@@ -1,0 +1,23 @@
+<app-header (isLoggedIn)="checkLogin($event)"></app-header>
+<div class="gray-background ">
+ <div class="import-success-container">
+  <div class="import-success-block" role="document">
+        <div class="img-block">
+          <img class="theme-logo" [src]="ImgPath+'Payment_Success.svg'" alt="Payment_Success.svg" width="80" />
+        </div>
+        <div class="content-block">
+          <h3 class="text-heading heading no-margin">Request Completed!</h3>
+          <div class="clearfix"></div>
+          <!-- <p [innerHTML]="importMessage"></p> -->
+          <p>Your request to import previous purchases has been verified.</p>
+          <p>After your purchases have been confirmed, they will appear in your account automatically.<br>
+            Please note that this process may take several days.</p>
+        </div>
+        <div class="text-center">
+          <button class="btn btn-theme-white" [routerLink]="['/']">Continue</button>
+        </div>
+  </div>
+
+ </div>
+</div>
+<app-footer></app-footer>

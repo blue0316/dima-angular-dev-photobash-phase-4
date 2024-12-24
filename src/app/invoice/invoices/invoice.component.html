@@ -1,0 +1,299 @@
+<app-header (isLoggedIn)="checkLogin($event)"></app-header>
+<style type="text/css">
+  @media print {
+    body {
+      font-family: 'FrutigerNeueLTPro-Regular', sans-serif;
+    }
+    html{
+      font-family: 'FrutigerNeueLTPro-Regular', sans-serif;
+    }
+    .invoice-comman-block{display: none;}
+  }
+
+</style>
+<div class="gray-background transaction-warp">
+  <div class="">
+    <div class="transaction-table">
+      <table id="datatable_example" class="table-bordered table table-striped table-hover">
+        <thead class="thead_color">
+          <tr>
+            <!--  <th width="100" class="text-center">S. No.</th> -->
+            <th width="500">Invoice Nr.</th>
+            <!--  <th width="15%">Transaction ID</th> -->
+            <!-- <th width="">Packages / Images / Plans / Credits </th> -->
+            <th width="">Description</th>
+            <!-- <th width="12%">Transaction Time/Date</th> -->
+            <th width="12%">Invoice Date</th>
+            <!-- <th width="5%">Profit</th> -->
+            <th width="7%">Price</th>
+            <th width="5%" class="text-center">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <ng-container *ngIf="(isDataLoaded && invoices.length>0); else loading">
+            <tr *ngFor="let invoice of invoices;let i=index;">
+              <!-- <td class="text-center">{{i + 1}}</td> -->
+              <td>{{ invoice.invoice_id || '-'}}</td>
+              <!-- <td>{{ invoice.transaction_id || '-' }}</td> -->
+              <td *ngIf="invoice.type==1 && invoice.itemData" [innerHTML]="invoice.itemData.split('#$#')[1]"></td>
+              <td *ngIf="invoice.type==2 && invoice.itemData" [innerHTML]="invoice.itemData.split('#$#')[1]"></td>
+              <td *ngIf="invoice.type==3 && invoice.itemData" [innerHTML]="invoice.itemData.split('#$#')[1]"></td>
+              <td *ngIf="invoice.type==5 && invoice.itemData" [innerHTML]="invoice.itemData.split('#$#')[1]"></td>
+              <td *ngIf="invoice.type==6 && invoice.itemData" [innerHTML]="invoice.itemData.split('#$#')[1]"></td>
+              <td *ngIf="invoice.type==4">Credit Pack</td>
+              <td *ngIf="!invoice.itemData && invoice.type!=4">-</td>
+              <td class="to_hide_phone">{{ invoice.transaction_date_format }}</td>
+              <td *ngIf="invoice.payment_type==1">${{invoice.grand_amount || 0}}</td>
+              <td *ngIf="invoice.payment_type!=1"> - </td>
+              <td class="ms">
+                <!-- <ng-container *ngIf="(invoice.street_address && invoice.first_name && invoice.city && invoice.country); else invoiceNotApplicable">-->
+                <ng-container *ngIf="invoice.other_payment_info.name && invoice.other_payment_info.streetAddress && invoice.other_payment_info.city; else invoiceNotApplicable">
+                  <a href="javascript:;" class="btn btn-default-white btn-xs " rel="tooltip" data-placement="top"
+                    data-original-title=" View Details" (click)="transactionDetail(invoice.id)" data-target="#transModal"
+                    data-toggle="modal" data-dismiss="modal">
+                    View Invoice
+                  </a>
+                </ng-container>
+                <ng-template #invoiceNotApplicable>
+                  <div class="info-tooltip  hover-tooltip" [ngStyle]="{position: 'relative'}">
+                    <button class="btn btn-default-white btn-xs disabled-btn" rel="tooltip" data-placement="top"
+                      data-original-title=" View Details">
+                      View Invoice
+                    </button>
+                      <span class="custom-tooltip tooltip-arrow-bottom" [ngStyle]="{width: '220px'}">
+                      Personal details in your Account Settings were incomplete at time of purchase. To request a previously incomplete Invoice, please contact us.</span>
+                  </div>
+                </ng-template>
+              </td>
+            </tr>
+          </ng-container>
+          <ng-template #loading>
+            <tr>
+              <td colspan="6">{{message}}</td>
+            </tr>
+          </ng-template>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <div class="clearfix"></div>
+</div>
+<!--Billing details-->
+<div aria-labelledby="myModalLabel " class="modal fade" id="transModal" role="dialog" tabindex="-1">
+  <div class="modal-dialog comman-modal invoice-modal" role="document">
+    <div class="modal-content">
+      <div class="modal-body">
+        <button aria-label="Close " class="close btn-close-modal" data-dismiss="modal" type="button ">
+          <span aria-hidden="true ">
+            <img [src]="ImgPath+'Icon_Basic_Close.svg'" width="18" alt="Icon_Basic_Close.svg">
+            <img [src]="ImgPath+'Icon_Basic_Close_Blue.svg'" width="18" alt="Icon_Basic_Close_Blue.svg" class="hover-img">
+          </span>
+        </button>
+        <div class="invoice-block">
+          <div *ngFor="let invoice of invoices;let i=index;" class="transaction-details" id="{{invoice.id}}" style="display:none;">
+            <div class="">
+              <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                <table class="invoice-header table no-margin" style="width: 100% !important;border-bottom: 2px solid #efefef;">
+                  <tr>
+                    <td width="50%">
+                      <a class="">
+                        <img class="theme-logo" [src]="ImgPath+'photobash-logo.png'" alt="photobash-logo.png" />
+                      </a>
+                    </td>
+                    <td width="50%" class="" style="width:50%;text-align: right;vertical-align: bottom !important;">
+                      <h3 class="invoice-heading text-right" style="margin-bottom: 0px;color:#818181;-webkit-print-color-adjust: exact; font-family: 'Theme-Montserrat-SemiBold';
+                      ">INVOICE</h3> 
+                    </td>
+                  </tr>
+                </table>
+                <div class="clearfix"></div>
+              </div>
+              <div class="clearfix"></div>
+              <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                <table class="table no-margin" style="width:100%;">
+                  <tr>
+                    <td width="50%" style="vertical-align: top;padding-top: 15px;padding-bottom: 8px;">
+                      <div class="invoice-address" id="invoice-address">
+                        <p class="company-name bold">{{photobashInfo.company}}</p>
+                        <p [innerHTML]="photobashInfo.aadress" id="invoice-address-para" class="invoice-address-para" style="margin-bottom: 0px;"></p>
+                        <div *ngIf="photobashInfo.vat_number">
+                          <p class="invoice-address-para">VAT {{photobashInfo.vat_number}}</p>
+                        </div>
+                      </div>
+                    </td>
+                    <td width="50%" style="vertical-align: top;padding-top: 15px;padding-bottom: 8px;">
+                      <div class="text-right" style="text-align: right;">
+                        <div class="invoice-comman-block">
+                          <div class="invoice-extra" style="float: right;width: 290px;">
+                            <div class="invoice-extra-row invoice-extra-row" >
+                              <span class="extra-cell title">
+                                <b class="bold">Date</b>
+                              </span>
+                              <span class="extra-cell">{{invoice.transaction_date_format}}</span>
+                            </div>
+                            <div class="invoice-extra-row">
+                              <span class="extra-cell title">
+                                <b class="bold">Invoice Nr.</b>
+                              </span>
+                              <span class="extra-cell">
+                                <span class="invoice-id-text" style="white-space: nowrap;">{{ invoice.invoice_id }}</span>
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
+                </table>
+                <div class="clearfix"></div>
+              </div>
+              <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" *ngIf="invoice">
+                <div class="billing-address-block">
+                  <div class="heading-row bold" id="heading-row" bgcolor="red" style="-webkit-print-color-adjust: exact; background-color: #efefef;padding: 6px 10px !important;">
+                    Billing Address
+                  </div>
+
+                  <div class="">
+                    <table class="table no-margin" width="100%">
+                      <tr>
+                        <td style="padding-top: 15px;padding-left: 12px;vertical-align: top;">
+                          <div *ngIf="invoice.other_payment_info.name">
+                            <div>{{ invoice.other_payment_info.name }},</div>
+                          </div>
+                          <div *ngIf="invoice.other_payment_info.streetAddress">
+                            <div>{{ invoice.other_payment_info.streetAddress }}</div>
+                          </div>
+                          <div *ngIf="invoice.other_payment_info.city || invoice.other_payment_info.postalCode">
+                            <div>{{ invoice.other_payment_info.city }} {{ invoice.other_payment_info.postalCode }}</div>
+                          </div>
+                          <div *ngIf="invoice.other_payment_info.country">
+                            <div>{{ invoice.other_payment_info.country }}</div>
+                          </div>
+                          <div>
+                            <div></div>
+                          </div>
+                        </td>
+                      </tr>
+                      <tr *ngIf="invoice.vat_number">
+                        <td>
+                          <div>
+                            <div>VAT {{ invoice.vat_number }}</div>
+                          </div>
+                        </td>
+                      </tr>
+                    </table>
+                  </div>
+                </div>
+              </div>
+              <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 invoice-detail-table">
+                <div class="table-responsive">
+                  <table class="table no-margin" width="100%">
+                    <tr>
+                      <td class="heading-row" id="heading-row2"  style="-webkit-print-color-adjust: exact; background-color: #efefef;padding: 6px 10px !important;">
+                        <b class="bold">Description</b>
+                      </td>
+                      <td width="150" class="value heading-row" id="heading-row3"  style="-webkit-print-color-adjust: exact; background-color: #efefef;padding: 6px 10px !important;text-align: right;">
+                        <b class="bold">Price</b>
+                      </td>
+                    </tr>
+                  </table>
+                  <div class="">
+                    <div class="invoice-description-block">
+                      <table class="table no-margin" width="100%">
+                        <tr *ngIf="invoice.type==1 && invoice.itemData" class="invoice-description-row clearfix">
+                          <!--<th width="2%">#</th> -->
+                          <td width="50%">Pack Purchased -
+                            <span [innerHTML]="invoice.itemData.split('#$#')[1]" class="value"></span>
+                          </td>
+                          <td width="50%" *ngIf="invoice.payment_type==1" class="value">${{invoice.gross_total}}</td>
+                          <td width="50%" *ngIf="invoice.payment_type!=1" class="value">{{invoice.gross_total}}</td>
+                        </tr>
+                        <tr *ngIf="invoice.type==2 && invoice.itemData" class="invoice-description-row clearfix">
+                          <td width="50%">Image Purchased -
+                            <span [innerHTML]="invoice.itemData.split('#$#')[1]" class="value"></span>
+                          </td>
+                          <td width="50%" *ngIf="invoice.payment_type==1" class="value">${{invoice.gross_total}}</td>
+                          <td width="50%" *ngIf="invoice.payment_type!=1" class="value">{{invoice.gross_total}}</td>
+                        </tr>
+                        <tr *ngIf="invoice.type==3 && invoice.itemData" class="invoice-description-row clearfix">
+                          <td width="50%">Plan Purchased -
+                            <span [innerHTML]="invoice.itemData.split('#$#')[1]" class="value"></span>
+                          </td>
+                          <td width="50%" *ngIf="invoice.payment_type==1" class="value">${{invoice.gross_total}}</td>
+                          <td width="50%" *ngIf="invoice.payment_type!=1" class="value">{{invoice.gross_total}}</td>
+                        </tr>
+                        <tr *ngIf="invoice.type==5 && invoice.itemData" class="invoice-description-row clearfix">
+                          <td width="50%">Kit Purchased -
+                            <span [innerHTML]="invoice.itemData.split('#$#')[1]" class="value"></span>
+                          </td>
+                          <td width="50%" *ngIf="invoice.payment_type==1" class="value">${{invoice.gross_total}}</td>
+                          <td width="50%" *ngIf="invoice.payment_type!=1" class="value">{{invoice.gross_total}}</td>
+                        </tr>
+                        <tr *ngIf="invoice.type==6 && invoice.itemData" class="invoice-description-row clearfix">
+                          <td width="50%">Model Purchased -
+                            <span [innerHTML]="invoice.itemData.split('#$#')[1]" class="value"></span>
+                          </td>
+                          <td width="50%" *ngIf="invoice.payment_type==1" class="value">${{invoice.gross_total}}</td>
+                          <td width="50%" *ngIf="invoice.payment_type!=1" class="value">{{invoice.gross_total}}</td>
+                        </tr>
+                        <tr *ngIf="invoice.type==4" class="invoice-description-row clearfix">
+                          <!-- <th width="2%">#</th> -->
+                          <td width="50%">Credit Purchased -
+                            <span class="value">{{invoice.credits}}
+                              <span *ngIf="invoice.bonus>0"> / + {{invoice.bonus}}</span>
+                            </span>
+                          </td>
+                          <td width="50%" *ngIf="invoice.payment_type==1" class="value" style="text-align: right;">${{invoice.gross_total}}</td>
+                          <td width="50%" *ngIf="invoice.payment_type!=1" class="value" style="text-align: right;">{{invoice.gross_total}}</td>
+                        </tr>
+                        <tr *ngIf="!invoice.type" class="invoice-description-row clearfix">
+                          <td width="50%" *ngIf="!invoice.type">
+                            <span *ngIf="!invoice.itemData">Custom Credit - </span>
+                          </td>
+                          <td width="50%" *ngIf="invoice.payment_type==1" class="value" style="text-align: right;">${{invoice.gross_total}}</td>
+                          <td width="50%" *ngIf="invoice.payment_type!=1" class="value" style="text-align: right;">{{invoice.gross_total}}</td>
+                        </tr>
+                        <tr class="invoice-description-row clearfix" *ngIf="parse(invoice.tax_total) > 0">
+                          <td width="50%">VAT -
+                            <span class="value" style="text-align: right;">{{invoice.tax_per}}%</span>
+                          </td>
+                          <td width="50%" class="value" style="text-align: right;">${{invoice.tax_total}}</td>
+                        </tr>
+                       
+                        
+                      </table>
+                  <table    class="table no-margin" width="100%" style="padding: 10px 0;font-size: 16px;border-top: 2px solid #efefef;">
+                      <tr class="total-tr invoice-description-row clearfix text-right" >
+                        <td width="50%"></td>
+                        <td *ngIf="invoice.payment_type==1" class="value" width="50%" style="text-align: right !important; display: table-cell;font-size: 20px;min-width: 75px;padding-left: 10px;">
+                          <span class="bold title" style="    font-size: 21px;">Total:</span>
+                          <span class="bold value" style="font-size: 20px;min-width: 75px;padding-left: 10px;">${{invoice.grand_amount}}</span>
+                        </td>
+                        <td *ngIf="invoice.payment_type!=1" class="value" colspan="2" style="text-align: right !important; display: table-cell;font-size: 20px;min-width: 75px;padding-left: 10px;">
+                          <span class="bold title">Total:</span>
+                          <span class="bold value">${{invoice.grand_amount}}</span>
+                        </td>
+                      </tr>
+                    </table>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="clearfix"></div>
+          <div class="footer text-center">
+            <br>
+            <br>
+            <br>
+            <button (click)="printDiv();" class="btn btn-theme-white btn-md">Print</button>&nbsp;&nbsp;&nbsp;
+            <button type="button" data-dismiss="modal" class="btn btn-theme-white">Close</button>
+          </div>
+          <div class="clearfix"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Billing details-->
+<app-footer></app-footer>

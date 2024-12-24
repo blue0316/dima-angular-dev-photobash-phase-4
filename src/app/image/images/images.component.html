@@ -1,0 +1,693 @@
+<app-header (isLoggedIn)="checkLogin($event)"></app-header>
+<div class="image-component-warp" >
+  <div class="toggle-button left-filter hover-tooltip" (click)="toggleFilter()" [ngClass]="{'toggle-on': showFilterToggle}">
+    <img [src]="ImgPath+ 'Icon_Basic_S_Right.svg'" width="20" class="main-img" />
+    <img [src]="ImgPath+ 'Icon_Basic_S_Right_Blue.svg'" width="20" class="hover-img" />
+    <span _ngcontent-c1="" class="info-tooltip">
+      <span _ngcontent-c1="" class="custom-tooltip custom-tooltip-left tooltip-arrow-left">
+        <ng-container *ngIf="showFilterToggle">
+          Switch to Default
+        </ng-container>
+        <ng-container *ngIf="!showFilterToggle">
+          Switch to Sidebar
+        </ng-container>
+       </span>
+    </span>
+  </div>
+  <ng-container *ngIf="showFilterToggle">
+    <app-aside-filter [totalItems]="totalItems" [selectedSort]="sortyBy"  [filters]="{'filters': filters, 'categories': categories, 'resolution': resolution}" (catFilterAdded)="onCatFilterAdd($event)" (filterUpdated)="onFilterUpdate($event)" (resolutionFilterAdded)="resolutionFilterAdded($event)" (clearFilter)="clearFilter()" (updateSortOption)="sortImage($event)"></app-aside-filter>
+  </ng-container>
+  <div [ngClass]="{'image-container-wrapper-rightside': showFilterToggle}">
+  <!--SEARCH AND FILTER BLOCK START-->
+  <div class=" search-warp " [hidden]="showSearchBox">
+    <div class="search-block center-block clearfix ">
+      <div class="icon">
+        <img [src]="ImgPath+ 'Icon_PhotobashCamera_Reset.svg'" (click)="clearAllFilter()" alt="Icon_PhotobashCamera_Reset.svg"
+          class="hover-icon" />
+        <img [src]="ImgPath+ 'Icon_PhotobashCamera_Blue.svg'" (click)="clearAllFilter()" alt="Icon_PhotobashCamera_Blue.svg"
+          class="main-icon" />
+      </div>
+      <form #searchImage="ngForm" (submit)="searchImages()">
+        <div class="input input-group">
+            <div class="search-box">
+              <input aria-label="Amount (to the nearest dollar) " class="form-control " placeholder="Search... " type="text"
+                [(ngModel)]="searchKeyword" id="suggestion-tags" autocomplete="off" name="search" />
+                <ng-container *ngIf="searchKeyword">
+                    <span class="clear-input-img" (click)="clearSearchInput()"><i class="fa fa-times"></i></span>
+                </ng-container>
+            </div>
+          <!-- (ngModelChange)="getTags($event)" -->
+          <span class="input-group-addon" (click)="searchImages()">
+            <button type="submit" class="search-submit-btn">
+              <img [src]="ImgPath+ 'Icon_Search.svg'" width="15" class="front-img" alt="Icon_Search.svg" />
+              <img [src]="ImgPath+ 'Icon_Search_Blue.svg'" width="15" class="hover-img" alt="Icon_Search_Blue.svg" />
+            </button>
+          </span>
+        </div>
+        <div class="suggestion-box" *ngIf="suggestedTags && suggestedTags.length>0">
+          <ul>
+            <li *ngFor="let tag of suggestedTags" (click)="setSeachKeyword(tag.tag_name)" [innerHTML]="tag.tag_name + ' ('+tag.result_count+')'"></li>
+          </ul>
+        </div>
+      </form>
+    </div>
+    <div class="filter-block text-center ">
+      <ul class="list-inline filter-block-ul filter-block-image">
+        <li class="all-categories">
+          <span class="head ">CATEGORIES</span>
+          <div class="btn-group">
+            <button aria-expanded="false" aria-haspopup="true" class="btn dropdown-toggle" data-toggle="dropdown" type="button">
+              <span *ngIf="catId==0">All Categories</span>
+              <span *ngIf="catId!=0">{{catName}}</span>
+              <!-- <span *ngIf="packId!=0" [innerHTML]="packName"></span> -->
+              <span class="drop-arrow"></span>
+            </button>
+            <ul class="dropdown-menu">
+              <li>
+                <a href="javascript:; " (click)="catFilterAdded(null, null, null)">All Categories</a>
+              </li>
+              <li *ngFor="let cat of categories; let i=index " [ngClass]="{ 'has-sub': cat.subCategory.length>0}">
+                <div *ngIf="section_order!=cat.section_order_by" role="separator" class="divider">{{setNextSection(cat.section_order_by)}}</div>
+                <a href="javascript:;" data-toggle="tooltip" data-placement="bottom" (click)="catFilterAdded(cat.id, i, null)"
+                  class="delay-tooltip" [ngClass]="{'text-blue': catId == cat.id || isSubcatSelected(cat.subCategory)}">
+                  {{cat.category_name}}
+                  <span class="custom-tooltip tooltip-arrow-right" *ngIf="cat.description">
+                    <span class="description-content" [innerHTML]="cat.description"></span>
+                  </span>
+                </a>
+                <div *ngIf="i==0">
+                  {{ setvalueVer(cat.section_order_by) }}
+                </div>
+                <ul *ngIf="cat.subCategory.length>0">
+                  <div class="custom-scrollbar custom-filter-scrollbar">
+                    <li *ngFor="let subcat of cat.subCategory; let j = index;" class="delay-tooltip">
+                      <a href="javascript:;" (click)="catFilterAdded(subcat.id, i, j)"  [ngClass]="{'text-blue': catId == subcat.id}">{{ subcat.category_name }}</a>
+                      <span class="custom-tooltip tooltip-arrow-right" *ngIf="subcat.description">
+                        <span class="description-content" [innerHTML]="subcat.description"></span>
+                      </span>
+                    </li>
+                  </div>
+                </ul>
+              </li>
+            </ul>
+          </div>
+        </li>
+        <li class="filter-block-li">
+          <span class="head">FILTER</span>
+          <div class="btn-group">
+            <button aria-expanded="false" aria-haspopup="true" class="btn dropdown-toggle" data-toggle="dropdown" type="button"
+              *ngIf="!isFilterApplied;else filtered">None&nbsp;
+              <span class="drop-arrow"></span>
+            </button>
+            <ng-template #filtered>
+              <button aria-expanded="false" aria-haspopup="true" class="btn dropdown-toggle" data-toggle="dropdown" type="button">Filtered&nbsp;
+                <span class="drop-arrow"></span>
+              </button>
+            </ng-template>
+            <ul class="dropdown-menu">
+              <li>
+                <a href="javascript:;" (click)="clearFilter()">None</a>
+              </li>
+              <li class="divider" role="separator"></li>
+              <ng-container *ngFor="let filter of filters; let i=index">
+                <ng-container *ngIf="i!=filters.length-1">
+                  <li [ngClass]="{'active-filter': (allParams[filter.reqParam] && allParams[filter.reqParam].length>0), 'has-sub':  filter.data && filter.data.length>0, 'open-dropdown': filter.reqParam == clickedOn}">
+                    <a href="javascript:;" [innerHTML]="filter.name" [ngClass]="{'text-blue': (allParams[filter.reqParam] && allParams[filter.reqParam].length>0)}"></a>
+                    <ul class="filter-with-check" *ngIf="filter.data && filter.data.length>0">
+                      <div class="custom-scrollbar">
+                        <ng-container *ngFor="let d of filter.data; let j=index;">
+                          <li>
+                            <div class="checkbox checkbox-white" [ngClass]="{'purchased-pack': d.isPurchased, 'text-blue': (allParams[filter.reqParam] && allParams[filter.reqParam].split(',').indexOf(d.id)>-1) ? true : false}">
+                              <input class="filter" id="filter-li-{{j}}-{{i}}" type="checkbox" (click)="filterUpdated(i, j)"
+                                [checked]="(allParams[filter.reqParam] && allParams[filter.reqParam].split(',').indexOf(d.id)>-1) ? true : false" />
+                              <label for="filter-li-{{j}}-{{i}}" [innerHTML]="d.name"></label>
+                            </div>
+                            <span class="custom-tooltip tooltip-arrow-right" *ngIf="d.description">
+                              <span class="description-content" [innerHTML]="d.description"></span>
+                            </span>
+                          </li>
+                        </ng-container>
+                      </div>
+                    </ul>
+                  </li>
+                </ng-container>
+                <ng-container *ngIf="i==filters.length-1 && isUserLoggedIn">
+                  <li class="divider" role="separator"></li>
+                  <li [ngClass]="{'has-sub': filter.data && filter.data.length>0, 'open-dropdown': filter.reqParam == clickedOn}">
+                    <a href="javascript:;" [innerHTML]="filter.name"  [ngClass]="{'text-blue': (tempPacks.length>0)}"></a>
+                    <ul class="filter-with-check" *ngIf="filter.data && filter.data.length>0" [ngClass]="{'show': filter.reqParam == clickedOn}">
+                      <div class="custom-scrollbar custom-filter-scrollbar">
+                        <ng-container *ngFor="let d of filter.data; let j=index;">
+                          <li class="pack-required-tooltip">
+                            <div class="checkbox checkbox-white" [ngClass]="{'purchased-pack': d.isPurchased, 'text-blue': (tempPacks.indexOf(d.id)>-1) ? true : false}">
+                              <input class="filter" id="filter-li-{{j}}-{{i}}" type="checkbox" (click)="filterUpdated(i, j)"
+                                [checked]="(tempPacks.indexOf(d.id)>-1) ? true : false"
+                                *ngIf="d.isPurchased || (planFacilities && planFacilities.viewAllPacks)" />
+                              <input class="filter" id="filter-li-{{j}}-{{i}}" type="checkbox" [checked]="(tempPacks.indexOf(d.id)>-1) ? true : false"
+                                *ngIf="!d.isPurchased || (planFacilities && !planFacilities.viewAllPacks)" [disabled]="!d.isPurchased || (planFacilities && !planFacilities.viewAllPacks)" />
+                              <label for="filter-li-{{j}}-{{i}}" [innerHTML]="d.name" [ngClass]="{'disabled-pack-checkbox': (!d.isPurchased && (planFacilities && !planFacilities.viewAllPacks))}"></label>
+                            </div>
+                            <span class="custom-tooltip custom-tooltip-required tooltip-arrow-right" *ngIf="(!d.isPurchased && (planFacilities && !planFacilities.viewAllPacks))">
+                              <span class="description-content text-nowarp ">View All Packs <font class="disabled">(Subscription
+                                  Required)</font></span>
+                            </span>
+                          </li>
+                          <li class="divider" *ngIf="j==numberOfPurchasedPacks-1"></li>
+                        </ng-container>
+                      </div>
+                    </ul>
+                  </li>
+                </ng-container>
+              </ng-container>
+            </ul>
+          </div>
+        </li>
+        <li class="resolution">
+          <span class="head">Resolution</span>
+          <div class="btn-group">
+            <button aria-expanded="false" aria-haspopup="true" class="btn dropdown-toggle" data-toggle="dropdown" type="button">
+              <span *ngIf="resolId==0 ">Show All&nbsp;</span>
+              <span *ngIf="resolId!=0" [innerHTML]="resolName"></span>
+              <span class="drop-arrow"></span>
+            </button>
+            <ul class="resolution-dropdown-menu dropdown-menu">
+              <li *ngFor="let resol of resolution; let i=index">
+                <a href="javascript:;"  [ngClass]="{'text-blue': (allParams['resol'] && allParams['resol'] == resol.id)}" (click)="resolutionFilterAdded(i)" [innerHTML]="resol.name"></a>
+              </li>
+            </ul>
+          </div>
+        </li>
+        <li class="sort-block">
+          <span class="head">SORT</span>
+          <div class="btn-group">
+            <button aria-expanded="false" aria-haspopup="true" class="btn dropdown-toggle" data-toggle="dropdown" type="button">
+              <span *ngIf="sortyBy==2">Popular</span>
+              <span *ngIf="sortyBy==1">Recent</span>
+              <span *ngIf="sortyBy==3">Price</span>
+              <span *ngIf="sortyBy==4">Name</span>&nbsp;
+              <span class="drop-arrow"></span>
+            </button>
+            <ul class="dropdown-menu">
+              <li>
+                <a href="javascript:;" (click)="sortImage(1)" [ngClass]="{'text-blue': sortyBy == 1}">Recent</a>
+              </li>
+              <li>
+                <a href="javascript:;" (click)="sortImage(2)"  [ngClass]="{'text-blue': sortyBy == 2}">Popular</a>
+              </li>
+              <li>
+                <a href="javascript:;" (click)="sortImage(3)"  [ngClass]="{'text-blue': sortyBy == 3}">Price</a>
+              </li>
+              <li>
+                <a href="javascript:;" (click)="sortImage(4)"  [ngClass]="{'text-blue': sortyBy == 4}">Name</a>
+              </li>
+            </ul>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
+  <div class="gray-background image-collection-head-warp" [ngClass]="{'no-filter-add': selectedFilters.length || imageIdsToAdd.length,'no-data': !Images.length}">
+    <!--Need to add slider to manage overflow of tags-->
+    <div class="filter-tag gray-background" style="display: block" *ngIf="selectedFilters.length>0">
+      <span class="arrow arrow-left">
+        <img [src]="ImgPath+ 'Icon_Basic_S_Left.svg'" alt="Icon_Basic_S_Left.svg" class="main-img" width="20" />
+        <img [src]="ImgPath+ 'Icon_Basic_S_Left_Blue.svg'" alt="Icon_Basic_S_Left_Blue.svg" class="hover-img" width="20" />
+      </span>
+      <ul class="list-inline no-margin tag-slider text-left carousel slide multi-item-carousel">
+        <ng-container>
+          <li *ngFor="let filt of selectedFilters; let i = index" class="item">
+            <a>
+              <span class="catg-icon">
+                <!-- For category -->
+                <img [src]="ImgPath+ 'Categories_Filter.svg'" alt="Categories_Filter.svg" width="20" *ngIf="filt.type==1" />
+                <!-- For Camera Angle -->
+                <img [src]="ImgPath+ 'Camera-Angles_Filter.svg'" alt="Camera-Angles_Filter.svg" width="20" *ngIf="filt.type==2" />
+                <!-- For Resolution -->
+                <img [src]="ImgPath+ 'Resolution_Filter.svg'" alt="Resolution_Filter.svg" width="20" *ngIf="filt.type==3" />
+                <!-- For Mood Light -->
+                <img [src]="ImgPath+ 'Mood_Lighting_Filter.svg'" alt="Mood_Lighting_Filter.svg" width="20" *ngIf="filt.type==4" />
+                <!-- For Location -->
+                <img [src]="ImgPath+ 'Location_Filter.svg'" alt="Aerialview_Camera_Angles_Filter.svg" width="20" *ngIf="filt.type==5" />
+                <!-- For Pack -->
+                <img [src]="ImgPath+ 'Images_Filter.svg'" alt="Images.svg" width="20" *ngIf="filt.type==6" />
+              </span>
+              <span [innerHTML]="filt.name"></span>
+              <span class="close-icon">
+                <img [src]="ImgPath+ 'Icon_Basic_S_Cancel.svg'" alt="Icon_Basic_S_Cancel.svg" class="main-img" width="10"
+                  (click)="removeFilterByClickingCross(filt)" />
+                <img [src]="ImgPath+ 'Icon_Basic_S_Cancel_Blue_Update.svg'" alt="Icon_Basic_S_Cancel_Blue_Update.svg"
+                  class="hover-img" width="10" (click)="removeFilterByClickingCross(filt)" />
+              </span>
+            </a>
+          </li>
+        </ng-container>
+      </ul>
+      <span class="arrow arrow-right">
+        <img [src]="ImgPath+ 'Icon_Basic_S_Right.svg'" alt="Icon_Basic_S_Right.svg" class="main-img" width="20" />
+        <img [src]="ImgPath+ 'Icon_Basic_S_Right_Blue.svg'" alt="Icon_Basic_S_Right_Blue.svg" class="hover-img" width="20" />
+      </span>
+      <span class="fliter-close-icon pull-right">
+        <a href="javascript:;" (click)="clearAllFilter()">
+          <img [src]="ImgPath+ 'Icon_Basic_S_Cancel.svg'" alt="Icon_Basic_S_Cancel.svg" class="main-img" width="12" />
+          <img [src]="ImgPath+ 'Icon_Basic_S_Cancel_Blue_Update.svg'" alt="Icon_Basic_S_Cancel_Blue_Update.svg" class="hover-img"
+            width="12" />
+        </a>
+      </span>
+    </div>
+    <!-- collection Add Block -->
+    <div class="image-collection-head" *ngIf="imageIdsToAdd.length">
+      <div class="left-side">
+        <span class="count">{{imageIdsToAdd.length}}</span> selected
+      </div>
+      <div class="right-side">
+        <div class="dropdown collection-dropdown">
+          <button aria-expanded="false" aria-haspopup="true" class="btn btn-default account-filter-btn collection-btn dropdown-toggle"
+            data-toggle="dropdown" id="dropdownMenu1" type="button">
+            Add to Collection
+          </button>
+          <ul aria-labelledby="dropdownMenu1" class="dropdown-menu dropdown-reset toggle-dropdown">
+            <li>
+              <ul class="collection-overflow-scroll custom-scrollbar">
+                <li *ngFor="let collection of collections; let i=index" (click)="addnameCol(collection.name, false, null)"><a
+                    href="javascript:;"><span class="collection-name">{{collection.name}}</span> &nbsp;<span class="count">({{collection.image_count
+                      || 0}})</span></a></li>
+              </ul>
+            </li>
+            <li class="divider" role="separator" *ngIf="collections.length"></li>
+            <li class="new-collection-tag" data-target="#collection-add" data-toggle="modal" data-dismiss="modal"><a
+                href="javascript:;" (click)="isAddError = false">
+                <img [src]="ImgPath+ 'Icon_NewCollection.svg'" alt="Icon_NewCollection.svg" class="icon-img" width="16">
+                <img [src]="ImgPath+ 'Icon_NewCollection_Blue.svg'" alt="Icon_NewCollection_Blue.svg" class="hover-icon-img"
+                  width="16">&nbsp;New Collection</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="clearfix"></div>
+
+      <span class="close-btn" (click)="uncheckAllImages()">
+        <img [src]="ImgPath+ 'Icon_Basic_S_Cancel.svg'" alt="Icon_Basic_S_Cancel.svg" class="main-img" width="12" />
+        <img [src]="ImgPath+ 'Icon_Basic_S_Cancel_Blue_Update.svg'" alt="Icon_Basic_S_Cancel_Blue_Update.svg" class="hover-img"
+          width="12" />
+      </span>
+    </div>
+
+
+    <!-- collection Add Block End-->
+    <div class="clearfix"></div>
+  </div>
+
+  <div class="container-fluid gray-background comman-padding-block images-wrapper-block">
+    <div class="col-md-12 wrapper-side-padding" id="single-image-detail">
+      <div class="pictureView viewchange picflex" *ngIf="isDataLoaded" [ngClass]="{'checkbox-selected': imageIdsToAdd.length > 0}">
+        <ng-container *ngFor="let img of Images; let i = index;">
+          <div class="resultitem" [ngStyle]="{'width': img.thumb_width+'px'}">
+            <div class="box thumbnailurl" [ngClass]="{'selected': allToCollId[img.image_id]}" [attr.data-imgwidth]="img.width"
+              [attr.data-imgheight]="img.height">
+              <a href="javascript:void(0);" class="clickevent" [attr.data-id]="img.image_id" [attr.data-index]="i"
+                [ngClass]="{'disabled-view': imageIdsToAdd.length > 0}">
+                <img [src]="ServerImgPath + img.image_thumbnail" [attr.data-id]="img.image_id" [attr.data-index]="i"
+                  class="img_thumbnail" [alt]="img.image_name">
+                <div class="iconlinks">{{img.width}} x {{img.height}}</div>
+              </a>
+              <div class="new-tag" *ngIf="img.isNew==1">
+                <span class="tag-name">NEW!</span>
+              </div>
+              <div class="plusicon-link btn-group" *ngIf="isUserLoggedIn">
+                <button aria-expanded="false" aria-haspopup="true" class="dropdown-toggle" data-toggle="dropdown" type="button"
+                  (click)="selectImage(img.image_id)" *ngIf="imageIdsToAdd.length==0">
+                  <img class="fa-plus main-img" width="15" [src]="ImgPath+'Icon_Plus_Light_Gray.svg'" alt="Icon_Plus_Light_Gray.svg"
+                    (load)="thumnailLoaded(i)" />
+                  <img class="fa-plus hover-img" width="15" [src]="ImgPath+'Icon_Plus_White.svg'" alt="Icon_Plus_White.svg"
+                    (load)="thumnailLoaded(i)" />
+                </button>
+                <div class="checkbox checkbox-black" *ngIf="imageIdsToAdd.length>0">
+                  <input id="add-col-{{img.image_id}}" name="addCol-{img.image_id}" type="checkbox" [(ngModel)]="allToCollId[img.image_id]"
+                    (change)="updateImageForCollection(allToCollId[img.image_id], i)" value="1">
+                  <label for="add-col-{{img.image_id}}"></label>
+                </div>
+              </div>
+              <div class="block-overlay" (click)="updateImageForCollection(allToCollId[img.image_id], i)"></div>
+            </div>
+            <div class="detailview">
+              <div class="single-img-warp flexbox-container">
+                <a href="#detailClose" class="detailClose remove mobile-view-btn hidden-md hidden-lg visible-sm visible-xs">
+                  <img [src]="ImgPath+ 'Icon_Basic_Close.svg' " width="20" alt="Icon_Basic_Close.svg">
+                </a>
+                <div class="left-section">
+                  <a href="javascript:;" class="move-arrow left detailPrev" *ngIf="i!=0">
+                    <img [src]="ImgPath+'Icon_Basic_Left.svg'" width="25" class="" alt="Icon_Basic_Left.svg">
+                  </a>
+                  <div class="single-image">
+                    <div class="image-wrapper" [ngClass]="{'trans-back': (!img.background_color && img.is_transparent==1)}">
+                      <div id="copyable-image-{{i}}" *ngIf="img.image_thumbnail_main" [hidden]="!isPreviewLoaded[i]">
+                        <img class="xzoom" id="xzoom-{{i}}" [src]="img.image_thumbnail_main" [attr.xoriginal]="img.image_preview_zoom"
+                          [ngStyle]="{'width': img.isPurchased || img.preview_width < 250 ? img.preview_width +'px' : img.preview_width - 100 +'px', 'max-width': (img.isPurchased ? showFilterToggle ? '800px' : '1000px' : showFilterToggle ? '750px' : '900px')}"
+                          [alt]="img.image_name" (load)="previewLoaded(i)" />
+                      </div>
+                      <div id="remove-ele-{{i}}" [hidden]="isPreviewLoaded[i]">
+                        <img [src]="ServerImgPath + img.image_thumbnail" [alt]="img.image_name" [ngStyle]="{'width': img.isPurchased  || img.preview_width < 250 ? img.preview_width +'px' : img.preview_width - 100 +'px', 'max-width': (img.isPurchased ? showFilterToggle ? '800px' : '1000px' : showFilterToggle ? '750px' : '900px')}"
+                          [alt]="img.image_name" class="blur-load">
+                      </div>
+                      <div class="image-addons-block" *ngIf="img.image_thumbnail_main">
+                        <div class="search-icon icon" *ngIf="planFacilities.imgZoom && showActualOption(); else disabledZoom" (click)="zoomImage('xzoom-'+i, $event)">
+                          <img [src]="ImgPath+'ImageFunction_Zoom_Gray.svg'" width="18" class="main-icon" alt="ImageFunction_Zoom_Gray.svg">
+                          <img [src]="ImgPath+'ImageFunction_Zoom_Gray_White.svg'" width="18" class="hover-icon" alt="ImageFunction_Zoom_Gray_White.svg">
+                          <span class="custom-tooltip tooltip-arrow-top" *ngIf="planfacilitiesToolTip.imgZoom"
+                            [innerHTML]="planfacilitiesToolTip.imgZoom"></span>
+                          <span class="custom-tooltip tooltip-arrow-top" *ngIf="!planfacilitiesToolTip.imgZoom">Zoom
+                            Image <font class="disabled-text">(Subscription Required)</font></span>
+                        </div>
+                        <ng-template #disabledZoom>
+                          <div class="search-icon icon disabled">
+                            <img [src]="ImgPath+'ImageFunction_Zoom_Gray.svg'" width="18" class="main-icon" alt="ImageFunction_Zoom_Gray.svg">
+                            <img [src]="ImgPath+'ImageFunction_Zoom_Gray_White.svg'" width="18" class="hover-icon" alt="ImageFunction_Zoom_Gray_White.svg">
+                            <span class="custom-tooltip tooltip-arrow-top" *ngIf="planfacilitiesToolTip.imgZoom"
+                              [innerHTML]="planfacilitiesToolTip.imgZoom"></span>
+                            <span class="custom-tooltip tooltip-arrow-top" *ngIf="!planfacilitiesToolTip.imgZoom">Zoom
+                              Image <font class="disabled-text">(Subscription Required)</font></span>
+                          </div>
+                        </ng-template>
+                        <div class="download-icon icon" *ngIf="planFacilities.freePreviewDownload && showActualOption(); else disabledDownload"
+                          (click)="downloadPreview(i);removeZoom('xzoom-'+i)">
+                          <img [src]="ImgPath+'ImageFunction_FreeDownload_Gray.svg'" width="18" class="main-icon" alt="ImageFunction_FreeDownload_Gray.svg">
+                          <img [src]="ImgPath+'ImageFunction_FreeDownload_Gray_White.svg'" width="18" class="hover-icon"
+                            alt="ImageFunction_FreeDownload_Gray_White.svg">
+                          <span class="custom-tooltip tooltip-arrow-top" *ngIf="planfacilitiesToolTip.freePreviewDownload"
+                            [innerHTML]="planfacilitiesToolTip.freePreviewDownload"></span>
+                          <span class="custom-tooltip tooltip-arrow-top" *ngIf="!planfacilitiesToolTip.freePreviewDownload">Download
+                            Free Preview <font class="disabled-text">(Subscription Required)</font></span>
+                        </div>
+                        <ng-template #disabledDownload>
+                          <div class="copy-icon icon disabled">
+                            <img [src]="ImgPath+'ImageFunction_FreeDownload_Gray.svg'" width="18" class="main-icon" alt="ImageFunction_FreeDownload_Gray.svg">
+                            <img [src]="ImgPath+'ImageFunction_FreeDownload_Gray_White.svg'" width="18" class="hover-icon"
+                              alt="ImageFunction_FreeDownload_Gray_White.svg">
+                            <span class="custom-tooltip tooltip-arrow-top" *ngIf="planfacilitiesToolTip.freePreviewDownload"
+                              [innerHTML]="planfacilitiesToolTip.freePreviewDownload"></span>
+                            <span class="custom-tooltip tooltip-arrow-top" *ngIf="!planfacilitiesToolTip.freePreviewDownload">Download
+                              Free Preview <font class="disabled-text">(Subscription Required)</font></span>
+                          </div>
+                        </ng-template>
+                      </div>
+
+
+                    </div>
+                    <div class="subscribe-info-line" *ngIf="!isUserLoggedIn || (planFacilities && !planFacilities.noWaterMark && !img.isPurchased)"><b
+                        class="bold">Subscribe</b> or <b class="bold">Purchase</b> to remove watermarks</div>
+                  </div>
+                  <a href="javascript:;" class="move-arrow right detailNext" *ngIf="i<Images.length-1">
+                    <img [src]="ImgPath+'Icon_Basic_Right.svg'" class="" width="25" alt="Icon_Basic_Right.svg">
+                  </a>
+                </div>
+                <div class="right-section">
+                  <div class="single-image-detail">
+                    <a href="#detailClose" class="detailClose remove hidden-sm hidden-xs">
+                      <img [src]="ImgPath+ 'Icon_Basic_Close.svg' " width="20" alt="Icon_Basic_Close.svg">
+                    </a>
+                    <div class="header">
+                      <h3 class="no-margin">{{img.image_name}}</h3>
+                    </div>
+                    <div class="row">
+                      <div class="col-md-12">
+                        <ul class="content">
+                          <li *ngIf="img.width || img.height">
+                            <span class="icon">
+                              <img [src]="ImgPath+'Icon_Details_MinRes.svg'" class="" width="20" alt="Icon_Details_MinRes.svg">
+                            </span>
+                            <div class="title">
+                              <b class="bold">Resolution</b>
+                            </div>
+                            <div class="value nowarp">{{img.width || 0}} x {{img.height || 0}} px</div>
+                          </li>
+                          <li *ngIf="img.size">
+                            <span class="icon">
+                              <img [src]="ImgPath+'Icon_Details_FileSize.svg'" class="" width="20" alt="Icon_Details_FileSize.svg">
+                            </span>
+                            <div class="title">
+                              <b class="bold">File Size</b>
+                            </div>
+                            <div class="value nowarp">{{img.size}}</div>
+                          </li>
+                          <li *ngIf="img.format">
+                            <span class="icon">
+                              <img [src]="ImgPath+'Icon_Details_Format.svg'" class="" width="15" alt="Icon_Details_Format.svg">
+                            </span>
+                            <div class="title">
+                              <b class="bold">Format</b>
+                            </div>
+                            <div class="value nowarp text-uppercase">{{img.sformat}}</div>
+                          </li>
+                          <li *ngIf="img.camera_model">
+                            <span class="icon">
+                              <img [src]="ImgPath+'Icon_Details_Camera.svg'" class="" width="20" alt="Icon_Details_Camera.svg">
+                            </span>
+                            <div class="title">
+                              <b class="bold">Camera Model</b>
+                            </div>
+                            <div class="value " [innerHTML]="img.camera_model"></div>
+                          </li>
+                          <li *ngIf="img.focal_range">
+                            <span class="icon">
+                              <img [src]="ImgPath+'Icon_Details_Focal.svg'" class="" width="20" alt="Icon_Details_Focal.svg">
+                            </span>
+                            <div class="title">
+                              <b class="bold">Focal Length</b>
+                            </div>
+                            <div class="value nowarp">{{img.focal_range}}</div>
+                          </li>
+                          <li *ngIf="img.location">
+                            <span class="icon">
+                              <img [src]="ImgPath+'Icon_Details_Location.svg'" class="" width="20" alt="Icon_Details_Location.svg">
+                            </span>
+                            <div class="title">
+                              <b class="bold">Location</b>
+                            </div>
+                            <div class="value nowarp">{{img.location}}</div>
+                          </li>
+                        </ul>
+                      </div>
+                    </div>
+                    <div class="">
+                      <div class="credit-count text-center" *ngIf="!img.isPurchased">
+                        <div class="credit-count-inner">
+                          <font class="count">{{img.price_credits}}</font> Credits
+                          <span class="custom-tooltip tooltip-arrow-top">Equals about
+                            <b><span class="doller-icon">$</span>{{img.price}}</b>
+                          </span>
+                        </div>
+                      </div>
+                      <div class="credit-count text-center" *ngIf="img.isPurchased">
+                        <font class="purchased">Purchased</font>
+                      </div>
+                      <div class="">
+                        <div class="download-block">
+                          <div class="download-block-addon hover-tooltip" *ngIf="isUserLoggedIn">
+                            <button class="CopyClipboard" type="button" [disabled]="downloadingImage || !isUserLoggedIn || img.isPurchased"
+                              (click)="onlyPurchaseThisImage(i)">
+                              <img class="front-img" [src]="ImgPath+'Icon_Wallet_Download_Img.svg'" width="18" alt="Icon_Wallet_Download_Img.svg">
+                              <img class="hover-img" [src]="ImgPath+'Icon_Wallet_Download_Img_Blue.svg'" width="18" alt="Icon_Wallet_Download_Img_Blue.svg">
+                            </button>
+                            <span class="info-tooltip">
+                              <span class="custom-tooltip tooltip-arrow-top">
+                                Purchase without Downloading
+                              </span>
+                            </span>
+                          </div>
+                          <button class="btn btn-download" *ngIf="isUserLoggedIn; else notLoggedIn" (click)="downloadImage(i, selectedSize[i])"
+                            [disabled]="downloadingImage">
+
+                              <span *ngIf="!downloadingImage" class="download-text-img">
+                                <img class="front-img" [src]="ImgPath+'Icon_Download.svg'" width="18" alt="Icon_Download.svg">
+                                <img class="hover-img" [src]="ImgPath+'Icon_Download_Blue.svg'" width="18" alt="Icon_Download_Blue.svg">
+                                Download
+                              </span>
+
+                              <span *ngIf="downloadingImage" class="download-text-img">
+                                Downloading Image...
+                              </span>
+
+                          </button>
+                          <ng-template #notLoggedIn>
+                            <button class="btn btn-download" data-target="#login-modal" data-toggle="modal">
+                              <span class="download-text-img">
+                                <img class="front-img" [src]="ImgPath+'Icon_Download.svg'" width="18" alt="Icon_Download.svg">
+                                <img class="hover-img" [src]="ImgPath+'Icon_Download_Blue.svg'" width="18" alt="Icon_Download_Blue.svg">
+                                Download
+                              </span>
+                            </button>
+                          </ng-template>
+                          <div class="download-block-addon right">
+                            <div class="dropdown" *ngIf="planFacilities.downloadResizer">
+                              <button class="input-group-addon dropdown-toggle" type="button" id="dropdownMenu1"
+                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="true" [disabled]="downloadingImage || !isUserLoggedIn">
+                                <img class="front-img" [src]="ImgPath+'Icon_Basic_S_Down.svg'" width="12" alt="Icon_Basic_S_Down.svg">
+                                <img class="hover-img" [src]="ImgPath+'Icon_Basic_S_Down_Blue.svg'" width="12" alt="Icon_Basic_S_Down_Blue.svg">
+                              </button>
+                              <ul class="dropdown-menu dropdown-menu-right size-dropdown dropdown-reset"
+                                aria-labelledby="dropdownMenu1">
+                                <li>
+                                  <h4>Select Size</h4>
+                                </li>
+                                <li role="separator" class="divider"></li>
+                                <li>
+                                  <div class="radio custom-radio" (click)="selectedSize[i]='original'">
+                                    <input type="radio" name="optionsRadios-{{i}}" id="optionsRadios1-{{i}}" value="original"
+                                      class="size-select-check radio-btn" name="option" [checked]="selectedSize[i]=='original' || !selectedSize[i]">
+                                    <!-- (click)="downloadThisImage(i, 'width', 'height')" -->
+                                    <label class="radio-label" for="optionsRadios1-{{i}}">
+                                      Original
+                                      <font class="size-name">({{img.width || 0}} x {{img.height || 0}})</font>
+                                    </label>
+                                  </div>
+                                </li>
+                                <li>
+                                  <div class="radio custom-radio" (click)="selectedSize[i]=l.value">
+                                    <input type="radio" name="optionsRadios-{{i}}" id="optionsRadios2-{{i}}" value="large"
+                                      class="size-select-check" name="option" #l [checked]="selectedSize[i]==l.value">
+                                    <!-- (click)="downloadThisImage(i, 'large_width', 'large_height')" -->
+                                    <label class="radio-label" for="optionsRadios2-{{i}}">
+                                      Large
+                                      <font class="size-name">({{img.large_width || 0}} x {{img.large_height || 0}})</font>
+                                    </label>
+                                  </div>
+                                </li>
+                                <li>
+                                  <div class="radio custom-radio" (click)="selectedSize[i]=m.value">
+                                    <input type="radio" name="optionsRadios-{{i}}" id="optionsRadios3-{{i}}" value="medium"
+                                      class="size-select-check" #m [checked]="selectedSize[i]==m.value">
+                                    <!-- (click)="downloadThisImage(i, 'medium_width', 'medium_height')" -->
+                                    <label class="radio-label" for="optionsRadios3-{{i}}">
+                                      Medium
+                                      <font class="size-name">({{img.medium_width || 0}} x {{img.medium_height || 0}})</font>
+                                    </label>
+                                  </div>
+                                </li>
+                                <li>
+                                  <div class="radio custom-radio" (click)="selectedSize[i]=s.value">
+                                    <input type="radio" name="optionsRadios-{{i}}" id="optionsRadios4-{{i}}" value="small"
+                                      class="size-select-check" #s [checked]="selectedSize[i]==s.value">
+                                    <!-- (click)="downloadThisImage(i, 'small_width', 'small_height')" -->
+                                    <label class="radio-label" for="optionsRadios4-{{i}}">
+                                      Small
+                                      <font class="size-name">({{img.small_width || 0}} x {{img.small_height || 0}})</font>
+                                    </label>
+                                  </div>
+                                </li>
+                                <li>
+                                  <div class="radio custom-radio" (click)="selectedSize[i]=c.value">
+                                    <input type="radio" name="optionsRadios-{{i}}" id="optionsRadios5-{{i}}" value="custom"
+                                      class="size-select-check" #c [checked]="selectedSize[i]==c.value">
+                                    <label class="radio-label" for="optionsRadios5-{{i}}">
+                                      Custom Size
+                                    </label>
+                                  </div>
+                                </li>
+                                <li *ngIf="selectedSize[i]==c.value">
+                                  <div class="input-group custom-image-size">
+                                    <input type="text" class="form-control" aria-label="Amount (to the nearest dollar)"
+                                      placeholder="Width" [(ngModel)]="imageWidthToDownload" (ngModelChange)="widthUpdated(img.ratio)"
+                                      pattern="/^[0-9]+$/">
+                                    <span class="input-group-addon">X</span>
+                                    <input type="text" class="form-control" aria-label="Amount (to the nearest dollar)"
+                                      placeholder="Height" disabled="true" [(ngModel)]="imageHeightToDownload">
+                                  </div>
+                                  <p class="text-danger" *ngIf="widthError">Only numbers are allowed</p>
+
+                                  <!-- <button class="btn btn-primary">Download</button> -->
+                                  <!--  (click)="downloadThisImage(i, 'custom_width', 'custom_height')" -->
+                                </li>
+                              </ul>
+                            </div>
+                          </div>
+                        </div>
+                        <p class="appearance-info" *ngIf="img.package">
+                          This image appears in
+                          <a [routerLink]="['/packs']" [queryParams]="{ search: encodeToURL(img.package_simple) }">
+                            <b>
+                              <font class="text-uppercase" [innerHTML]="img.package"></font>
+                            </b>
+                          </a>
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="clearfix"></div>
+            </div>
+          </div>
+        </ng-container>
+        <!-- End of thumbnail display -->
+        <!-- <div class="infinite-loader" infiniteScroll [infiniteScrollDistance]="0" [infiniteScrollThrottle]="50" (scrolled)="loadMoreData()"></div> -->
+      </div>
+      <div id="pics"></div>
+      <div *ngIf="dataLoading">
+        <loader-infinite></loader-infinite>
+      </div>
+      <div *ngIf="!isDataLoaded">
+        <div>
+          <loader></loader>
+        </div>
+      </div>
+      <!-- End of thumbnail display -->
+    </div>
+    <div [hidden]="Images.length>0 || !isDataLoaded" class="loader-warp">
+      <no-data></no-data>
+    </div>
+
+  </div>
+
+  <div aria-labelledby="myModalLabel" class="modal fade" id="collection-add" role="dialog" tabindex="-1">
+    <div class="modal-dialog account-modal comman-modal" role="document">
+      <div class="modal-content">
+        <div class="modal-header comman-header-modal">
+          <button aria-label="Close" class="close btn-close-modal" data-dismiss="modal" type="button">
+            <span aria-hidden="true">
+              <img [src]="ImgPath+'Icon_Basic_Close.svg'" width="18" alt="Icon_Basic_Close.svg">
+            </span>
+          </button>
+          <h2 class="modal-title">
+            <img class="checkout-lock-icon" [src]="ImgPath+'Icon_NewCollection.svg'" width="20" alt="Icon_NewCollection.svg">
+            New Collection</h2>
+        </div>
+        <div class="modal-body">
+          <form name="AddForm" #AddForm="ngForm" (submit)="addnameCol(newColName,1,AddForm)">
+            <div class="alert alert-success" *ngIf="isAddSuccess && AddSuccess">{{AddSuccess}}</div>
+            <div class="alert alert-danger" *ngIf="isAddError && AddError">{{AddError}}</div>
+            <div class="form-group comman-form-group">
+              <input autocomplete="off" class="form-control input-block" id="newColName" name="newColName" placeholder="Name Your Collection..."
+                type="text" [(ngModel)]="newColName" #addCollection="ngModel" maxlength="50" />
+              <div *ngIf="addCollection.invalid && (addCollection.dirty || addCollection.touched)">
+                <p class="text-danger" *ngIf="addCollection.errors.required">Please enter a name</p>
+                <p class="text-danger" *ngIf="isAddError && Errors.addname">{{Errors.addname}}</p>
+              </div>
+            </div>
+            <div class="divider-section"></div>
+            <button class="btn btn-default btn-block login-btn" name="Submit" type="submit" value="add" [disabled]="addBtnDis || AddForm.invalid">
+              <b class="bold">Create</b>
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+<app-footer [ngClass]="{'footer-rightside': showFilterToggle}"></app-footer>
+<a [href]="downloadUrl" class="downloadImg" [download]="downloadImageName" [hidden]="true">
+  <img [src]="downloadUrl" [alt]="downloadUrl">
+</a>
+<a id="trigger-img-search"></a>
+</div>
+
+<!--Mobile View Warper-->
+<div class="image-component-mobile nofound-warp gray-background">
+  <div class="nofound-image nofound-single-block">
+    <div class="nofound-content text-light text-center">
+      <p>This features is not available on mobile version.</p>
+      <p>Please visit our desktop version.</p>
+    </div>
+  </div>
+</div>

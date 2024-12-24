@@ -1,0 +1,170 @@
+<app-header (isLoggedIn)="checkLogin($event)"></app-header>
+<div class="white-light-background">
+  <div class="contact-warp">
+    <div class="theme-container">
+      <div class="header-block text-center">
+        <h1 class="main-head no-margin text-light">Contact Us</h1>
+        <h3 class="sub-head">
+          Please contact us for questions or if you would like to submit a suggestion for future
+          content.
+          <br />
+          We'll do our best to respond to you as soon as possible.
+        </h3>
+      </div>
+      <div class="contact-form">
+        <form
+          id="contact-form"
+          method="post"
+          role="form"
+          #contact="ngForm"
+          (submit)="submitData(contact)"
+          novalidate
+        >
+          <div class="messages"></div>
+          <div class="col-sm-8 col-md-7 center-block">
+            <!-- <div *ngIf="isSupportFormMessage">
+                        <div [class]="messageClass" [innerHTML]="succesErrorMessage"></div>
+                    </div> -->
+            <div class="controls support-box">
+              <div class="row">
+                <div class="col-md-6 name-block">
+                  <div class="form-group">
+                    <!-- <label for="form_name">First Name *</label> -->
+                    <input
+                      id="form_name"
+                      type="text"
+                      name="first_name"
+                      class="form-control"
+                      placeholder="Name"
+                      [(ngModel)]="support.first_name"
+                      #first_name="ngModel"
+                      required
+                    />
+                    <div
+                      class="help-block with-errors"
+                      *ngIf="first_name.invalid && (first_name.dirty || first_name.touched)"
+                    >
+                      <p class="text-danger" *ngIf="first_name.errors.required">
+                        First name field is required.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                <!--                             <div class="col-md-6">
+                                <div class="form-group">
+                                    
+                                    <input id="form_lastname" type="text" name="last_name" class="form-control" placeholder="Please enter your last name" required="required" data-error="Lastname is required." [(ngModel)]="support.last_name" #last_name="ngModel" required>
+                                     <div class="help-block with-errors" *ngIf="last_name.invalid && (last_name.dirty || last_name.touched)">
+                                        <p class="text-danger" *ngIf="last_name.errors.required">Last name field is required.</p>
+                                    </div>
+                                </div>
+                            </div> -->
+                <div class="col-md-6 email-block">
+                  <div class="form-group">
+                    <!-- <label for="form_email">Email *</label> -->
+                    <input
+                      type="email"
+                      name="email"
+                      class="form-control"
+                      placeholder="Email"
+                      [(ngModel)]="support.email"
+                      #email="ngModel"
+                      required
+                    />
+                    <div
+                      class="help-block with-errors"
+                      *ngIf="email.invalid && (email.dirty || email.touched)"
+                    >
+                      <p class="text-danger" *ngIf="email.errors.required">
+                        Email field is required.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-12">
+                  <div class="form-group">
+                    <!-- <label for="form_phone">Subject</label> -->
+
+                    <select
+                      class="form-control"
+                      name="subject"
+                      [(ngModel)]="support.subject"
+                      #subject="ngModel"
+                      required
+                    >
+                      <option>Select the Subject </option>
+                      <option *ngFor="let subject of subjects" [value]="subject.id">{{
+                        subject.subject
+                      }}</option>
+                    </select>
+
+                    <div
+                      class="help-block with-errors"
+                      *ngIf="subject.invalid && (subject.dirty || subject.touched)"
+                    >
+                      <p class="text-danger" *ngIf="subject.errors.required">
+                        Subject field is required.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-12">
+                  <div class="form-group">
+                    <!--  <label for="form_message">Message *</label> -->
+                    <textarea
+                      name="message"
+                      class="form-control"
+                      placeholder="Message"
+                      rows="4"
+                      required="required"
+                      data-error="Please,leave us a message."
+                      [(ngModel)]="support.message"
+                      #message="ngModel"
+                      required
+                    ></textarea>
+                    <div
+                      class="help-block with-errors"
+                      *ngIf="message.invalid && (message.dirty || message.touched)"
+                    >
+                      <p class="text-danger" *ngIf="message.errors.required">
+                        Message field is required.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                <br />
+                <div class="col-md-12">
+                  <div class="text-center">
+                    <input
+                      type="submit"
+                      class="btn btn-theme-white"
+                      value="Submit"
+                      *ngIf="!sendingRequest"
+                      [disabled]="!contact.form.valid"
+                    />
+                    <input
+                      type="button"
+                      class="btn btn-theme-white"
+                      value="Please wait.."
+                      disabled
+                      *ngIf="sendingRequest"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+<ng-template #loader>
+  <loader></loader>
+</ng-template>
+
+<app-footer></app-footer>

@@ -1,0 +1,621 @@
+<app-header (isLoggedIn)="checkLogin($event)" (userDataUpdated)="userDataUpdated($event)"></app-header>
+<div style="position: relative;background: #eaeaea;">
+  <div class="subscription-banner-warp">
+    <div class="subscription-banner fade-load-banner" [ngStyle]="{'background-image': 'url('+ServerImgPath+'assets/image/PP_MainBanner_01_2K.jpg'+'),url('+ServerImgPath+'assets/image/PP_MainBanner_01_4K.jpg'+')'}"></div>
+  </div>
+  <div class="subscription-block" *ngIf="isDataLoaded; else loader">
+    <div class="theme-container">
+      <div class="header-block text-center">
+        <h1 class="no-margin text-light">Subscription Plans</h1>
+        <ng-container *ngIf="isUserLoggedIn;else notLoggedIn">
+          <p class="text-light plan-sub-heading" *ngIf="userData.user_plan_details && userData.user_plan_details.planName && userData.user_plan_details.subscriptionStatus=='3'">
+            Your <span class="text-regular">{{userData.user_plan_details.planName || 'No Plan'}}
+              {{userData.user_plan_details.subscriptionName || 'No Subscription'}}
+              Plan</span> has
+            <span class="text-expired">expired</span>.
+            <br> You can <span class="text-regular">renew</span> your Subscription at any time.
+          </p>
+          <p class="text-light plan-sub-heading" *ngIf="userData.user_plan_details && userData.user_plan_details.planName && userData.user_plan_details.subscriptionStatus=='1'">
+            Your current
+            <span class="text-regular">{{userData.user_plan_details.planName || 'No Plan'}}
+              {{userData.user_plan_details.subscriptionName || 'No Subscription'}}
+              Plan</span> is
+            <span class="text-active">active</span>.
+            <br> Your next Subscription payment will be on {{userData.user_plan_details.nextPayment}}.
+          </p>
+          <p class="text-light plan-sub-heading" *ngIf="userData.user_plan_details && userData.user_plan_details.planName && userData.user_plan_details.subscriptionStatus=='2'">
+            Your current
+            <span class="text-regular">{{userData.user_plan_details.planName || 'No Plan'}}
+              {{userData.user_plan_details.subscriptionName || 'No Subscription'}}
+              Plan</span> has been
+            <span class="text-cancelled">cancelled</span>.
+            <br> Your Subscription will expire {{userData.user_plan_details.nextPayment}}
+          </p>
+          <p class="text-light plan-sub-heading" *ngIf="!userData.user_plan_details || !userData.user_plan_details.planName">
+            Get a monthly Subscription for uninterrupted access.
+            <br> Unlock additional features at no extra cost!
+          </p>
+        </ng-container>
+
+        <ng-template #notLoggedIn>
+          <p class="text-light plan-sub-heading">
+            Get a monthly Subscription for uninterrupted access.
+            <br> Unlock Credits rollover and never expire!
+          </p>
+        </ng-template>
+      </div>
+      <div class="plans-block">
+        <div class="col-md-10 center-block">
+          <ul class="nav nav-tabs plans-nav-tabs" role="tablist" *ngIf="userData && userData.user_plan">
+            <li role="presentation" *ngFor="let plan of plans; let i = index;" [ngClass]="{'active': (userData && userData.user_plan == plan.account_id)}">
+              <a>
+                <span [ngClass]="{'plans-name': (userData && userData.user_plan == plan.account_id)}">{{plan.account_type}}</span>
+              </a>
+            </li>
+          </ul>
+          <ul class="nav nav-tabs plans-nav-tabs" role="tablist" *ngIf="!userData || !userData.user_plan">
+            <li role="presentation" *ngFor="let plan of plans; let i = index;" [ngClass]="{'active': (i==0)}" (click)="planChanged(i)">
+              <a href="#tab-{{i}}" aria-controls="freelance" role="tab" data-toggle="tab">
+                <span>{{plan.account_type}}</span>
+              </a>
+            </li>
+          </ul>
+          <!-- Tab panes -->
+          <div class="tab-content" *ngIf="!userData || !userData.user_plan">
+            <div role="tabpanel" class="tab-pane" *ngFor="let plan of plans; let i = index;" id="tab-{{i}}" [ngClass]="{'active': (i==0)}">
+              <div class="plans-table clearfix">
+                <div class="plan-row text-center" *ngFor="let subplan of plan.plan_details; let subIndex = index"
+                  [ngClass]="{'highlight-plan': (highlightedPlanIndex==subIndex)}" (click)="setSelectedPlanIndex(subIndex, i)">
+                  <div class="popular-tag" *ngIf="subIndex==1">
+                    <span class="tag-name">POPULAR</span>
+                  </div>
+                  <h2 class="plan-base-name no-margin">{{subplan.subscription_name}}</h2>
+                  <div class="paln-detail">
+                    <div class="plan-price">
+                      <font class="doller-icon">$</font>{{numberType(subplan.amount) || 0}}/<small>mo</small>
+                    </div>
+                    <div class="credits">
+                      <h3><b>{{subplan.credit || 0}}</b> Credits</h3>
+                    </div>
+                    <div class="credits-info">per month/ <span *ngIf="subplan.bonus>0">
+                        <font class="text-blue">+{{subplan.bonus || 0}}</font> bonus
+                      </span></div>
+                    <div class="plan-user">{{parseJSON(subplan.facilities).numbeOfUsers || 1}} user(s)</div>
+                  </div>
+                  <div class="btn-section text-center">
+                    <a href="javascript:;" *ngIf="isUserLoggedIn; else notLoggedIn" class="btn btn btn-theme-white"
+                      data-target="#plan-modal" data-toggle="modal">Select Plan</a>
+                    <!-- (click)="planSeleceted(subplan.plan_id, subplan.amount) -->
+                    <ng-template #notLoggedIn>
+                      <a href="javascript:;" class="btn btn btn-theme-white" data-target="#login-modal" data-toggle="modal">Select
+                        Plan</a>
+                    </ng-template>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="tab-content" *ngIf="userData && userData.user_plan">
+            <div role="tabpanel" class="tab-pane" *ngFor="let plan of plans; let i = index;" id="tab-{{i}}" [ngClass]="{'active': (userData && userData.user_plan == plan.account_id)}">
+              <div class="plans-table clearfix">
+                <div class="plan-row text-center" *ngFor="let subplan of plan.plan_details; let subIndex = index"
+                  [ngClass]="{'highlight-plan': (highlightedPlanIndex==subIndex || ((subIndex==1 && (!userData.user_plan_details || !userData.user_plan_details.planId)) && highlightedPlanIndex == -1)), 'userselectedPlan': (userData.user_plan_details.planId==subplan.plan_id), 'deselectedPlan':(userData.user_plan_details.planId && userData.user_plan_details.planId!=subplan.plan_id)}"
+                  (click)="setSelectedPlanIndex(subIndex, i)">
+                  <div class="popular-tag" *ngIf="subIndex==1 && (!userData.user_plan_details || !userData.user_plan_details.planId)">
+                    <span class="tag-name">POPULAR</span>
+                  </div>
+                  <h2 class="plan-base-name no-margin">
+                    <span *ngIf="(userData.user_plan_details.planId==subplan.plan_id)"><img class="hide-img" [src]="ImgPath+'Free-Bonus-Icon_blue.svg'"
+                        width="20" alt="Free-Bonus-Icon_blue.svg"></span>
+                    {{subplan.subscription_name}}
+                  </h2>
+                  <div class="paln-detail">
+                    <div class="plan-price">
+                      <font class="doller-icon">$</font>{{numberType(subplan.amount) || 0}}/<small>mo</small>
+                    </div>
+                    <div class="credits">
+                      <h3><b>{{subplan.credit || 0}}</b> Credits</h3>
+                    </div>
+                    <div class="credits-info">per month/
+                      <span *ngIf="subplan.bonus>0">
+                        <font class="text-blue">+{{subplan.bonus || 0}}</font> bonus
+                      </span>
+                    </div>
+                    <div class="plan-user">{{parseJSON(subplan.facilities).numbeOfUsers || 1}} user(s)</div>
+                  </div>
+                  <div class="btn-section text-center">
+                    <ng-container *ngIf="isUserLoggedIn; else notLoggedIn">
+                      <a href="javascript:;" class="btn btn btn-theme-white" data-target="#subscriptions-detial-modal"
+                        data-toggle="modal" *ngIf="userData.user_plan_details && userData.user_plan_details.planId && userData.user_plan_details.planId==subplan.plan_id">View
+                        Plan</a>
+                      <a href="javascript:;" class="btn btn btn-theme-white" data-target="#plan-modal" data-toggle="modal"
+                        *ngIf="!userData.user_plan_details || !userData.user_plan_details || !userData.user_plan_details.planId || userData.user_plan_details.planId!=subplan.plan_id"><span
+                          *ngIf="userData && userData.user_plan_details && userData.user_plan_details.planId">Change
+                          Plan</span><span *ngIf="userData && userData.user_plan_details && !userData.user_plan_details.planId">Select
+                          Plan</span></a>
+                    </ng-container>
+                    <!-- (click)="planSeleceted(subplan.plan_id, subplan.amount) -->
+                    <ng-template #notLoggedIn>
+                      <a href="javascript:;" class="btn btn btn-theme-white" data-target="#login-modal" data-toggle="modal">Select
+                        Plan</a>
+                    </ng-template>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="premium-features-subscription">
+    <div class="container">
+      <div class="row">
+        <div class="">
+          <div class="header-block text-center clearfix">
+            <!--             <h1 class="main-head no-margin text-light">              
+              <span class="text-regular">{{selectedPlan.subscription_name || ''}}</span> Features
+            </h1> -->
+            <h3 class="sub-head">Enjoy the following features with a <b class="bold">{{selectedPlan.account_type_name}}
+                {{selectedPlan.subscription_name || ''}} </b>Subscription.</h3>
+          </div>
+          <div class="premium-features-block  center-block">
+            <div class="container-fluid">
+              <div class="row">
+                <div class="col-md-4 col-sm-4 no-padding">
+                  <!--  [ngClass]="{'hidden-feature':!selectedPlan.facilities.copyToClipboard}" -->
+                  <div class="premium-feature-tile">
+                    <img class="hide-img" [src]="ImgPath+'Welcome_Credits.svg'" width="20" alt="Welcome_Credits.svg">
+                    <img class="show-img" [src]="ImgPath+'Welcome_Credits_Blue.svg'" width="20" alt="Welcome_Credits_Blue.svg">
+                    <h4>Monthly Refill</h4>
+                    <p>Automatically add Credits to your
+                      <br> account at the start of each month.</p>
+                  </div>
+                </div>
+                  <div class="col-md-4 col-sm-4 no-padding" [ngClass]="{'hidden-feature':!selectedPlan.facilities.viewAllPacks}">
+                    <!--   -->
+                    <div class="premium-feature-tile">
+                      <img class="hide-img" [src]="ImgPath+'Features_OnlineDatabase.svg'" width="20" alt="Features_OnlineDatabase.svg">
+                      <img class="show-img" [src]="ImgPath+'Features_OnlineDatabase_blue.svg'" width="20"
+                        alt="Features_OnlineDatabase_blue.svg">
+                      <h4>Filter By Packs</h4>
+                      <p>Easily filter, view and browse
+                        <br> the entire Photobash library.</p>
+                    </div>
+                  </div>
+                <div class="col-md-4 col-sm-4 no-padding" [ngClass]="{'hidden-feature': !selectedPlan.facilities.noWaterMark}">
+                  <div class="premium-feature-tile">
+                    <img class="hide-img" [src]="ImgPath+'no-watermark-gray.svg'" width="18" alt="no-watermark-gray.png">
+                    <img class="show-img" [src]="ImgPath+'no-watermark.svg'" width="18" alt="no-watermark.png">
+                    <h4>No Watermarks</h4>
+                    <p>Don't display any watermarks <br> when browsing the image gallery.</p>
+                  </div>
+                </div>
+                <div class="col-md-4 col-sm-4 no-padding" [ngClass]="{'hidden-feature':!selectedPlan.facilities.imgZoom}">
+                  <div class="premium-feature-tile">
+                    <img class="hide-img" [src]="ImgPath+'Features_Zoom.svg'" width="18" alt="Features_Zoom.svg">
+                    <img class="show-img" [src]="ImgPath+'Features_Zoom_blue.svg'" width="18" alt="Features_Zoom.svg">
+                    <h4>Image Zoom</h4>
+                    <p>Use the Zoom tool to inspect <br> images before downloading them.</p>
+                  </div>
+                </div>
+                <div class="col-md-4 col-sm-4 no-padding" [ngClass]="{'hidden-feature': !selectedPlan.facilities.downloadResizer}">
+                  <div class="premium-feature-tile">
+                    <img class="hide-img" [src]="ImgPath+'Features_Resizer.svg'" width="18" alt="Features_Resizer.svg">
+                    <img class="show-img" [src]="ImgPath+'Features_Resizer_blue.svg'" width="18" alt="Features_Resizer.svg">
+                    <h4>Download Resizer</h4>
+                    <p>Choose from various sizes or input <br> a custom download resolution.</p>
+                  </div>
+                </div>
+            
+                <div class="col-md-4 col-sm-4 no-padding" [ngClass]="{'hidden-feature':!selectedPlan.facilities.freePreviewDownload}">
+                  <div class="premium-feature-tile">
+                    <img class="hide-img" [src]="ImgPath+'Features_FreeDownload.svg'" width="18" alt="Features_FreeDownload.svg">
+                    <img class="show-img" [src]="ImgPath+'Features_FreeDownload_blue.svg'" width="18" alt="Features_FreeDownload.svg">
+                    <h4>Free Preview Download</h4>
+                    <p>Download a preview resolution
+                      <br> version of any image for free.</p>
+                  </div>
+                </div>
+                <div class="col-md-4 col-sm-4 no-padding" [ngClass]="{'hidden-feature':!selectedPlan.facilities.threeDProjectFiles}">
+                  <div class="premium-feature-tile">
+                    <img class="hide-img" [src]="ImgPath+'Icons_Details_Models_Gray.svg'" width="18" alt="Features_FreeDownload.svg">
+                    <img class="show-img" [src]="ImgPath+'Icon_Modal_3D_blue.svg'" width="18" alt="Features_FreeDownload.svg">
+                    <h4>3D Scene Files</h4>
+                    <p>Get direct access to scene files 
+                      <br> for 3ds Max, Maya, C4D & Blender.</p>
+                  </div>
+                </div>
+                <div class="col-md-4 col-sm-4 no-padding" [ngClass]="{'hidden-feature':!selectedPlan.facilities.collectionDiscount}">
+                  <div class="premium-feature-tile">
+                    <img class="hide-img" [src]="ImgPath+'Features_Discount1.svg'" width="18" alt="Features_Discount1.svg">
+                    <img class="show-img" [src]="ImgPath+'Features_Discount1_blue.svg'" width="18" alt="Features_Discount1.svg">
+                    <h4>Collection Discounts</h4>
+                    <p>Get a discount when purchasing <br> a large number of images at once.</p>
+                  </div>
+                </div>
+                <div class="col-md-4 col-sm-4 no-padding" [ngClass]="{'hidden-feature':!selectedPlan.facilities.bonusCredit}">
+                  <div class="premium-feature-tile">
+                    <img class="hide-img" [src]="ImgPath+'Features_BonusCredits.svg'" width="18" alt="Features_BonusCredits.svg">
+                    <img class="show-img" [src]="ImgPath+'Features_BonusCredits_blue.svg'" width="18" alt="Features_BonusCredits.svg">
+                    <h4>Bonus Credits</h4>
+                    <p>Enjoy free additional Credits every <br> month and whenever you top up.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="custom-studio-subscription" *ngIf="(selectedPlan && selectedPlan.account_type=='3' && !isCustomPlanUser)">
+    <div class="theme-container">
+      <div class="header-block text-center">
+        <h1 class="main-head no-margin text-light">
+          <img [src]="ImgPath+'Icon_License_Indie.svg'" width="35" class="head-icon" alt="Icon_License_Indie.svg">
+          Custom <span class="text-regular">Studio</span> Subscription
+        </h1>
+        <h3 class="sub-head">Need something more specific?
+          <br>We'd be happy to tailor a plan that suits your needs.
+        </h3>
+      </div>
+      <div class="text-center btn-block">
+        <a href="javascript:;" class="btn btn btn-theme-white" data-target="#modal-custom-subscription" data-toggle="modal">Custom
+          Plan</a>
+      </div>
+    </div>
+  </div>
+  <div class="custom-studio-subscription" *ngIf="isUserLoggedIn && isCustomPlanUser">
+    <div class="theme-container">
+      <div class="header-block text-center">
+        <h1 class="main-head no-margin text-light">
+          <img [src]="ImgPath+'Icon_License_Indie.svg'" width="35" class="head-icon" alt="Icon_License_Indie.svg">
+          Custom
+          <span class="text-regular">Studio</span> Subscription
+        </h1>
+      </div>
+      <div class="col-md-10 center-block">
+        <div class="tab-content">
+          <div class="">
+            <div class="plans-table clearfix">
+              <div class="plan-row text-center highlight-plan">
+                <h2 class="plan-base-name no-margin" [innerHTML]="selectedPlan.subscriptionName"></h2>
+                <div class="paln-detail">
+                  <div class="plan-price">
+                    <font class="doller-icon">$</font>{{numberType(selectedPlan.amount) || 0}}/
+                    <small>mo</small>
+                  </div>
+                  <div class="credits">
+                    <h3>
+                      <b>{{selectedPlan.credit || 0}}</b> Credits</h3>
+                  </div>
+                  <div class="credits-info">per month
+                    <span *ngIf="selectedPlan.bonus>0">
+                      /<font class="text-blue">+{{selectedPlan.bonus || 0}}</font> bonus</span>
+                  </div>
+                  <div class="plan-user" *ngIf="selectedPlan.facilities">{{selectedPlan.facilities.numbeOfUsers || 1 }}
+                    user(s)</div>
+                </div>
+                <div class="btn-section text-center">
+                  <ng-container *ngIf="isUserLoggedIn; else notLoggedIn">
+                    <a href="javascript:;" class="btn btn btn-theme-white" data-target="#subscriptions-detial-modal"
+                      data-toggle="modal">View Details</a>
+                  </ng-container>
+                  <!-- (click)="planSeleceted(subplan.plan_id, subplan.amount) -->
+                  <ng-template #notLoggedIn>
+                    <a href="javascript:;" class="btn btn btn-theme-white" data-target="#login-modal" data-toggle="modal">Select
+                      Plan</a>
+                  </ng-template>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="clearfix"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <ng-container *ngIf="isDataLoaded; else loader">
+    <div class="credits-plan-wrap" id="plans-block">
+      <div class="theme-container">
+        <div class="header-block text-center">
+          <h1 class="main-head no-margin text-light">Credit Packs</h1>
+          <h3 class="sub-head">
+            Don't need a monthly Subscription?
+            <br> You can add Credits to your account at any time.
+          </h3>
+        </div>
+        <div class="plans-block">
+          <div class="col-md-7 col-sm-10 center-block">
+            <div class="tab-content">
+              <div class="credit-table-wrapper">
+                <form *ngIf="!loadingCustomCredit">
+                  <div class="table-tile clearfix" *ngFor="let list of creditList; let i = index">
+                    <div class="left">
+                      <div class="price clearfix">
+                        <div class="radio custom-radio">
+                          <input class="radio-btn" type="radio" name="checkCredit" [value]="list.credit_id" [(ngModel)]="checkCredit">
+                          <label class="radio-label" for="checkbox{{list.credit_id}}" (click)="customCreditSelect(list)">
+                            <b>
+                              <font class="doller-icon">$</font>{{list.amountTemp || list.amount || 0}}
+                            </b>
+                          </label>
+                          <!-- <small *ngIf="list.applicableTax">+ ${{ list.applicableTax }} (VAT {{applicableTaxPer || 0}}%)</small> -->
+                        </div>
+                      </div>
+                    </div>
+                    <div class="right">
+                      <div class="credit-point clearfix">
+                        <h4 class="info-credit-bonus">{{list.credit || 0}}
+                          <span class="credit">credits</span>
+                          <span *ngIf="getBonusCredits(list.credit, list.bonus)>0">
+                            <span class="per-divided">/</span>
+                            <span class="bonus">+{{getBonusCredits(list.credit, list.bonus) || 0}}
+                              <font>bonus</font>
+                            </span>
+                          </span>
+                        </h4>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="table-tile clearfix purchase-creadit-price">
+                    <div class="left">
+                      <div class="price price-input clearfix ">
+                        <div class="radio custom-radio amount-check">
+                          <input class="radio-btn" type="radio" id="checkbox00" name="checkCredit" [value]="0"
+                            [(ngModel)]="checkCredit">
+                          <label class="radio-label" for="checkbox00" (click)="customCreditPuch()">
+                            <b>
+                              <font class="doller-icon">$</font>
+                            </b>
+                          </label>
+                          <span>
+                            <input class="form-control" name="amount" (ngModelChange)="customCreditPuch()" (focus)="customCreditPuch()"
+                              (blur)="customCreditPuch()" [(ngModel)]="amount" placeholder="" type="text" autocomplete="off"
+                              maxlength="4" min="5" minvalue onlyNumbers>
+                            <p *ngIf="amountError" class="text-danger">Amount should be more or equal to 5</p>
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="right">
+                      <div class="credit-point clearfix">
+                        <h4 class="info-credit-bonus">{{credit || 0}}
+                          <span class="credit">credits</span>
+                          <span *ngIf="customBonus>0">
+                            <span class="per-divided">/</span>
+                            <span class="bonus">+{{customBonus || 0}}
+                              <font>bonus</font>
+                            </span>
+                          </span>
+                        </h4>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="one-time-credits">
+                    <div class="price">
+                      <h4>
+                        <font class="doller-icon">$</font><span *ngIf="checkCredit == 0">{{amount || 0 }}</span><span
+                          *ngIf="checkCredit != 0">{{selectedCustomCredits.amountTemp || selectedCustomCredits.amount
+                          || 0 }}</span>
+                        <!-- <small *ngIf="selectedCustomCredits.applicableTax">+${{selectedCustomCredits.applicableTax || 0}}</small> -->
+                      </h4>
+                    </div>
+                    <div class="credit">
+                      <h4>
+                        <span class="credit-points" *ngIf="checkCredit == 0">{{credit + customBonus || '0' }}</span><span
+                          class="credit-points" *ngIf="checkCredit!=0">{{selectedCustomCredits.totalCredits || 0}}</span>
+                        <!-- <span class="credit-points">{{credits + customBonus || 0 }}</span> -->
+                        <span>credits</span>
+                        <br>
+                        <span>/one time</span>
+                      </h4>
+                    </div>
+                  </div>
+                  <div class="text-center btn-block">
+                    <ng-container *ngIf="amount>4 || selectedCustomCredits.amount > 4">
+                      <ng-container *ngIf="isUserLoggedIn; else notLoggedIn">
+                        <a href="javascript:;" *ngIf="userData && !userData.user_plan" class="btn btn btn-theme-white add-credit-btn"
+                          data-target="#set-account-type" data-toggle="modal" data-dismiss="modal" (click)="getAccountType()">Add
+                          Credits</a>
+                        <a href="javascript:;" *ngIf="userData && userData.user_plan" class="btn btn btn-theme-white add-credit-btn"
+                          data-target="#custom-credit-modal-subsc" data-toggle="modal" data-dismiss="modal" (click)="amountError = false"
+                          data-backdrop="static" data-keyboard="false">Add Credits</a>
+                      </ng-container>
+                    </ng-container>
+                    <ng-container *ngIf="amount<=4 && selectedCustomCredits.amount <= 4">
+                      <a href="javascript:;" *ngIf="isUserLoggedIn; else notLoggedIn" class="btn btn btn-theme-white add-credit-btn"
+                        (click)="amountError = true">Add Credits</a>
+                    </ng-container>
+                    <ng-template #notLoggedIn>
+                      <a href="javascript:;" class="btn btn btn-theme-white add-credit-btn" data-target="#login-modal"
+                        data-toggle="modal">Add Credits</a>
+                    </ng-template>
+                  </div>
+                </form>
+                <ng-container *ngIf="loadingCustomCredit">
+                  <loader></loader>
+                </ng-container>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+  <div class="subscription-block-note">
+    <div *ngIf="false">
+      <div class="theme-container">
+        <p>Credits added to your wallet never expire and can be used <br>at any time with an active Account.</p>
+      </div>
+    </div>
+  </div>
+</div>
+<ng-template #loader>
+  <br><br>
+  <loader></loader>
+</ng-template>
+<a href="javascript:;" *ngIf="isUserLoggedIn; else notLoggedIn1" data-target="#plan-modal" id="plan-modal-btn"
+  data-toggle="modal"></a>
+<!-- (click)="planSeleceted(subplan.plan_id, subplan.amount) -->
+<ng-template #notLoggedIn1>
+  <a href="javascript:;" id="plan-modal-btn" data-target="#login-modal" data-toggle="modal"></a>
+</ng-template>
+
+<!--Mobile View Warper-->
+<div class="image-component-mobile nofound-warp gray-background">
+  <div class="nofound-image nofound-single-block">
+    <div class="nofound-content text-light text-center">
+      <p>This features is not available on mobile version.</p>
+      <p>Please visit our desktop version.</p>
+    </div>
+  </div>
+</div>
+
+<app-footer></app-footer>
+<!-- Subscription Modal -->
+<div aria-labelledby="myModalLabel" class="modal fade" id="plan-modal" role="dialog" tabindex="-1">
+  <div class="modal-dialog account-modal comman-modal subscription-modal subscription-modal-plan" role="document">
+    <div class="modal-content">
+      <button aria-label="Close " class="close btn-close-modal" data-dismiss="modal" type="button ">
+      </button>
+      <div class="modal-body">
+        <div class="">
+          <div class="plan-row text-center">
+            <div class="plan-name">
+              <span class="info-tooltip">
+                <img [src]="ImgPath+'Icon_Info.svg'" class="" width="14" alt="Icon_Info.svg">
+                <span class="custom-tooltip tooltip-arrow-top">{{selectedPlan.description || 'N/A'}}</span>
+              </span>
+              <span *ngIf="selectedPlan.account_type=='3'">Studio</span><span *ngIf="selectedPlan.account_type!='3'">{{selectedPlan.account_type_name}}</span>
+              <span class="text-regular">License</span>
+            </div>
+            <h2 class="plan-base-name no-margin">{{selectedPlan.subscription_name || selectedPlan.plan_name || 'N/A'}}</h2>
+            <div class="paln-detail">
+              <div class="plan-price">
+                <font class="doller-icon">$</font>{{numberType(selectedPlan.amount) || 0}}/<small>mo</small>
+              </div>
+              <div class="credits">
+                <h3><b>{{selectedPlan.credit || 0}}</b> Credits</h3>
+              </div>
+              <div class="credits-info">per month/
+                <span *ngIf="selectedPlan.bonus && selectedPlan.bonus!='0'">
+                  <font class="text-blue">+{{selectedPlan.bonus}}</font> bonus
+                </span>
+              </div>
+              <div class="plan-user">{{selectedPlan.facilities.numbeOfUsers || 1}} user(s)</div>
+            </div>
+          </div>
+          <div class="plan-details-list">
+            <ul>
+              <li>Subscription are billed monthly</li>
+              <li>Credits rollover and never expire</li>
+              <li>Change plan or cancel any time</li>
+            </ul>
+          </div>
+          <div class="btn-section text-center">
+            <button class="btn btn btn-theme-white subscribe-modal-btn " data-toggle="modal" (click)="subscribeToThisPlan(selectedPlan)">Proceed
+              to Checkout</button>
+            <button id="subscribe-modal-btn" data-dismiss="modal" data-toggle="modal" data-target="#subscribe-modal"
+              style="display: none" data-backdrop="static" data-keyboard="false"></button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- CUSTOM STUDIO SUBSCRIPTION MODAL-->
+<div aria-labelledby="myModalLabel " class="modal fade " id="modal-custom-subscription" role="dialog" tabindex="-1">
+  <div class="modal-dialog settings-modal comman-modal custom-subscription-modal" role="document ">
+    <div class="modal-content">
+      <div class="modal-header comman-header-modal">
+        <button aria-label="Close" class="close btn-close-modal" data-dismiss="modal" type="button ">
+        </button>
+        <h3 class="text-center heading ">Custom Subscription</h3>
+      </div>
+      <div class="modal-body">
+        <div class="alert alert-success" *ngIf="successMessage">{{successMessage}}</div>
+        <div class="alert alert-danger" *ngIf="errorMessage">{{errorMessage}}</div>
+        <div class="form-group text-center clearfix">
+          <p>Send us your request and we’ll get back to you.</p>
+        </div>
+        <form #form="ngForm" (submit)="submitCustomPlanRequest(form)" novalidate>
+          <div class="form-group clearfix ">
+            <div class="col-md-3 col-sm-3">
+              <label class="">Company</label>
+            </div>
+            <div class="col-md-9 col-sm-9">
+              <div class="">
+                <input class="form-control input-block" name="company" placeholder="Company Name" type="text"
+                  [(ngModel)]="companyName" required (ngModelChange)="clearErrorMessage('company')">
+              </div>
+              <p class="text-danger" *ngIf="customPlanErrors['company']">{{customPlanErrors['company']}}</p>
+            </div>
+          </div>
+          <div class="form-group clearfix ">
+            <div class="col-md-3 col-sm-3">
+              <label class="">Message</label>
+            </div>
+            <div class="col-md-9 col-sm-9">
+              <div class="addess-setting">
+                <textarea class="form-control" rows="6" name="message" placeholder="Lets us know what you’re looking for..."
+                  [(ngModel)]="message" required (ngModelChange)="clearErrorMessage('message')"></textarea>
+              </div>
+              <p class="text-danger" *ngIf="customPlanErrors['message']">{{customPlanErrors['message']}}</p>
+            </div>
+          </div>
+          <div class="form-group clearfix ">
+            <div class="col-md-9 col-md-offset-3 col-sm-9 col-sm-offset-3">
+              <div class="btn-block">
+                <button class="btn setting-btn" type="submit" *ngIf="!requestingCustomPlan">Request Plan</button>
+                <button class="btn setting-btn" type="button" disabled *ngIf="requestingCustomPlan">Requesting...</button>
+              </div>
+            </div>
+          </div>
+        </form>
+        <div class="divider-with-or">
+          <span>or</span>
+        </div>
+        <div class="form-group text-center clearfix">
+          <p>Enter your <span class="text-blue">Activation Code</span> to setup your Subscription.</p>
+        </div>
+        <form #activateForm="ngForm" (submit)="activateCustomPlan(activateForm)" novalidate>
+          <div class="form-group clearfix ">
+            <div class="col-md-3 col-sm-3 ">
+              <label class=" ">Activation Code</label>
+            </div>
+            <div class="col-md-9 col-sm-9 ">
+              <div class="validate-vat-wrap">
+                <div class="input-group">
+                  <input class="form-control" name="Activation Code" [(ngModel)]="activationCode" (ngModelChange)="clearActviationError()"
+                    placeholder="Enter your code here" required="" type="text">
+                  <span class="input-group-btn">
+                    <button class="btn btn-default btn-validate" type="submit" [disabled]="getingActivationCodeDetails"><span
+                        *ngIf="!getingActivationCodeDetails">Confirm</span><span *ngIf="getingActivationCodeDetails">Please
+                        wait..</span></button>
+                  </span>
+                </div>
+                <p *ngIf="activationError" class="text-danger">{{activationError}}</p>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!--PURCHASE MODAL-->
+<div aria-labelledby="myModalLabel" class="modal fade" id="subscribe-modal" role="dialog" tabindex="-1" *ngIf="isUserLoggedIn">
+  <app-payment-modal #subscriptionPay [isRecurring]="true" [planId]="planId" [amount]="planAmount"
+    (onCreditCardPaymentDone)="plandPurchasedSuccess($event)" [paymentFor]="1"></app-payment-modal>
+</div>
+<!--PURCHASE MODAL-->
+<!--PURCHASE MODAL-->
+<div aria-labelledby="myModalLabel" class="modal fade" id="custom-credit-modal-subsc" role="dialog" tabindex="-1" *ngIf="isUserLoggedIn">
+  <app-payment-modal #customPay [amount]="selectedCustomCredits.amountTemp || selectedCustomCredits.amount || 0 "
+    (onCreditCardPaymentDone)="onCreditCardPaymentDoneForAddCredit($event)" [paymentFor]="2" [creditData]="selectedCustomCredits"
+    [bonus]="customBonus" [checkCredit]="checkCredit" [credit]="credit"></app-payment-modal>
+</div>
+<!--PURCHASE MODAL-->

@@ -1,0 +1,27 @@
+.show {
+  display: block !important;
+}
+.centerlineoption {
+  line-height: 45px;
+}
+.custom-badge {
+  text-transform: capitalize;
+  background: #4995ff;
+  padding: 4px;
+  color: white;
+  border-radius: 5px;
+  font-size: 12px;
+}
+.deleting-button {
+  position: relative;
+}
+.deleting-text {
+  position: absolute;
+}
+.deleting-spinner {
+  position: absolute;
+  right: -145px;
+}
+.deleting-button-with-spinner {
+  padding-right: 55px;
+}

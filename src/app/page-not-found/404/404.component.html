@@ -1,0 +1,25 @@
+<app-header></app-header>
+<div class="error-page">
+    <div class="theme-container">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="error-text">
+                    <h1 class="text-center"><b>404</b></h1>
+                    <h2 class="text-center "><b>No Page Found</b></h2>
+                </div>
+                <div class="error-page-content text-center">
+                    <h3>Page or images you are looking for may be removed.
+                        <!-- </h3> -->
+                        <!-- <h3> -->Please try to search for different keyword</h3>
+                    <h3>OR</h3>
+                    <br>
+                    <a class="btn back-button" routerLink="/">Go Back To Home <i class=" fa fa-home "></i></a>
+                </div>
+            </div>
+            <div class="col-md-6 ">
+                <img [src]="ImgPath+ '404_icon.png' " class="img-responsive pull-left error_page_icon " alt="404_icon.png">
+            </div>
+        </div>
+    </div>
+</div>
+<app-footer></app-footer>

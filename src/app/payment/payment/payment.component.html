@@ -1,0 +1,108 @@
+<app-header></app-header>
+<div class="gray-background payment-status-warp">
+  <div class="theme-container">
+    <div class="container">
+      <div class="row">
+        <div class="payment-block-wrapper" *ngIf="isPaymentSuccess">
+          <div class="col-sm-10 col-md-8 center-block white-background payment-tile">
+            <ng-container *ngIf="!isLoading; else loader">
+              <div class="payment-head">
+                <div class="text-center">
+                  <img [src]="ImgPath+'Payment_Success.svg'" alt="Payment_Success.svg" width="90" class="icon">
+                  <div>
+                    <h1 class="header no-margin">Payment Successful!</h1>
+                  </div>
+                </div>
+                <div class="text-center total-section">
+                  <p>Total Amount Paid:</p>
+                  <h2>
+                    <font class="dollor">${{paymentDetails.grand_amount}}</font>
+                  </h2>
+                </div>
+              </div>
+              <div class="payment-transaction-details">
+                <div class="payment-transaction-table clearfix" *ngIf="paymentDetails.type==4 || paymentDetails.type==3">
+                  <div class="left"><b class="bold">Purchase:</b></div>
+                  <div class="right">
+                    <ng-container *ngIf="paymentDetails.type != 3">
+                      <span><b>
+                          <font class="text-blue Montserrat">{{paymentDetails.credits}}</font>
+                        </b> Credits</span>
+                      <span *ngIf="paymentDetails.bonus>0">
+                        <span class="per-divided">/</span>
+                        <span class="bonus">+{{paymentDetails.bonus || 0}}
+                          <font>bonus</font>
+                        </span>
+                      </span>
+                    </ng-container>
+                    <ng-container *ngIf="paymentDetails.type == 3">
+                      <span><b>
+                          <font class="text-blue Montserrat">{{paymentDetails.account_type}}</font>
+                        </b>
+                        - {{ paymentDetails.subscription }} Subscription
+                      </span>
+                    </ng-container>
+                  </div>
+                </div>
+                <div class="payment-transaction-table clearfix">
+                  <div class="left"><b class="bold">Transaction Date:</b></div>
+                  <div class="right">{{paymentDetails.transaction_date}}</div>
+                </div>
+                <div class="payment-transaction-table clearfix" *ngIf="paymentDetails.invoice_id">
+                  <div class="left"><b class="bold">Invoice Nr:</b></div>
+                  <div class="right">{{paymentDetails.invoice_id}}</div>
+                </div>
+                <div class="payment-transaction-table clearfix" *ngIf="paymentDetails.agreement_id">
+                  <div class="left">
+                    <b class="bold">Agreement Id:</b>
+                  </div>
+                  <div class="right">{{paymentDetails.agreement_id}}</div>
+                </div>
+
+              </div>
+              <div class="text-center payment-footer">
+                <p>A confirmation email has been sent to </p>
+                <p><a href="mailto:{{paymentDetails.email}}" class="mail">{{paymentDetails.email}}</a></p>
+                <a routerLink="/" class="btn btn-add-creadit">Continue</a>
+              </div>
+            </ng-container>
+          </div>
+        </div>
+        <div class="payment-block-wrapper" *ngIf="!isPaymentSuccess">
+          <div class="col-sm-10 col-md-8 center-block white-background payment-tile">
+            <div class="header-block">
+              <div class="payment-head">
+                <div class="text-center">
+                  <img [src]="ImgPath+'Payment_Error.svg'" alt="Payment_Error.svg" width="90">
+                  <div>
+                    <!-- <h1 class="header no-margin text-light">{{ paymentMessage }} !</h1> -->
+                    <h1 class="header no-margin text-light">Payment Failed!</h1>
+                  </div>
+                </div>
+
+                <div class="text-center total-section">
+                  <p>We’re sorry, something went wrong with your payment.</p>
+                </div>
+              </div>
+              <br>
+              <div class="text-center payment-footer">
+                <a href="" class="btn btn-add-creadit">Try Again</a>
+              </div>
+            </div>
+          </div>
+          <br>
+          <br>
+          <br>
+          <br>
+          <br>
+          <br>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<app-footer></app-footer>
+
+<ng-template #loader>
+  <loader></loader>
+</ng-template>
